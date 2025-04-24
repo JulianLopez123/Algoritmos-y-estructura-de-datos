@@ -9,9 +9,6 @@ import (
 
 func TestPilaVacia(t *testing.T) {
 	pila := TDAPila.CrearPilaDinamica[int]()
-	pila.Apilar(2)
-	require.False(t, pila.EstaVacia())
-	pila.Desapilar()
 	require.True(t, pila.EstaVacia())
 	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.Desapilar() })
 	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.VerTope() })
@@ -62,36 +59,15 @@ func TestVolumen(t *testing.T) {
 	require.True(t, pila.EstaVacia())
 }
 
-func TestPilaVaciaComoRecienCreada(t *testing.T) {
+func TestVaciarPila(t *testing.T) {
+	//A mi parecer este test es necesario debido que al achicar TestPilaVacia,
+	//debo probar si una pila está vacía luego de apilar y de desapilar
+	//en un test aparte,y verificar que esta se comporte como tal
 	pila := TDAPila.CrearPilaDinamica[int]()
-	pila.Apilar(15)
+	pila.Apilar(2)
+	require.False(t, pila.EstaVacia())
 	pila.Desapilar()
 	require.True(t, pila.EstaVacia())
 	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.Desapilar() })
 	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.VerTope() })
-
-}
-
-func TestDesapilarYVerTopeRecienCreada(t *testing.T) {
-	pila := TDAPila.CrearPilaDinamica[int]()
-	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.Desapilar() })
-	require.PanicsWithValue(t, "La pila esta vacia", func() { pila.VerTope() })
-}
-
-func TestEstaVaciaRecienCreada(t *testing.T) {
-	pila := TDAPila.CrearPilaDinamica[int]()
-	require.True(t, pila.EstaVacia())
-}
-
-func TestDesapilarYVerTopePilaVacia(t *testing.T) {
-	pila_string := TDAPila.CrearPilaDinamica[string]()
-	pila_string.Apilar("hola")
-	pila_string.Apilar("como")
-	pila_string.Desapilar()
-	pila_string.Apilar("va")
-	pila_string.Desapilar()
-	pila_string.Desapilar()
-	require.True(t, pila_string.EstaVacia())
-	require.PanicsWithValue(t, "La pila esta vacia", func() { pila_string.Desapilar() })
-	require.PanicsWithValue(t, "La pila esta vacia", func() { pila_string.VerTope() })
 }
