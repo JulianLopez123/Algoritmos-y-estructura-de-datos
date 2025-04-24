@@ -13,6 +13,8 @@ type listaEnlazada[T any] struct {
 
 type iterListaEnlazada[T any] struct {
 	actual *nodoLista[T]
+	anterior *nodoLista[T]
+	lista *listaEnlazada[T]
 }
 
 func CrearListaEnlazada[T any]() Lista[T] {
@@ -90,4 +92,26 @@ func (iter *iterListaEnlazada[T]) VerActual() T {
 
 func (iter *iterListaEnlazada[T]) HaySiguiente() bool {
 	return iter.actual.siguiente != nil
+}
+
+func (iter *iterListaEnlazada[T]) Siguiente(){
+	if iter.actual == nil{
+		panic("El iterador termino de iterar")
+	}
+	iter.anterior = iter.actual
+	iter.actual = iter.actual.siguiente
+}
+
+func (iter *iterListaEnlazada[T]) Insertar(elemento T){
+	nodo_nuevo := &nodoLista[T]{dato: elemento}
+	if iter.anterior == nil{
+		iter.lista.InsertarPrimero(elemento)
+	}else if iter.actual == nil{
+		iter.lista.InsertarUltimo(elemento)
+	}else{
+		nuevo_siguiente := iter.actual
+		iter.actual = nodo_nuevo
+		iter.actual.siguiente = nuevo_siguiente
+		iter.anterior.siguiente = iter.actual
+	}
 }
