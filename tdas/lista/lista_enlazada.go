@@ -113,6 +113,6 @@ func (iter *iterListaEnlazada[T]) Insertar(elemento T){
 		iter.actual = nodo_nuevo
 		iter.actual.siguiente = nuevo_siguiente //si pusiese directamente iter.actual.sig = iter.actual ese iter.actual apuntaria a si mismo¿
 		iter.anterior.siguiente = iter.actual
-		iter.lista.largo ++
 	}
+	iter.lista.largo ++
 }
