@@ -111,6 +111,7 @@ func (iter *iterListaEnlazada[T]) Insertar(elemento T){
 	}else{
 		nuevo_siguiente := iter.actual
 		iter.actual = nodo_nuevo
+		iter.anterior.siguiente = iter.actual
 		iter.actual.siguiente = nuevo_siguiente
 		iter.lista.largo ++
 	}
