@@ -22,6 +22,8 @@ type Lista[T any] interface {
 }
 
 type IteradorLista[T any] interface {
+
+	//VerActual devuelve el dato de la posicion actual en la que se encuentra el iterador.
 	VerActual() T
 
 	// HaySiguiente devuelve true si hay un siguiente elemento a leer en la posicion actual del iterador;de no ser asi devuelve false.
