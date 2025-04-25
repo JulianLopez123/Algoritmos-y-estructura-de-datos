@@ -50,7 +50,7 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elemento T) {
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.largo == 0 {
+	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
 	nodo_eliminado := lista.primero.dato
@@ -65,7 +65,7 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 }
 
 func (lista *listaEnlazada[T]) VerPrimero() T {
-	if lista.largo == 0 {
+	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
 	return lista.primero.dato
@@ -91,11 +91,11 @@ func (iter *iterListaEnlazada[T]) VerActual() T {
 }
 
 func (iter *iterListaEnlazada[T]) HaySiguiente() bool {
-	return iter.actual.siguiente != nil
+	return iter.actual != nil
 }
 
 func (iter *iterListaEnlazada[T]) Siguiente() {
-	if iter.actual == nil {
+	if !iter.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
 	iter.anterior = iter.actual
@@ -106,13 +106,14 @@ func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 	nodo_nuevo := &nodoLista[T]{dato: elemento}
 	if iter.anterior == nil {
 		iter.lista.InsertarPrimero(elemento)
-	} else if iter.actual == nil {
+	} else if !iter.HaySiguiente() {
 		iter.lista.InsertarUltimo(elemento)
 	} else {
 		nuevo_siguiente := iter.actual
 		iter.actual = nodo_nuevo
-		iter.actual.siguiente = nuevo_siguiente //si pusiese directamente iter.actual.sig = iter.actual ese iter.actual apuntaria a si mismo¿
 		iter.anterior.siguiente = iter.actual
+		iter.actual.siguiente = nuevo_siguiente
+		iter.lista.largo++
 	}
 	iter.lista.largo++
 }
@@ -125,16 +126,11 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	if iter.anterior == nil {
 		iter.lista.primero = iter.actual.siguiente
 	} else {
-		iter.actual = iter.actual.siguiente
-		iter.anterior.siguiente = iter.actual
+		iter.anterior.siguiente = iter.actual.siguiente
 	}
 
-	if iter.actual.siguiente == nil {
-		iter.lista.ultimo = iter.anterior
-	} else {
-		iter.actual = iter.actual.siguiente
-		iter.anterior.siguiente = iter.actual
-	}
+	iter.actual = iter.actual.siguiente
+
 	return nodo_eliminado.dato
 }
 
@@ -142,7 +138,7 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 	actual := lista.primero
 	for actual != nil {
 		if !visitar(actual.dato) {
-			break
+			return
 		}
 		actual = lista.primero.siguiente
 	}
