@@ -140,6 +140,6 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 		if !visitar(actual.dato) {
 			return
 		}
-		actual = lista.primero.siguiente
+		actual = actual.siguiente
 	}
 }

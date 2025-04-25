@@ -14,7 +14,11 @@ type Lista[T any] interface {
 	// BorrarPrimero saca el primer elemento de la lista. Si la lista tiene elementos, se quita el primero de la misma,
 	// y se devuelve ese valor. Si está vacía, entra en pánico con un mensaje "La lista esta vacia".
 	BorrarPrimero() T
+
+	// VerPrimero devuelve el primer elemento de la lista. Si la lista esta vacia, entra en pánico con un mensaje "La lista esta vacía".
 	VerPrimero() T
+
+	// VerUltimo devuelve el ultimo elemento de la lista. Si la lista esta vacia, entra en pánico con un mensaje "La lista esta vacía".
 	VerUltimo() T
 
 	//Largo devuelve el largo de la lista, o lo que es equivalente, su cantidad de elementos.
@@ -37,4 +41,3 @@ type IteradorLista[T any] interface {
 	Insertar(T)
 	Borrar() T
 }
-
