@@ -31,7 +31,7 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elemento T) {
 		lista.primero = nodo_nuevo
 		lista.ultimo = nodo_nuevo
 	} else {
-		lista.primero.siguiente = lista.primero
+		nodo_nuevo.siguiente = lista.primero
 		lista.primero = nodo_nuevo
 	}
 	lista.largo++
