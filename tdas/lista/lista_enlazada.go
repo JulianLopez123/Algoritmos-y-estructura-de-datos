@@ -51,7 +51,7 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	if lista.largo == 0 {
 		panic("La lista esta vacia")
 	}
-	nodo_eliminado := lista.primero
+	nodo_eliminado := lista.primero.dato
 	if lista.primero.siguiente != nil {
 		lista.primero = lista.primero.siguiente
 	} else {
@@ -59,7 +59,7 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 		lista.ultimo = nil
 	}
 	lista.largo--
-	return nodo_eliminado.dato
+	return nodo_eliminado
 }
 
 func (lista *listaEnlazada[T]) VerPrimero() T {
@@ -90,4 +90,16 @@ func (iter *iterListaEnlazada[T]) VerActual() T {
 
 func (iter *iterListaEnlazada[T]) HaySiguiente() bool {
 	return iter.actual.siguiente != nil
+}
+
+func (iter *iterListaEnlazada[T]) Siguiente() {
+
+}
+
+func (iter *iterListaEnlazada[T]) Borrar() T {
+	return iter.actual.dato
+}
+
+func (iter *iterListaEnlazada[T]) Insertar(T) {
+
 }
