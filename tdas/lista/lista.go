@@ -16,12 +16,16 @@ type Lista[T any] interface {
 	BorrarPrimero() T
 	VerPrimero() T
 	VerUltimo() T
+
+	//Largo devuelve el largo de la lista, o lo que es equivalente, su cantidad de elementos.
 	Largo() int
 	Iterar(visitar func(T) bool)
 	Iterador() IteradorLista[T]
 }
 
 type IteradorLista[T any] interface {
+
+	//VerActual devuelve el dato de la posicion actual en la que se encuentra el iterador.
 	VerActual() T
 
 	// HaySiguiente devuelve true si hay un siguiente elemento a leer en la posicion actual del iterador;de no ser asi devuelve false.
