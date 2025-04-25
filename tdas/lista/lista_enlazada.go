@@ -12,7 +12,9 @@ type listaEnlazada[T any] struct {
 }
 
 type iterListaEnlazada[T any] struct {
-	actual *nodoLista[T]
+	actual   *nodoLista[T]
+	anterior *nodoLista[T]
+	lista    *listaEnlazada[T]
 }
 
 func CrearListaEnlazada[T any]() Lista[T] {
@@ -93,13 +95,55 @@ func (iter *iterListaEnlazada[T]) HaySiguiente() bool {
 }
 
 func (iter *iterListaEnlazada[T]) Siguiente() {
+	if iter.actual == nil {
+		panic("El iterador termino de iterar")
+	}
+	iter.anterior = iter.actual
+	iter.actual = iter.actual.siguiente
+}
 
+func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
+	nodo_nuevo := &nodoLista[T]{dato: elemento}
+	if iter.anterior == nil {
+		iter.lista.InsertarPrimero(elemento)
+	} else if iter.actual == nil {
+		iter.lista.InsertarUltimo(elemento)
+	} else {
+		nuevo_siguiente := iter.actual
+		iter.actual = nodo_nuevo
+		iter.actual.siguiente = nuevo_siguiente //si pusiese directamente iter.actual.sig = iter.actual ese iter.actual apuntaria a si mismo¿
+		iter.anterior.siguiente = iter.actual
+	}
+	iter.lista.largo++
 }
 
 func (iter *iterListaEnlazada[T]) Borrar() T {
-	return iter.actual.dato
+	if iter.actual == nil {
+		panic("La lista esta vacia")
+	}
+	nodo_eliminado := iter.actual
+	if iter.anterior == nil {
+		iter.lista.primero = iter.actual.siguiente
+	} else {
+		iter.actual = iter.actual.siguiente
+		iter.anterior.siguiente = iter.actual
+	}
+
+	if iter.actual.siguiente == nil {
+		iter.lista.ultimo = iter.anterior
+	} else {
+		iter.actual = iter.actual.siguiente
+		iter.anterior.siguiente = iter.actual
+	}
+	return nodo_eliminado.dato
 }
 
-func (iter *iterListaEnlazada[T]) Insertar(T) {
-
+func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
+	actual := lista.primero
+	for actual != nil {
+		if !visitar(actual.dato) {
+			break
+		}
+		actual = lista.primero.siguiente
+	}
 }
