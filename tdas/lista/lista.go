@@ -16,6 +16,8 @@ type Lista[T any] interface {
 	BorrarPrimero() T
 	VerPrimero() T
 	VerUltimo() T
+
+	//Largo devuelve el largo de la lista, o lo que es equivalente, su cantidad de elementos.
 	Largo() int
 	Iterar(visitar func(T) bool)
 	Iterador() IteradorLista[T]
