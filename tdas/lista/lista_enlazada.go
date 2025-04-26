@@ -107,6 +107,21 @@ func (iter *iterListaEnlazada[T]) Siguiente() {
 
 func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 	nodo_nuevo := &nodoLista[T]{dato: elemento}
+	// if iter.anterior == nil {
+	// 	nodo_nuevo.siguiente = iter.lista.primero
+	// 	iter.lista.primero = nodo_nuevo
+	// 	if iter.lista.ultimo == nil {
+	// 		iter.lista.ultimo = nodo_nuevo
+	// 	}
+	// } else {
+	// 	nodo_nuevo.siguiente = iter.actual
+	// 	iter.anterior.siguiente = nodo_nuevo
+	// 	if iter.actual == nil {
+	// 		iter.lista.ultimo = nodo_nuevo
+	// 	}
+	// }
+	// iter.actual = nodo_nuevo
+	// iter.lista.largo++
 	if iter.anterior == nil {
 		iter.lista.InsertarPrimero(elemento)
 	} else if !iter.HaySiguiente() {
