@@ -45,3 +45,16 @@ func Test(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
 }
+
+
+func TestIteradorExterno(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[string]()
+	iterador := lista.Iterador()
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	iterador.Insertar("todo bien")
+	iterador.Insertar("hola")
+	require.Equal(t, "hola", iterador.VerActual())
+	require.Equal(t, "hola", lista.VerPrimero())
+	iterador.Siguiente()
+	require.Equal(t, "todo bien", iterador.VerActual())
+}
