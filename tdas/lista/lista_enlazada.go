@@ -107,12 +107,12 @@ func (iter *iterListaEnlazada[T]) Siguiente() {
 
 func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 	nodo_nuevo := &nodoLista[T]{dato: elemento,siguiente: iter.actual}
-	if iter.anterior == nil{ //primer elemento
+	if iter.anterior == nil{ 
 		iter.lista.primero = nodo_nuevo
 		if iter.lista.largo == 0{
 			iter.lista.ultimo = nodo_nuevo
 		}
-	}else { //ultimo elemento
+	}else { 
 		iter.anterior.siguiente = nodo_nuevo
 		if iter.actual == nil{
 			iter.lista.ultimo = nodo_nuevo
