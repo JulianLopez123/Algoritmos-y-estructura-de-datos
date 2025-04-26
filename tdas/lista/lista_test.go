@@ -110,3 +110,15 @@ func TestBorrarElementoDelMedioIterador(t *testing.T) {
 	require.Equal(t, 1, lista.VerPrimero())
 	require.Equal(t, 3, lista.VerUltimo())
 }
+
+func TestIteradorExterno(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[string]()
+	iterador := lista.Iterador()
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	iterador.Insertar("todo bien")
+	iterador.Insertar("hola")
+	require.Equal(t, "hola", iterador.VerActual())
+	require.Equal(t, "hola", lista.VerPrimero())
+	iterador.Siguiente()
+	require.Equal(t, "todo bien", iterador.VerActual())
+}
