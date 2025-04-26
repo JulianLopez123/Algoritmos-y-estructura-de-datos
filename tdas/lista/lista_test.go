@@ -22,7 +22,7 @@ func TestVerUltimoListaVacia(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerUltimo() }, "Se espera un panic cuando se intenta ver el ultimo de una lista vacia")
 }
 
-func Test(t *testing.T) {
+func TestInsertarPrimeroYBorrarPrimero(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 
 	lista.InsertarPrimero(1)
@@ -46,15 +46,133 @@ func Test(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
 }
 
+func TestVerPrimeroYVerUltimo(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
 
-func TestIteradorExterno(t *testing.T) {
+	lista.InsertarUltimo(1)
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 1, lista.VerUltimo())
+
+	lista.InsertarUltimo(2)
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+
+	lista.InsertarPrimero(3)
+	require.Equal(t, 3, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+}
+
+func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
+
+	require.Equal(t, 1, lista.BorrarPrimero())
+	require.Equal(t, 2, lista.BorrarPrimero())
+	require.Equal(t, 3, lista.BorrarPrimero())
+
+	require.True(t, lista.EstaVacia())
+}
+
+func TestIteradorConListaVacia(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	iter := lista.Iterador()
+
+	require.False(t, iter.HaySiguiente())
+}
+
+func TestVerificarInsercionAlCrearIterador(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	iter := lista.Iterador()
+	iter.Insertar(1)
+
+	primero := iter.VerActual()
+	require.Equal(t, 1, primero)
+	require.Equal(t, 1, lista.VerPrimero())
+}
+
+func TestBorrarElementoIterador(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	iter := lista.Iterador()
+
+	iter.Insertar(1)
+	iter.Insertar(2)
+
+	require.Equal(t, 2, lista.VerPrimero())
+
+	iter.Borrar()
+
+	require.Equal(t, 1, lista.VerPrimero())
+}
+
+func TestBorrarUltimoElementoIterador(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
+
+	require.Equal(t, 3, lista.VerUltimo())
+
+	iter := lista.Iterador()
+	for iter.HaySiguiente() {
+		if iter.VerActual() == 3 {
+			iter.Borrar()
+			break
+		}
+		iter.Siguiente()
+	}
+
+	require.Equal(t, 2, lista.VerUltimo())
+	require.Equal(t, 2, lista.Largo())
+}
+
+func TestBorrarElementoDelMedioIterador(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
+
+	iter := lista.Iterador()
+	for iter.HaySiguiente() {
+		if iter.VerActual() == 2 {
+			iter.Borrar()
+			break
+		}
+		iter.Siguiente()
+	}
+
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 3, lista.VerUltimo())
+}
+
+func TestInsertarIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[string]()
 	iterador := lista.Iterador()
-	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
 	iterador.Insertar("todo bien")
+	require.Equal(t, "todo bien", iterador.VerActual())
 	iterador.Insertar("hola")
 	require.Equal(t, "hola", iterador.VerActual())
+	require.Equal(t, "todo bien", lista.VerUltimo())
 	require.Equal(t, "hola", lista.VerPrimero())
 	iterador.Siguiente()
-	require.Equal(t, "todo bien", iterador.VerActual())
+	require.True(t, iterador.HaySiguiente())
+	iterador.Siguiente()
+	iterador.Insertar("que tal")
+	require.Equal(t, "que tal", lista.VerUltimo())
+	iterador.Siguiente()
+	require.False(t, iterador.HaySiguiente())
+	require.Equal(t, 3, lista.Largo())
 }
+
+func TestListaVaciaIterador(t *testing.T){
+	lista := TDALista.CrearListaEnlazada[int]()
+	iterador := lista.Iterador()
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Borrar() })
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
+	require.False(t, iterador.HaySiguiente())
+}
+

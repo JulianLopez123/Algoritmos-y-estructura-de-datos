@@ -37,7 +37,7 @@ type Lista[T any] interface {
 
 type IteradorLista[T any] interface {
 
-	// VerActual devuelve el dato de la posicion actual en la que se encuentra el iterador; si no 
+	// VerActual devuelve el dato de la posicion actual en la que se encuentra el iterador; si no
 	// hay elemento en la posicion actual entra en panico con un mensaje "El iterador termino de iterar"
 	VerActual() T
 
@@ -51,7 +51,7 @@ type IteradorLista[T any] interface {
 	// Insertar agrega un nuevo elemento en la posicion actual del iterador.
 	Insertar(T)
 
-	// Borrar elimina el elemento de la posicion actual del iterador. Si la lista no tiene 
+	// Borrar elimina el elemento de la posicion actual del iterador. Si la lista no tiene
 	// elementos entra en panico con un mensaje "La lista esta vacia""
 	Borrar() T
 }
