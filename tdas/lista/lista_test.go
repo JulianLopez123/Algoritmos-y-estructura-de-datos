@@ -46,6 +46,43 @@ func TestInsertarPrimeroYBorrarPrimero(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
 }
 
+func TestVerPrimeroYVerUltimo(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+
+	lista.InsertarUltimo(1)
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 1, lista.VerUltimo())
+
+	lista.InsertarUltimo(2)
+	require.Equal(t, 1, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+
+	lista.InsertarPrimero(3)
+	require.Equal(t, 3, lista.VerPrimero())
+	require.Equal(t, 2, lista.VerUltimo())
+}
+
+func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+
+	lista.InsertarUltimo(1)
+	lista.InsertarUltimo(2)
+	lista.InsertarUltimo(3)
+
+	require.Equal(t, 1, lista.BorrarPrimero())
+	require.Equal(t, 2, lista.BorrarPrimero())
+	require.Equal(t, 3, lista.BorrarPrimero())
+
+	require.True(t, lista.EstaVacia())
+}
+
+func TestIteradorConListaVacia(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	iter := lista.Iterador()
+
+	require.False(t, iter.HaySiguiente())
+}
+
 func TestVerificarInsercionAlCrearIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iter := lista.Iterador()
@@ -54,6 +91,13 @@ func TestVerificarInsercionAlCrearIterador(t *testing.T) {
 	primero := iter.VerActual()
 	require.Equal(t, 1, primero)
 	require.Equal(t, 1, lista.VerPrimero())
+}
+
+func TestBorrarSinElementosIterador(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	iter := lista.Iterador()
+
+	require.PanicsWithValue(t, "La lista esta vacia", func() { iter.Borrar() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia o el iterador apuntando a nil.")
 }
 
 func TestBorrarElementoIterador(t *testing.T) {
