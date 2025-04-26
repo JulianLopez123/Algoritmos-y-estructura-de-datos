@@ -83,10 +83,13 @@ func (lista *listaEnlazada[T]) Largo() int {
 }
 
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
-	return &iterListaEnlazada[T]{actual: lista.primero}
+	return &iterListaEnlazada[T]{actual: lista.primero, anterior: nil, lista: lista}
 }
 
 func (iter *iterListaEnlazada[T]) VerActual() T {
+	if iter.actual == nil {
+		panic("La lista esta vacia")
+	}
 	return iter.actual.dato
 }
 
@@ -105,17 +108,32 @@ func (iter *iterListaEnlazada[T]) Siguiente() {
 func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 	nodo_nuevo := &nodoLista[T]{dato: elemento}
 	if iter.anterior == nil {
-		iter.lista.InsertarPrimero(elemento)
-	} else if !iter.HaySiguiente() {
-		iter.lista.InsertarUltimo(elemento)
+		nodo_nuevo.siguiente = iter.lista.primero
+		iter.lista.primero = nodo_nuevo
+		if iter.lista.ultimo == nil {
+			iter.lista.ultimo = nodo_nuevo
+		}
 	} else {
-		nuevo_siguiente := iter.actual
-		iter.actual = nodo_nuevo
-		iter.anterior.siguiente = iter.actual
-		iter.actual.siguiente = nuevo_siguiente
-		iter.lista.largo++
+		nodo_nuevo.siguiente = iter.actual
+		iter.anterior.siguiente = nodo_nuevo
+		if iter.actual == nil {
+			iter.lista.ultimo = nodo_nuevo
+		}
 	}
+	iter.actual = nodo_nuevo
 	iter.lista.largo++
+	// if iter.anterior == nil {
+	// 	iter.lista.InsertarPrimero(elemento)
+	// } else if !iter.HaySiguiente() {
+	// 	iter.lista.InsertarUltimo(elemento)
+	// } else {
+	// 	nuevo_siguiente := iter.actual
+	// 	iter.actual = nodo_nuevo
+	// 	iter.anterior.siguiente = iter.actual
+	// 	iter.actual.siguiente = nuevo_siguiente
+	// 	iter.lista.largo++
+	// }
+	// iter.lista.largo++
 }
 
 func (iter *iterListaEnlazada[T]) Borrar() T {
@@ -128,9 +146,12 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	} else {
 		iter.anterior.siguiente = iter.actual.siguiente
 	}
+	if nodo_eliminado == iter.lista.ultimo {
+		iter.lista.ultimo = iter.anterior
+	}
 
 	iter.actual = iter.actual.siguiente
-
+	iter.lista.largo--
 	return nodo_eliminado.dato
 }
 
