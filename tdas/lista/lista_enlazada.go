@@ -50,10 +50,7 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elemento T) {
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	nodo_eliminado := lista.primero.dato
+	nodo_eliminado := lista.datoNodo(lista.primero)
 	if lista.primero.siguiente != nil {
 		lista.primero = lista.primero.siguiente
 	} else {
