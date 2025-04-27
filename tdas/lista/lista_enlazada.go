@@ -72,7 +72,7 @@ func (lista *listaEnlazada[T]) VerPrimero() T {
 }
 
 func (lista *listaEnlazada[T]) VerUltimo() T {
-	if lista.largo == 0 {
+	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
 	return lista.ultimo.dato
