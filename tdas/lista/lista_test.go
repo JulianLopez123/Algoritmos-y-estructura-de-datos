@@ -83,6 +83,7 @@ func TestIterar(t *testing.T){
 	lista.InsertarUltimo(3.142332)
 	lista.InsertarUltimo(1.233212)
 	lista.Iterar(func (elemento float64) bool {if elemento * 2 > 0{return true}else{return false}})
+	//verifico que se haya aplicado a todos los elementos
 	for iterador.HaySiguiente(){
 		dato := iterador.VerActual()
 		require.Equal(t, dato, dato * 2)
