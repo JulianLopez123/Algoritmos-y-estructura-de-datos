@@ -90,6 +90,7 @@ func TestIterar(t *testing.T){
 	}
 
 	lista.Iterar(func (elemento float64) bool {if elemento > 10{return elemento/2 != 0}else{return false}})
+	//veo que la funcion solo se aplique solo el primer elemento, el resto debe permanecer igual
 	for iterador.HaySiguiente(){
 		dato := iterador.VerActual()
 		if dato == (7.102122 *2){
