@@ -50,10 +50,7 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elemento T) {
 }
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	nodo_eliminado := lista.primero.dato
+	nodo_eliminado := lista.datoNodo(lista.primero)
 	if lista.primero.siguiente != nil {
 		lista.primero = lista.primero.siguiente
 	} else {
@@ -65,21 +62,25 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 }
 
 func (lista *listaEnlazada[T]) VerPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	return lista.primero.dato
+	return lista.datoNodo(lista.primero)
 }
 
 func (lista *listaEnlazada[T]) VerUltimo() T {
-	if lista.largo == 0 {
-		panic("La lista esta vacia")
-	}
-	return lista.ultimo.dato
+	return lista.datoNodo(lista.ultimo)
 }
 
 func (lista *listaEnlazada[T]) Largo() int {
 	return lista.largo
+}
+
+func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
+	actual := lista.primero
+	for actual != nil {
+		if !visitar(actual.dato) {
+			return
+		}
+		actual = actual.siguiente
+	}
 }
 
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
@@ -140,12 +141,9 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	return nodo_eliminado.dato
 }
 
-func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-	actual := lista.primero
-	for actual != nil {
-		if !visitar(actual.dato) {
-			return
-		}
-		actual = actual.siguiente
+func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T{
+	if lista.EstaVacia() {
+		panic("La lista esta vacia")
 	}
+	return nodo.dato
 }
