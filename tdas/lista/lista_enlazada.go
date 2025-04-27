@@ -65,17 +65,11 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 }
 
 func (lista *listaEnlazada[T]) VerPrimero() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	return lista.primero.dato
+	return lista.datoNodo(lista.primero)
 }
 
 func (lista *listaEnlazada[T]) VerUltimo() T {
-	if lista.EstaVacia() {
-		panic("La lista esta vacia")
-	}
-	return lista.ultimo.dato
+	return lista.datoNodo(lista.ultimo)
 }
 
 func (lista *listaEnlazada[T]) Largo() int {
@@ -91,6 +85,7 @@ func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
 		actual = actual.siguiente
 	}
 }
+
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 	return &iterListaEnlazada[T]{actual: lista.primero, anterior: nil, lista: lista}
 }
@@ -147,4 +142,11 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	iter.actual = iter.actual.siguiente
 	iter.lista.largo--
 	return nodo_eliminado.dato
+}
+
+func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T{
+	if lista.EstaVacia() {
+		panic("La lista esta vacia")
+	}
+	return nodo.dato
 }
