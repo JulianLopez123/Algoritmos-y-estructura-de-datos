@@ -78,30 +78,15 @@ func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
 
 func TestIterar(t *testing.T){
 	lista := TDALista.CrearListaEnlazada[float64]()
-	iterador := lista.Iterador()
 	lista.InsertarUltimo(7.102122)
 	lista.InsertarUltimo(3.142332)
 	lista.InsertarUltimo(1.233212)
-	lista.Iterar(func (elemento float64) bool {if elemento * 2 > 0{return true}else{return false}})
-	//verifico que se haya aplicado a todos los elementos
-	for iterador.HaySiguiente(){
-		dato := iterador.VerActual()
-		require.Equal(t, dato, dato * 2)
-		iterador.Siguiente()
-	}
-
-	lista.Iterar(func (elemento float64) bool {if elemento > 10{return elemento/2 != 0}else{return false}})
-	//veo que la funcion solo se aplique solo el primer elemento, el resto debe permanecer igual
-	for iterador.HaySiguiente(){
-		dato := iterador.VerActual()
-		if dato == (7.102122 *2){
-			require.Equal(t,dato,dato/2)
-		}else{
-			require.Equal(t, dato, dato * 2)
-		}
-		iterador.Siguiente()
-	}
-
+	contador := 0
+	lista.Iterar(func (elemento float64) bool {if elemento * 2 > 0{contador ++;return true}else{return false}})
+	require.Equal(t,3,contador)
+	contador = 0
+	lista.Iterar(func (elemento float64) bool {if elemento > 5{contador ++;return true}else{return false}})
+	require.Equal(t,1,contador)
 }
 func TestBorrarElementoIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
