@@ -82,6 +82,15 @@ func (lista *listaEnlazada[T]) Largo() int {
 	return lista.largo
 }
 
+func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
+	actual := lista.primero
+	for actual != nil {
+		if !visitar(actual.dato) {
+			return
+		}
+		actual = actual.siguiente
+	}
+}
 func (lista *listaEnlazada[T]) Iterador() IteradorLista[T] {
 	return &iterListaEnlazada[T]{actual: lista.primero, anterior: nil, lista: lista}
 }
@@ -138,14 +147,4 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	iter.actual = iter.actual.siguiente
 	iter.lista.largo--
 	return nodo_eliminado.dato
-}
-
-func (lista *listaEnlazada[T]) Iterar(visitar func(T) bool) {
-	actual := lista.primero
-	for actual != nil {
-		if !visitar(actual.dato) {
-			return
-		}
-		actual = actual.siguiente
-	}
 }
