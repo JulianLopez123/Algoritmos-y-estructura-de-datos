@@ -76,34 +76,39 @@ func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 }
 
-func TestIteradorConListaVacia(t *testing.T) {
-	lista := TDALista.CrearListaEnlazada[int]()
-	iter := lista.Iterador()
+func TestIterar(t *testing.T){
+	lista := TDALista.CrearListaEnlazada[float64]()
+	iterador := lista.Iterador()
+	lista.InsertarUltimo(7.102122)
+	lista.InsertarUltimo(3.142332)
+	lista.InsertarUltimo(1.233212)
+	lista.Iterar(func (elemento float64) bool {if elemento * 2 > 0{return true}else{return false}})
+	for iterador.HaySiguiente(){
+		dato := iterador.VerActual()
+		require.Equal(t, dato, dato * 2)
+		iterador.Siguiente()
+	}
 
-	require.False(t, iter.HaySiguiente())
+	lista.Iterar(func (elemento float64) bool {if elemento > 10{return elemento/2 != 0}else{return false}})
+	//veo que la funcion solo se aplique solo el primer elemento, el resto debe permanecer igual
+	for iterador.HaySiguiente(){
+		dato := iterador.VerActual()
+		if dato == (7.102122 *2){
+			require.Equal(t,dato,dato/2)
+		}else{
+			require.Equal(t, dato, dato * 2)
+		}
+		iterador.Siguiente()
+	}
+
 }
-
-func TestVerificarInsercionAlCrearIterador(t *testing.T) {
-	lista := TDALista.CrearListaEnlazada[int]()
-	iter := lista.Iterador()
-	iter.Insertar(1)
-
-	primero := iter.VerActual()
-	require.Equal(t, 1, primero)
-	require.Equal(t, 1, lista.VerPrimero())
-}
-
 func TestBorrarElementoIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iter := lista.Iterador()
-
 	iter.Insertar(1)
 	iter.Insertar(2)
-
 	require.Equal(t, 2, lista.VerPrimero())
-
 	iter.Borrar()
-
 	require.Equal(t, 1, lista.VerPrimero())
 }
 
@@ -123,7 +128,6 @@ func TestBorrarUltimoElementoIterador(t *testing.T) {
 		}
 		iter.Siguiente()
 	}
-
 	require.Equal(t, 2, lista.VerUltimo())
 	require.Equal(t, 2, lista.Largo())
 }
@@ -153,6 +157,7 @@ func TestInsertarIterador(t *testing.T) {
 	iterador := lista.Iterador()
 	iterador.Insertar("todo bien")
 	require.Equal(t, "todo bien", iterador.VerActual())
+	require.Equal(t, "todo bien", lista.VerPrimero())
 	iterador.Insertar("hola")
 	require.Equal(t, "hola", iterador.VerActual())
 	require.Equal(t, "todo bien", lista.VerUltimo())
