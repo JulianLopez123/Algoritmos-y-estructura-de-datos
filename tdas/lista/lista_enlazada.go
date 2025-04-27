@@ -147,14 +147,11 @@ func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T {
 	return nodo.dato
 }
 
-func (lista *listaEnlazada[T])insertarListaVacia(nodo *nodoLista[T]){
+func (lista *listaEnlazada[T]) insertarListaVacia(nodo *nodoLista[T]) {
 	lista.primero = nodo
 	lista.ultimo = nodo
 }
 
-func crearNodo[T any](dato T) *nodoLista[T]{
+func crearNodo[T any](dato T) *nodoLista[T] {
 	return &nodoLista[T]{dato: dato}
 }
-
-
-	
