@@ -76,17 +76,31 @@ func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 }
 
-func TestIterar(t *testing.T){
+func TestIterar(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[float64]()
 	lista.InsertarUltimo(7.102122)
 	lista.InsertarUltimo(3.142332)
 	lista.InsertarUltimo(1.233212)
 	contador := 0
-	lista.Iterar(func (elemento float64) bool {if elemento * 2 > 0{contador ++;return true}else{return false}})
-	require.Equal(t,3,contador)
+	lista.Iterar(func(elemento float64) bool {
+		if elemento*2 > 0 {
+			contador++
+			return true
+		} else {
+			return false
+		}
+	})
+	require.Equal(t, 3, contador)
 	contador = 0
-	lista.Iterar(func (elemento float64) bool {if elemento > 5{contador ++;return true}else{return false}})
-	require.Equal(t,1,contador)
+	lista.Iterar(func(elemento float64) bool {
+		if elemento > 5 {
+			contador++
+			return true
+		} else {
+			return false
+		}
+	})
+	require.Equal(t, 1, contador)
 }
 func TestBorrarElementoIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
@@ -158,7 +172,7 @@ func TestInsertarIterador(t *testing.T) {
 	require.Equal(t, 3, lista.Largo())
 }
 
-func TestListaVaciaIterador(t *testing.T){
+func TestListaVaciaIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iterador := lista.Iterador()
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.VerActual() })
@@ -166,4 +180,3 @@ func TestListaVaciaIterador(t *testing.T){
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iterador.Siguiente() })
 	require.False(t, iterador.HaySiguiente())
 }
-
