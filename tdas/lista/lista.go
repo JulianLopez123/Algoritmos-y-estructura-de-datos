@@ -41,7 +41,7 @@ type IteradorLista[T any] interface {
 	// hay elemento en la posicion actual entra en panico con un mensaje "El iterador termino de iterar"
 	VerActual() T
 
-	// HaySiguiente devuelve true si hay un siguiente elemento a leer en la posicion actual del iterador;de no ser asi devuelve false.
+	// HaySiguiente devuelve true si hay un elemento en la posicion actual del iterador;de no ser asi devuelve false.
 	HaySiguiente() bool
 
 	// Siguiente mueve la posicion actual del iterador a la del siguiente elemento.
