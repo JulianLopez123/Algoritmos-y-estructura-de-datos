@@ -141,7 +141,7 @@ func (iter *iterListaEnlazada[T]) Borrar() T {
 	return nodo_eliminado.dato
 }
 
-func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T{
+func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T {
 	if lista.EstaVacia() {
 		panic("La lista esta vacia")
 	}
