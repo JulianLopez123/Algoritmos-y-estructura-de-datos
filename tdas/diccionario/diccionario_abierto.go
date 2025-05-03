@@ -43,17 +43,17 @@ func (hash *hashAbierto[K, V]) Cantidad() int {
 }
 
 func(hash *hashAbierto[K, V]) Obtener(clave K) V {
-	iterador_lista := hash.hallarParClaveValor(clave)
+	iterador_lista := hash.hallarPosicionParClaveValor(clave)
 	return iterador_lista.VerActual().dato
 }
 
 func(hash *hashAbierto[K, V]) Borrar(clave K) V {
-	iterador_lista := hash.hallarParClaveValor(clave)
+	iterador_lista := hash.hallarPosicionParClaveValor(clave)
 	hash.cantidad --
 	return iterador_lista.Borrar().dato
 }
 
-func (hash *hashAbierto[K, V])hallarParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]]{
+func (hash *hashAbierto[K, V])hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]]{
 	if !clave.Pertenece(){
 		panic("La clave no pertenece al diccionario")
 	}
