@@ -97,16 +97,21 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 	
 }
 
-func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){
-	for i:= 0; i <= hash.tam; i++{
-		if hash.tabla[i].Largo() != 0 {
+func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){ 
+	for i:= 0; i < hash.tam; i++{
+		if hash.tabla[i].EstaVacia() {
 			continue
-		// }else if !hash.tabla[i].Iterar(visitar func(K,V) bool){
-		// 	break
+		}else{
+			iter := hash.tabla[i].Iterador()
+			for iter.HaySiguiente(){
+				if !visitar(iter.VerActual().clave,iter.VerActual().dato){
+					break
+				}
+				iter.Siguiente()
+			}
 		}
 	}
 }
-
 func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
 	return &iterHash[K,V ]{index:0 , hashMap:hash}
 }
