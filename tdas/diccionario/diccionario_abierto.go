@@ -2,6 +2,7 @@ package diccionario
 
 import (
 	"fmt"
+	"math"
 	TDALista "tdas/lista"
 )
 
@@ -19,9 +20,6 @@ type hashAbierto[K comparable, V any] struct {
 }
 
 type iterHash[K comparable, V any] struct {
-	// actual   *parClaveValor[K, V]
-	// anterior *parClaveValor[K, V]
-	// lista    *hashAbierto[K, V]
 	index   int
 	hashMap *hashAbierto[K, V]
 	lista   TDALista.IteradorLista[parClaveValor[K, V]]
@@ -37,7 +35,7 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 	hashIndex := hashFunc(clave)
-	index := hashIndex % hash.tam
+	index :=  int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
 
 	iter := lista.Iterador()
@@ -56,7 +54,7 @@ func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 
 func (hash *hashAbierto[K, V]) Pertenece(clave K) bool {
 	hashIndex := hashFunc(clave)
-	index := hashIndex % hash.tam
+	index := int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
 	iter := lista.Iterador()
 
@@ -86,10 +84,7 @@ func (hash *hashAbierto[K, V]) Cantidad() int {
 }
 
 func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
-	if !clave.Pertenece() {
-		panic("La clave no pertenece al diccionario")
-	}
-	indice := hashFunc(clave) % hash.tam
+	indice := int(math.Abs(float64(hashFunc(clave) % hash.tam)))
 	lista := hash.tabla[indice]
 	iterador_lista := lista.Iterador()
 	for iterador_lista.HaySiguiente() {
@@ -98,7 +93,22 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 		}
 		iterador_lista.Siguiente()
 	}
-	panic("error de ejecucion")
+	panic("La clave no pertenece al diccionario")
+	
+}
+
+func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){
+	for i:= 0; i <= hash.tam; i++{
+		if hash.tabla[i].Largo() != 0 {
+			continue
+		// }else if !hash.tabla[i].Iterar(visitar func(K,V) bool){
+		// 	break
+		}
+	}
+}
+
+func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
+	return &iterHash[K,V ]{index:0 , hashMap:hash}
 }
 
 func hashFunc[K comparable](clave K) int {
