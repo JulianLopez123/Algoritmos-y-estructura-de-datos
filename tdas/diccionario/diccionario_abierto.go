@@ -112,9 +112,9 @@ func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){
 		}
 	}
 }
-func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
-	return &iterHash[K,V ]{index:0 , hashMap:hash}
-}
+// func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
+// 	return &iterHash[K,V ]{index:0 , hashMap:hash}
+// }
 
 func hashFunc[K comparable](clave K) int {
 	bytes := convertirABytes(clave)
