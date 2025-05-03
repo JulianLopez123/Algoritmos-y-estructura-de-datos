@@ -38,6 +38,37 @@ func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 	hash.cantidad++
 }
 
+func (hash *hashAbierto[K, V]) Cantidad() int {
+	return hash.cantidad
+}
+
+func(hash *hashAbierto[K, V]) Obtener(clave K) V {
+	iterador_lista := hash.hallarParClaveValor(clave)
+	return iterador_lista.VerActual().dato
+}
+
+func(hash *hashAbierto[K, V]) Borrar(clave K) V {
+	iterador_lista := hash.hallarParClaveValor(clave)
+	hash.cantidad --
+	return iterador_lista.Borrar().dato
+}
+
+func (hash *hashAbierto[K, V])hallarParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]]{
+	if !clave.Pertenece(){
+		panic("La clave no pertenece al diccionario")
+	}
+	indice := hashFunc(clave) % hash.tam
+	lista := hash.tabla[indice]
+	iterador_lista := lista.Iterador()
+	for iterador_lista.HaySiguiente() {
+		if iterador_lista.VerActual().clave == clave{
+			return iterador_lista
+		}
+		iterador_lista.Siguiente()
+	}
+	panic("error de ejecucion")
+}
+
 func hashFunc[K comparable](clave K) int {
 	bytes := convertirABytes(clave)
 	h := uint64(14695981039346656037)
@@ -50,10 +81,6 @@ func hashFunc[K comparable](clave K) int {
 
 func convertirABytes[K comparable](clave K) []byte {
 	return []byte(fmt.Sprintf("%v", clave))
-}
-
-func (hash *hashAbierto[K, V]) Cantidad() int {
-	return hash.cantidad
 }
 
 func (iter *iterHash[K, V]) HaySiguiente() bool {
