@@ -86,7 +86,7 @@ func (hash *hashAbierto[K, V]) Cantidad() int {
 }
 
 func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
-	if !clave.Pertenece() {
+	if !hash.Pertenece(clave) {
 		panic("La clave no pertenece al diccionario")
 	}
 	indice := hashFunc(clave) % hash.tam
@@ -116,7 +116,19 @@ func convertirABytes[K comparable](clave K) []byte {
 }
 
 func (iter *iterHash[K, V]) HaySiguiente() bool {
-	return iter.index == iter.hashMap.cantidad
+	//return iter.index == iter.hashMap.cantidad
+
+	if iter.lista != nil && iter.lista.HaySiguiente() {
+		return true
+	}
+
+	for i := iter.index + 1; i < len(iter.hashMap.tabla); i++ {
+		if !iter.hashMap.tabla[i].EstaVacia() {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (iter *iterHash[K, V]) VerActual() (K, V) {
@@ -130,5 +142,4 @@ func (iter *iterHash[K, V]) Siguiente() {
 	if !iter.HaySiguiente() {
 		panic("El iterador terminó de iterar.")
 	}
-
 }
