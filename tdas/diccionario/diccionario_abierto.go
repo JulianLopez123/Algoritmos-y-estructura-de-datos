@@ -2,10 +2,11 @@ package diccionario
 
 import (
 	"fmt"
+	"math"
 	TDALista "tdas/lista"
 )
 
-const TAMAÑO_HASH = 20
+const TAMAÑO_HASH = 10007
 
 type parClaveValor[K comparable, V any] struct {
 	clave K
@@ -19,9 +20,6 @@ type hashAbierto[K comparable, V any] struct {
 }
 
 type iterHash[K comparable, V any] struct {
-	// actual   *parClaveValor[K, V]
-	// anterior *parClaveValor[K, V]
-	// lista    *hashAbierto[K, V]
 	index   int
 	hashMap *hashAbierto[K, V]
 	lista   TDALista.IteradorLista[parClaveValor[K, V]]
@@ -37,7 +35,7 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 	hashIndex := hashFunc(clave)
-	index := hashIndex % hash.tam
+	index := int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
 
 	iter := lista.Iterador()
@@ -56,7 +54,7 @@ func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 
 func (hash *hashAbierto[K, V]) Pertenece(clave K) bool {
 	hashIndex := hashFunc(clave)
-	index := hashIndex % hash.tam
+	index := int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
 	iter := lista.Iterador()
 
@@ -86,10 +84,7 @@ func (hash *hashAbierto[K, V]) Cantidad() int {
 }
 
 func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
-	if !hash.Pertenece(clave) {
-		panic("La clave no pertenece al diccionario")
-	}
-	indice := hashFunc(clave) % hash.tam
+	indice := int(math.Abs(float64(hashFunc(clave) % hash.tam)))
 	lista := hash.tabla[indice]
 	iterador_lista := lista.Iterador()
 	for iterador_lista.HaySiguiente() {
@@ -98,7 +93,74 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 		}
 		iterador_lista.Siguiente()
 	}
-	panic("error de ejecucion")
+	panic("La clave no pertenece al diccionario")
+
+}
+
+func (hash *hashAbierto[K, V]) Iterar(visitar func(clave K, dato V) bool) {
+	for i := 0; i < hash.tam; i++ {
+		if hash.tabla[i].EstaVacia() {
+			continue
+		} else {
+			iter := hash.tabla[i].Iterador()
+			for iter.HaySiguiente() {
+				if !visitar(iter.VerActual().clave, iter.VerActual().dato) {
+					return
+				}
+				iter.Siguiente()
+			}
+		}
+	}
+}
+
+func (hash *hashAbierto[K, V]) Iterador() IterDiccionario[K, V] {
+	iter := &iterHash[K, V]{hashMap: hash}
+
+	for i := 0; i < len(hash.tabla); i++ {
+		if !hash.tabla[i].EstaVacia() {
+			iter.index = i
+			iter.lista = hash.tabla[i].Iterador()
+			break
+		}
+	}
+
+	return iter
+}
+
+func (iter *iterHash[K, V]) HaySiguiente() bool {
+	if iter.index == iter.hashMap.tam {
+		return false
+	}
+	return iter.lista != nil && iter.lista.HaySiguiente()
+}
+
+func (iter *iterHash[K, V]) VerActual() (K, V) {
+	if !iter.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	return iter.lista.VerActual().clave, iter.lista.VerActual().dato
+}
+
+func (iter *iterHash[K, V]) Siguiente() {
+	if !iter.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+
+	iter.lista.Siguiente()
+	if iter.lista.HaySiguiente() {
+		return
+	}
+
+	iter.index++
+	for iter.index < iter.hashMap.tam {
+		if !iter.hashMap.tabla[iter.index].EstaVacia() {
+			iter.lista = iter.hashMap.tabla[iter.index].Iterador()
+			return
+		}
+		iter.index++
+	}
+
+	iter.lista = nil
 }
 
 func hashFunc[K comparable](clave K) int {
@@ -113,33 +175,4 @@ func hashFunc[K comparable](clave K) int {
 
 func convertirABytes[K comparable](clave K) []byte {
 	return []byte(fmt.Sprintf("%v", clave))
-}
-
-func (iter *iterHash[K, V]) HaySiguiente() bool {
-	//return iter.index == iter.hashMap.cantidad
-
-	if iter.lista != nil && iter.lista.HaySiguiente() {
-		return true
-	}
-
-	for i := iter.index + 1; i < len(iter.hashMap.tabla); i++ {
-		if !iter.hashMap.tabla[i].EstaVacia() {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (iter *iterHash[K, V]) VerActual() (K, V) {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar.")
-	}
-	return iter.lista.VerActual().clave, iter.lista.VerActual().dato
-}
-
-func (iter *iterHash[K, V]) Siguiente() {
-	if !iter.HaySiguiente() {
-		panic("El iterador terminó de iterar.")
-	}
 }
