@@ -7,6 +7,8 @@ import (
 )
 
 const TAMAÑO_HASH = 17
+const FACTOR_CARGA = 3
+const FACTOR_REDIMENSION = 2
 
 type parClaveValor[K comparable, V any] struct {
 	clave K
@@ -34,6 +36,9 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 }
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
+	if hash.cantidad / hash.tam > FACTOR_CARGA{
+		hash.redimensionar(hash.tam * FACTOR_REDIMENSION)
+	}
 	hashIndex := hashFunc(clave)
 	index := int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
@@ -74,6 +79,9 @@ func (hash *hashAbierto[K, V]) Obtener(clave K) V {
 }
 
 func (hash *hashAbierto[K, V]) Borrar(clave K) V {
+	if hash.cantidad / hash.tam < FACTOR_CARGA{
+		hash.redimensionar(hash.tam / FACTOR_REDIMENSION)
+	}
 	iterador_lista := hash.hallarPosicionParClaveValor(clave)
 	hash.cantidad--
 	return iterador_lista.Borrar().dato
@@ -176,11 +184,41 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 	panic("La clave no pertenece al diccionario")
 }
 
-func (hash *hashAbierto[K, V]) redimensionar(nuevo_tamaño int){
-	tabla := make([]TDALista.Lista[parClaveValor[K, V]], nuevo_tamaño)
-	for i := range tabla {
-		tabla[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
+func (hash *hashAbierto[K, V]) redimensionar(nuevoTam int) {
+	nuevoTam = tamañoPrimo(nuevoTam)
+	nuevoHash := make([]TDALista.Lista[parClaveValor[K, V]], nuevoTam)
+	for i := range nuevoHash {
+		nuevoHash[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
 	}
-	hash.tabla = tabla
-	//return &hashAbierto[K, V]{tabla: tabla, tam: TAMAÑO_HASH, cantidad: 0}
-}	
+
+	for _, lista := range hash.tabla {
+		iter := lista.Iterador()
+		for iter.HaySiguiente() {
+			nuevoIndex := int(math.Abs(float64(hashFunc(iter.VerActual().clave) % nuevoTam)))
+			nuevoHash[nuevoIndex].InsertarUltimo(iter.VerActual())
+			iter.Siguiente()
+		}
+	}
+
+	hash.tabla = nuevoHash
+	hash.tam = nuevoTam
+}
+
+func esPrimo(n int) bool {
+	if n < 2 {
+		return false
+	}
+	for i := 2; i < n; i++ {
+		if (n % i) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func tamañoPrimo(n int) int {
+	for !esPrimo(n) {
+		n++
+	}
+	return n
+}
