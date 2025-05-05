@@ -6,7 +6,8 @@ import (
 	TDALista "tdas/lista"
 )
 
-const TAMAÑO_HASH = 10007
+const TAMAÑO_HASH = 17
+const FACTOR_CARGA = 0.75
 
 type parClaveValor[K comparable, V any] struct {
 	clave K
@@ -175,4 +176,43 @@ func hashFunc[K comparable](clave K) int {
 
 func convertirABytes[K comparable](clave K) []byte {
 	return []byte(fmt.Sprintf("%v", clave))
+}
+
+func (hash *hashAbierto[K, V]) redimensionar() {
+	nuevoTam := tamañoPrimo(hash.tam * 2)
+	nuevoHash := make([]TDALista.Lista[parClaveValor[K, V]], TAMAÑO_HASH)
+	for i := range nuevoHash {
+		nuevoHash[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
+	}
+
+	for _, lista := range hash.tabla {
+		iter := lista.Iterador()
+		for iter.HaySiguiente() {
+			nuevoIndex := int(math.Abs(float64(hashFunc(iter.VerActual().clave) % nuevoTam)))
+			nuevoHash[nuevoIndex].InsertarUltimo(iter.VerActual())
+			iter.Siguiente()
+		}
+	}
+
+	hash.tabla = nuevoHash
+	hash.tam = nuevoTam
+}
+
+func esPrimo(n int) bool {
+	if n < 2 {
+		return false
+	}
+	for i := 2; i < n; i++ {
+		if (n % i) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func tamañoPrimo(n int) int {
+	for !esPrimo(n) {
+		n++
+	}
+	return n
 }
