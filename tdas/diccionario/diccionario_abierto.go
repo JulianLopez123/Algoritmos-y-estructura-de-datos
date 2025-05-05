@@ -33,53 +33,40 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 }
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
-	if hash.cantidad / hash.tam > FACTOR_CARGA{
+	if hash.cantidad/hash.tam > FACTOR_CARGA {
 		hash.redimensionar(hash.tam * FACTOR_REDIMENSION)
 	}
-	hashIndex := hashFunc(clave)
-	index := int(math.Abs(float64(hashIndex % hash.tam)))
-	lista := hash.tabla[index]
-
-	iter := lista.Iterador()
-	for iter.HaySiguiente() {
-		if iter.VerActual().clave == clave {
-			iter.Borrar()
-			iter.Insertar(parClaveValor[K, V]{clave: clave, dato: dato})
-			return
-		}
-		iter.Siguiente()
+	iterador_lista := hash.hallarPosicionParClaveValor(clave)
+	if !iterador_lista.HaySiguiente() {
+		hash.cantidad++
+	} else {
+		iterador_lista.Borrar()
 	}
-
-	hash.tabla[index].InsertarUltimo(parClaveValor[K, V]{clave: clave, dato: dato})
-	hash.cantidad++
+	iterador_lista.Insertar(parClaveValor[K, V]{clave: clave, dato: dato})
 }
 
 func (hash *hashAbierto[K, V]) Pertenece(clave K) bool {
-	hashIndex := hashFunc(clave)
-	index := int(math.Abs(float64(hashIndex % hash.tam)))
-	lista := hash.tabla[index]
-	iter := lista.Iterador()
+	iterador_lista := hash.hallarPosicionParClaveValor(clave)
+	return iterador_lista.HaySiguiente()
 
-	for iter.HaySiguiente() {
-		if iter.VerActual().clave == clave {
-			return true
-		}
-		iter.Siguiente()
-	}
-
-	return false
 }
 
 func (hash *hashAbierto[K, V]) Obtener(clave K) V {
 	iterador_lista := hash.hallarPosicionParClaveValor(clave)
+	if !iterador_lista.HaySiguiente() {
+		panic("La clave no pertenece al diccionario")
+	}
 	return iterador_lista.VerActual().dato
 }
 
 func (hash *hashAbierto[K, V]) Borrar(clave K) V {
-	if hash.cantidad / hash.tam < FACTOR_CARGA{
+	if hash.cantidad/hash.tam < FACTOR_CARGA {
 		hash.redimensionar(hash.tam / FACTOR_REDIMENSION)
 	}
 	iterador_lista := hash.hallarPosicionParClaveValor(clave)
+	if !iterador_lista.HaySiguiente() {
+		panic("La clave no pertenece al diccionario")
+	}
 	hash.cantidad--
 	return iterador_lista.Borrar().dato
 }
@@ -154,20 +141,6 @@ func (iter *iterHash[K, V]) Siguiente() {
 	iter.lista = nil
 }
 
-func hashFunc[K comparable](clave K) int {
-	bytes := convertirABytes(clave)
-	h := uint64(14695981039346656037)
-	for _, b := range bytes {
-		h *= 1099511628211
-		h ^= uint64(b)
-	}
-	return int(h)
-}
-
-func convertirABytes[K comparable](clave K) []byte {
-	return []byte(fmt.Sprintf("%v", clave))
-}
-
 func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
 	indice := int(math.Abs(float64(hashFunc(clave) % hash.tam)))
 	lista := hash.tabla[indice]
@@ -178,7 +151,7 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 		}
 		iterador_lista.Siguiente()
 	}
-	panic("La clave no pertenece al diccionario")
+	return iterador_lista
 }
 
 func (hash *hashAbierto[K, V]) redimensionar(nuevoTam int) {
@@ -198,12 +171,26 @@ func (hash *hashAbierto[K, V]) redimensionar(nuevoTam int) {
 	hash.tam = nuevoTam
 }
 
-func inicializarTabla[K comparable, V any](tamaño int) []TDALista.Lista[parClaveValor[K, V]]{
+func inicializarTabla[K comparable, V any](tamaño int) []TDALista.Lista[parClaveValor[K, V]] {
 	tabla := make([]TDALista.Lista[parClaveValor[K, V]], tamaño)
 	for i := range tabla {
 		tabla[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
 	}
 	return tabla
+}
+
+func hashFunc[K comparable](clave K) int {
+	bytes := convertirABytes(clave)
+	h := uint64(14695981039346656037)
+	for _, b := range bytes {
+		h *= 1099511628211
+		h ^= uint64(b)
+	}
+	return int(h)
+}
+
+func convertirABytes[K comparable](clave K) []byte {
+	return []byte(fmt.Sprintf("%v", clave))
 }
 
 func esPrimo(n int) bool {
