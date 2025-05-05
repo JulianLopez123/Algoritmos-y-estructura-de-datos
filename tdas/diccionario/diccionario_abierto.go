@@ -6,7 +6,7 @@ import (
 	TDALista "tdas/lista"
 )
 
-const TAMAÑO_HASH = 20
+const TAMAÑO_HASH = 17
 
 type parClaveValor[K comparable, V any] struct {
 	clave K
@@ -83,20 +83,6 @@ func (hash *hashAbierto[K, V]) Cantidad() int {
 	return hash.cantidad
 }
 
-func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
-	indice := int(math.Abs(float64(hashFunc(clave) % hash.tam)))
-	lista := hash.tabla[indice]
-	iterador_lista := lista.Iterador()
-	for iterador_lista.HaySiguiente() {
-		if iterador_lista.VerActual().clave == clave {
-			return iterador_lista
-		}
-		iterador_lista.Siguiente()
-	}
-	panic("La clave no pertenece al diccionario")
-
-}
-
 func (hash *hashAbierto[K, V]) Iterar(visitar func(clave K, dato V) bool) {
 	for i := 0; i < hash.tam; i++ {
 		if hash.tabla[i].EstaVacia() {
@@ -105,7 +91,7 @@ func (hash *hashAbierto[K, V]) Iterar(visitar func(clave K, dato V) bool) {
 			iter := hash.tabla[i].Iterador()
 			for iter.HaySiguiente() {
 				if !visitar(iter.VerActual().clave, iter.VerActual().dato) {
-					break
+					return
 				}
 				iter.Siguiente()
 			}
@@ -113,9 +99,55 @@ func (hash *hashAbierto[K, V]) Iterar(visitar func(clave K, dato V) bool) {
 	}
 }
 
-// func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
-// 	return &iterHash[K,V ]{index:0 , hashMap:hash}
-// }
+func (hash *hashAbierto[K, V]) Iterador() IterDiccionario[K, V] {
+	iter := &iterHash[K, V]{hashMap: hash}
+
+	for i := 0; i < len(hash.tabla); i++ {
+		if !hash.tabla[i].EstaVacia() {
+			iter.index = i
+			iter.lista = hash.tabla[i].Iterador()
+			break
+		}
+	}
+
+	return iter
+}
+
+func (iter *iterHash[K, V]) HaySiguiente() bool {
+	if iter.index == iter.hashMap.tam {
+		return false
+	}
+	return iter.lista != nil && iter.lista.HaySiguiente()
+}
+
+func (iter *iterHash[K, V]) VerActual() (K, V) {
+	if !iter.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	return iter.lista.VerActual().clave, iter.lista.VerActual().dato
+}
+
+func (iter *iterHash[K, V]) Siguiente() {
+	if !iter.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+
+	iter.lista.Siguiente()
+	if iter.lista.HaySiguiente() {
+		return
+	}
+
+	iter.index++
+	for iter.index < iter.hashMap.tam {
+		if !iter.hashMap.tabla[iter.index].EstaVacia() {
+			iter.lista = iter.hashMap.tabla[iter.index].Iterador()
+			return
+		}
+		iter.index++
+	}
+
+	iter.lista = nil
+}
 
 func hashFunc[K comparable](clave K) int {
 	bytes := convertirABytes(clave)
@@ -131,20 +163,24 @@ func convertirABytes[K comparable](clave K) []byte {
 	return []byte(fmt.Sprintf("%v", clave))
 }
 
-func (iter *iterHash[K, V]) HaySiguiente() bool {
-	return iter.index == iter.hashMap.cantidad
-}
-
-func (iter *iterHash[K, V]) VerActual() (K, V) {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar.")
+func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.IteradorLista[parClaveValor[K, V]] {
+	indice := int(math.Abs(float64(hashFunc(clave) % hash.tam)))
+	lista := hash.tabla[indice]
+	iterador_lista := lista.Iterador()
+	for iterador_lista.HaySiguiente() {
+		if iterador_lista.VerActual().clave == clave {
+			return iterador_lista
+		}
+		iterador_lista.Siguiente()
 	}
-	return iter.lista.VerActual().clave, iter.lista.VerActual().dato
+	panic("La clave no pertenece al diccionario")
 }
 
-func (iter *iterHash[K, V]) Siguiente() {
-	if !iter.HaySiguiente() {
-		panic("El iterador terminó de iterar.")
+func (hash *hashAbierto[K, V]) redimensionar(nuevo_tamaño int){
+	tabla := make([]TDALista.Lista[parClaveValor[K, V]], nuevo_tamaño)
+	for i := range tabla {
+		tabla[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
 	}
-
-}
+	hash.tabla = tabla
+	//return &hashAbierto[K, V]{tabla: tabla, tam: TAMAÑO_HASH, cantidad: 0}
+}	
