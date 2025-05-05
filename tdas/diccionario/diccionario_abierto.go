@@ -35,7 +35,7 @@ func CrearHash[K comparable, V any]() Diccionario[K, V] {
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
 	hashIndex := hashFunc(clave)
-	index :=  int(math.Abs(float64(hashIndex % hash.tam)))
+	index := int(math.Abs(float64(hashIndex % hash.tam)))
 	lista := hash.tabla[index]
 
 	iter := lista.Iterador()
@@ -94,17 +94,17 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 		iterador_lista.Siguiente()
 	}
 	panic("La clave no pertenece al diccionario")
-	
+
 }
 
-func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){ 
-	for i:= 0; i < hash.tam; i++{
+func (hash *hashAbierto[K, V]) Iterar(visitar func(clave K, dato V) bool) {
+	for i := 0; i < hash.tam; i++ {
 		if hash.tabla[i].EstaVacia() {
 			continue
-		}else{
+		} else {
 			iter := hash.tabla[i].Iterador()
-			for iter.HaySiguiente(){
-				if !visitar(iter.VerActual().clave,iter.VerActual().dato){
+			for iter.HaySiguiente() {
+				if !visitar(iter.VerActual().clave, iter.VerActual().dato) {
 					break
 				}
 				iter.Siguiente()
@@ -112,6 +112,7 @@ func(hash *hashAbierto[K, V])Iterar(visitar func(clave K,dato V) bool){
 		}
 	}
 }
+
 // func (hash *hashAbierto[K, V])Iterador() IterDiccionario[K, V]{
 // 	return &iterHash[K,V ]{index:0 , hashMap:hash}
 // }
