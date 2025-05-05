@@ -6,7 +6,7 @@ import (
 	TDALista "tdas/lista"
 )
 
-const TAMAÑO_HASH = 17
+const TAMAÑO_INICIAL_HASH = 17
 const FACTOR_CARGA = 3
 const FACTOR_REDIMENSION = 2
 
@@ -28,11 +28,8 @@ type iterHash[K comparable, V any] struct {
 }
 
 func CrearHash[K comparable, V any]() Diccionario[K, V] {
-	tabla := make([]TDALista.Lista[parClaveValor[K, V]], TAMAÑO_HASH)
-	for i := range tabla {
-		tabla[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
-	}
-	return &hashAbierto[K, V]{tabla: tabla, tam: TAMAÑO_HASH, cantidad: 0}
+	tabla := inicializarTabla[K, V](TAMAÑO_INICIAL_HASH)
+	return &hashAbierto[K, V]{tabla: tabla, tam: TAMAÑO_INICIAL_HASH, cantidad: 0}
 }
 
 func (hash *hashAbierto[K, V]) Guardar(clave K, dato V) {
@@ -186,10 +183,7 @@ func (hash *hashAbierto[K, V]) hallarPosicionParClaveValor(clave K) TDALista.Ite
 
 func (hash *hashAbierto[K, V]) redimensionar(nuevoTam int) {
 	nuevoTam = tamañoPrimo(nuevoTam)
-	nuevoHash := make([]TDALista.Lista[parClaveValor[K, V]], nuevoTam)
-	for i := range nuevoHash {
-		nuevoHash[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
-	}
+	nuevoHash := inicializarTabla[K, V](nuevoTam)
 
 	for _, lista := range hash.tabla {
 		iter := lista.Iterador()
@@ -202,6 +196,14 @@ func (hash *hashAbierto[K, V]) redimensionar(nuevoTam int) {
 
 	hash.tabla = nuevoHash
 	hash.tam = nuevoTam
+}
+
+func inicializarTabla[K comparable, V any](tamaño int) []TDALista.Lista[parClaveValor[K, V]]{
+	tabla := make([]TDALista.Lista[parClaveValor[K, V]], tamaño)
+	for i := range tabla {
+		tabla[i] = TDALista.CrearListaEnlazada[parClaveValor[K, V]]()
+	}
+	return tabla
 }
 
 func esPrimo(n int) bool {
