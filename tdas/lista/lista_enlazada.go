@@ -54,12 +54,17 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 		panic("La lista esta vacia")
 	}
 	nodo_eliminado := lista.primero.dato
-	if lista.primero.siguiente != nil {
-		lista.primero = lista.primero.siguiente
-	} else {
-		lista.primero = nil
+	// if lista.primero.siguiente != nil {
+	// 	lista.primero = lista.primero.siguiente
+	// } else {
+	// 	lista.primero = nil
+	// 	lista.ultimo = nil
+	// }
+
+	if lista.primero.siguiente == nil {
 		lista.ultimo = nil
 	}
+	lista.primero = lista.primero.siguiente
 	lista.largo--
 	return nodo_eliminado
 }
@@ -114,9 +119,9 @@ func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 		}
 	} else { //ultimo elemento
 		iter.anterior.siguiente = nodo_nuevo
-		if iter.actual == nil {
-			iter.lista.ultimo = nodo_nuevo
-		}
+	}
+	if iter.actual == nil {
+		iter.lista.ultimo = nodo_nuevo
 	}
 	iter.actual = nodo_nuevo
 	iter.lista.largo++

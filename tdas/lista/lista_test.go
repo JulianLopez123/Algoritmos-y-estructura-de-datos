@@ -44,6 +44,14 @@ func TestInsertarPrimeroYBorrarPrimero(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
+
+	lista.InsertarPrimero(5)
+	lista.InsertarPrimero(6)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 6, lista.VerPrimero())
+	require.Equal(t, 5, lista.VerUltimo())
 }
 
 func TestVerPrimeroYVerUltimo(t *testing.T) {
@@ -74,6 +82,67 @@ func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
 	require.Equal(t, 3, lista.BorrarPrimero())
 
 	require.True(t, lista.EstaVacia())
+}
+
+func TestInsertarTiposDiferentes(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[string]()
+
+	lista.InsertarUltimo("hola")
+	lista.InsertarUltimo("todo bien")
+
+	require.False(t, lista.EstaVacia())
+
+	valor_borrado := lista.BorrarPrimero()
+	require.Equal(t, "hola", valor_borrado)
+	require.Equal(t, 1, lista.Largo())
+	valor_borrado = lista.BorrarPrimero()
+	require.Equal(t, "todo bien", valor_borrado)
+
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
+}
+
+func TestVolumenInsertarUltimo(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	cant := 10000
+	for i := 0; i < cant; i++ {
+		lista.InsertarUltimo(i)
+		ultimo := lista.VerUltimo()
+		require.Equal(t, i, ultimo)
+	}
+
+	for i := 0; i < cant; i++ {
+		primero := lista.VerPrimero()
+		require.Equal(t, i, primero)
+		valor_borrado := lista.BorrarPrimero()
+		require.Equal(t, i, valor_borrado)
+	}
+
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
+}
+
+func TestVolumenInsertarPrimero(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	cant := 10000
+	for i := 0; i < cant; i++ {
+		lista.InsertarPrimero(i)
+		primero := lista.VerPrimero()
+		require.Equal(t, i, primero)
+	}
+
+	for i := 0; i < cant; i++ {
+		ultimo := lista.VerUltimo()
+		require.Equal(t, 0, ultimo)
+		valor_borrado := lista.BorrarPrimero()
+		require.Equal(t, (cant-1)-i, valor_borrado)
+	}
+
+	require.True(t, lista.EstaVacia())
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
+	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
 }
 
 func TestIteradorConListaVacia(t *testing.T) {
