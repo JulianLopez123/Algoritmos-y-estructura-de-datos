@@ -49,10 +49,14 @@ func (lista *listaEnlazada[T]) InsertarUltimo(elemento T) {
 
 func (lista *listaEnlazada[T]) BorrarPrimero() T {
 	nodo_eliminado := lista.datoNodo(lista.primero)
-	if lista.primero.siguiente != nil {
-		lista.primero = lista.primero.siguiente
-	} else {
-		lista.primero = nil
+	// if lista.primero.siguiente != nil {
+	// 	lista.primero = lista.primero.siguiente
+	// } else {
+	// 	lista.primero = nil
+	// 	lista.ultimo = nil
+	// }
+
+	if lista.primero.siguiente == nil {
 		lista.ultimo = nil
 	}
 	lista.primero = lista.primero.siguiente
