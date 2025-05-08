@@ -57,6 +57,7 @@ func (lista *listaEnlazada[T]) BorrarPrimero() T {
 		lista.primero = nil
 		lista.ultimo = nil
 	}
+	lista.primero = lista.primero.siguiente
 	lista.largo--
 	return nodo_eliminado
 }
@@ -115,9 +116,9 @@ func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
 		}
 	} else {
 		iter.anterior.siguiente = nodo_nuevo
-		if iter.actual == nil {
-			iter.lista.ultimo = nodo_nuevo
-		}
+	}
+	if iter.actual == nil {
+		iter.lista.ultimo = nodo_nuevo
 	}
 	iter.actual = nodo_nuevo
 	iter.lista.largo++

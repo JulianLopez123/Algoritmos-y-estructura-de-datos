@@ -44,6 +44,14 @@ func TestInsertarPrimeroYBorrarPrimero(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.BorrarPrimero() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia")
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
+
+	lista.InsertarPrimero(5)
+	lista.InsertarPrimero(6)
+
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, 6, lista.VerPrimero())
+	require.Equal(t, 5, lista.VerUltimo())
 }
 
 func TestVerPrimeroYVerUltimo(t *testing.T) {
