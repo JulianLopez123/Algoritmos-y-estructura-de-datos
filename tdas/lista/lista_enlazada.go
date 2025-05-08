@@ -26,10 +26,9 @@ func (lista *listaEnlazada[T]) EstaVacia() bool {
 }
 
 func (lista *listaEnlazada[T]) InsertarPrimero(elemento T) {
-	nodo_nuevo := &nodoLista[T]{dato: elemento}
-	if lista.primero == nil {
-		lista.primero = nodo_nuevo
-		lista.ultimo = nodo_nuevo
+	nodo_nuevo := crearNodo(elemento)
+	if lista.EstaVacia() {
+		lista.insertarListaVacia(nodo_nuevo)
 	} else {
 		nodo_nuevo.siguiente = lista.primero
 		lista.primero = nodo_nuevo
@@ -38,10 +37,9 @@ func (lista *listaEnlazada[T]) InsertarPrimero(elemento T) {
 }
 
 func (lista *listaEnlazada[T]) InsertarUltimo(elemento T) {
-	nodo_nuevo := &nodoLista[T]{dato: elemento}
-	if lista.ultimo == nil {
-		lista.ultimo = nodo_nuevo
-		lista.primero = nodo_nuevo
+	nodo_nuevo := crearNodo(elemento)
+	if lista.EstaVacia() {
+		lista.insertarListaVacia(nodo_nuevo)
 	} else {
 		lista.ultimo.siguiente = nodo_nuevo
 		lista.ultimo = nodo_nuevo
@@ -108,10 +106,11 @@ func (iter *iterListaEnlazada[T]) Siguiente() {
 }
 
 func (iter *iterListaEnlazada[T]) Insertar(elemento T) {
-	nodo_nuevo := &nodoLista[T]{dato: elemento, siguiente: iter.actual}
+	nodo_nuevo := crearNodo(elemento)
+	nodo_nuevo.siguiente = iter.actual
 	if iter.anterior == nil {
 		iter.lista.primero = nodo_nuevo
-		if iter.lista.largo == 0 {
+		if iter.lista.EstaVacia() {
 			iter.lista.ultimo = nodo_nuevo
 		}
 	} else {
@@ -147,4 +146,13 @@ func (lista *listaEnlazada[T]) datoNodo(nodo *nodoLista[T]) T {
 		panic("La lista esta vacia")
 	}
 	return nodo.dato
+}
+
+func (lista *listaEnlazada[T]) insertarListaVacia(nodo *nodoLista[T]) {
+	lista.primero = nodo
+	lista.ultimo = nodo
+}
+
+func crearNodo[T any](dato T) *nodoLista[T] {
+	return &nodoLista[T]{dato: dato}
 }
