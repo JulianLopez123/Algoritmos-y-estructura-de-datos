@@ -166,7 +166,7 @@ func TestBorrarSinElementosIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iter := lista.Iterador()
 
-	require.PanicsWithValue(t, "La lista esta vacia", func() { iter.Borrar() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia o el iterador apuntando a nil.")
+	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia o el iterador apuntando a nil")
 }
 
 func TestIterar(t *testing.T) {
