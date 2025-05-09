@@ -84,6 +84,8 @@ func TestInsertarUltimoYBorrarPrimero(t *testing.T) {
 	require.True(t, lista.EstaVacia())
 }
 
+// desde aca
+
 func TestInsertarTiposDiferentes(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[string]()
 
@@ -169,22 +171,15 @@ func TestBorrarSinElementosIterador(t *testing.T) {
 	require.PanicsWithValue(t, "El iterador termino de iterar", func() { iter.Borrar() }, "Se espera un panic cuando se intenta borrar un elemento de una lista vacia o el iterador apuntando a nil")
 }
 
-func TestIterar(t *testing.T) {
+
+// hasta aca
+
+func TestIterarConCorte(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[float64]()
 	lista.InsertarUltimo(7.102122)
 	lista.InsertarUltimo(3.142332)
 	lista.InsertarUltimo(1.233212)
 	contador := 0
-	lista.Iterar(func(elemento float64) bool {
-		if elemento*2 > 0 {
-			contador++
-			return true
-		} else {
-			return false
-		}
-	})
-	require.Equal(t, 3, contador)
-	contador = 0
 	lista.Iterar(func(elemento float64) bool {
 		if elemento > 5 {
 			contador++
@@ -194,7 +189,59 @@ func TestIterar(t *testing.T) {
 		}
 	})
 	require.Equal(t, 1, contador)
+
+	contador = 0
+	lista.Iterar(func(elemento float64) bool {
+		return false
+	})
+	require.Equal(t, 0, contador)
 }
+func TestIterarSinCorte(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	lista.InsertarUltimo(7)
+	lista.InsertarUltimo(3)
+	lista.InsertarUltimo(20)
+	contador := 0
+	lista.Iterar(func(elemento int) bool {
+		if elemento*2 > 0 {
+			contador++
+			return true
+		} else {
+			return false //no se ejecuta nunca en este caso
+		}
+	})
+	require.Equal(t, 3, contador)
+
+	contador = 0
+	lista.Iterar(func(elemento int) bool {
+		contador++
+		return true
+	})
+	require.Equal(t, 3, contador)
+}
+func TestIterarSinCorste(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	lista.InsertarUltimo(7)
+	lista.InsertarUltimo(3)
+	lista.InsertarUltimo(20)
+	contador := 0
+	lista.Iterar(func(elemento int) bool {
+		contador++
+		return true
+	})
+	require.Equal(t, 3, contador)
+}
+
+func TestIterarListaVacia(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[int]()
+	contador := 0
+	lista.Iterar(func(elemento int) bool {
+		contador++
+		return true
+	})
+	require.Equal(t, 0, contador)
+}
+
 func TestBorrarElementoIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iter := lista.Iterador()
