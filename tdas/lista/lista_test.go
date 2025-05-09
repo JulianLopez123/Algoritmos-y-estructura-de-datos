@@ -249,7 +249,9 @@ func TestVerificarInsercionAlCrearIterador(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	iter := lista.Iterador()
 	iter.Insertar(1)
-
+	iter.Insertar(2)
+	require.Equal(t, 2, lista.VerPrimero())
+	iter.Borrar()
 	primero := iter.VerActual()
 	require.Equal(t, 1, primero)
 	require.Equal(t, 1, lista.VerPrimero())
