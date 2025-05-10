@@ -104,6 +104,29 @@ func TestInsertarTiposDiferentes(t *testing.T) {
 	require.PanicsWithValue(t, "La lista esta vacia", func() { lista.VerPrimero() }, "Se espera un panic cuando se intenta ver el primero de una lista vacia")
 }
 
+func TestEstadoConSlices(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[[]string]()
+	lista.InsertarPrimero([]string{"a", "b"})
+	lista.InsertarUltimo([]string{"c", "d"})
+	lista.InsertarPrimero([]string{"e", "f"})
+	require.Equal(t, []string{"e", "f"}, lista.BorrarPrimero())
+	lista.InsertarUltimo([]string{"g", "h"})
+	require.Equal(t, []string{"a", "b"}, lista.BorrarPrimero())
+
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, []string{"c", "d"}, lista.VerPrimero())
+	require.Equal(t, []string{"g", "h"}, lista.VerUltimo())
+}
+
+func TestElementoNil(t *testing.T) {
+	lista := TDALista.CrearListaEnlazada[*int]()
+	var n *int = nil
+
+	lista.InsertarPrimero(n)
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, n, lista.VerPrimero())
+}
+
 func TestVolumenInsertarUltimo(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	cant := 10000
@@ -351,7 +374,7 @@ func TestInsertarIterador(t *testing.T) {
 	require.Equal(t, 3, lista.Largo())
 }
 
-func TestDosIteradoresIndependientes(t *testing.T) {
+func TestDosIteradores(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	lista.InsertarUltimo(5)
 	lista.InsertarUltimo(23)
