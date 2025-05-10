@@ -105,26 +105,28 @@ func TestInsertarTiposDiferentes(t *testing.T) {
 }
 
 func TestEstadoConSlices(t *testing.T) {
-    lista := TDALista.CrearListaEnlazada[[]string]()
-    lista.InsertarPrimero([]string{"a", "b"})
-    lista.InsertarUltimo([]string{"c", "d"})
-    lista.InsertarPrimero([]string{"e", "f"})
-    require.Equal(t, []string{"e", "f"}, lista.BorrarPrimero())
-    lista.InsertarUltimo([]string{"g", "h"})
-    require.Equal(t, []string{"a", "b"}, lista.BorrarPrimero())
-    
-    require.Equal(t, 2, lista.Largo())
-    require.Equal(t, []string{"c", "d"}, lista.VerPrimero())
-    require.Equal(t, []string{"g", "h"}, lista.VerUltimo())
+	lista := TDALista.CrearListaEnlazada[[]string]()
+	lista.InsertarPrimero([]string{"a", "b"})
+	lista.InsertarUltimo([]string{"c", "d"})
+	lista.InsertarPrimero([]string{"e", "f"})
+	require.Equal(t, []string{"e", "f"}, lista.BorrarPrimero())
+	lista.InsertarUltimo([]string{"g", "h"})
+	require.Equal(t, []string{"a", "b"}, lista.BorrarPrimero())
+
+	require.Equal(t, 2, lista.Largo())
+	require.Equal(t, []string{"c", "d"}, lista.VerPrimero())
+	require.Equal(t, []string{"g", "h"}, lista.VerUltimo())
 }
+
 func TestElementoNil(t *testing.T) {
-    lista := TDALista.CrearListaEnlazada[*int]()
-    var n *int = nil
-    
-    lista.InsertarPrimero(n)
-    require.False(t, lista.EstaVacia())
-    require.Equal(t, n, lista.VerPrimero())
+	lista := TDALista.CrearListaEnlazada[*int]()
+	var n *int = nil
+
+	lista.InsertarPrimero(n)
+	require.False(t, lista.EstaVacia())
+	require.Equal(t, n, lista.VerPrimero())
 }
+
 func TestVolumenInsertarUltimo(t *testing.T) {
 	lista := TDALista.CrearListaEnlazada[int]()
 	cant := 10000
