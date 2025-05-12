@@ -17,55 +17,23 @@ func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdena
 	return &abb[K, V]{raiz: nil, cantidad: 0, comparar: funcion_cmp}
 }
 
-func (abb *abb[K, V]) Cantidad() int {
-	return abb.cantidad
-}
-
 func (abb *abb[K, V]) Guardar(clave K, dato V) {
-	abb.raiz = abb.guardar(clave,dato,abb.raiz)
+	abb.raiz = abb.hallarPosicionDeNodo(clave, dato, abb.raiz)
 }
 
-func (abb *abb[K, V]) Borrar(clave K) V{
-	var dato V;
-	abb.raiz ,dato = abb.borrar(clave,abb.raiz)
+func (abb *abb[K, V]) Pertenece(clave K) bool {
+	return abb.buscarClaveEnArbol(clave, abb.raiz)
+}
+
+func (abb *abb[K, V]) Borrar(clave K) V {
+	var dato V
+	abb.raiz, dato = abb.borrar(clave, abb.raiz)
 	abb.cantidad--
 	return dato
 }
 
-func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K,V]) (*nodoAbb[K,V], V){ 
-	if nodo == nil{
-		panic("La clave no pertenece al diccionario")
-	}
-	var dato V;
-	condicion := abb.comparar(clave,nodo.clave)
-	switch {
-	case condicion == 0:
-		dato := nodo.dato
-		if nodo.izq == nil && nodo.der == nil{
-			return nil,dato
-		}else if nodo.izq == nil{
-			return nodo.der,dato
-		}else if nodo.der == nil{
-			return nodo.izq,dato
-		}else{
-			nodo_maximo := buscarMaximo(nodo.izq)
-			nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
-			nodo.izq, _ = abb.borrar(nodo_maximo.clave,nodo.izq)
-			return nodo, dato
-		}
-	case condicion > 0:
-	nodo.der,dato = abb.borrar(clave,nodo.der)
-	return nodo, dato
-	case condicion < 0:
-	nodo.izq,dato = abb.borrar(clave,nodo.izq)
-	return nodo, dato
-	}
-	return nil, nodo.dato
-}
-
-func (abb *abb[K, V]) guardar(clave K,dato V, nodo *nodoAbb[K,V]) *nodoAbb[K,V]{
-	if nodo == nil{
-	abb.raiz = abb.hallarPosicionDeNodo(clave, dato, abb.raiz)
+func (abb *abb[K, V]) Cantidad() int {
+	return abb.cantidad
 }
 
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
@@ -78,17 +46,11 @@ func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V])
 	case condicion == 0:
 		nodo.dato = dato
 	case condicion > 0:
-	nodo.der = abb.guardar(clave,dato,nodo.der)
+		nodo.der = abb.hallarPosicionDeNodo(clave, dato, nodo.der)
 	case condicion < 0:
-	nodo.izq = abb.guardar(clave,dato,nodo.izq) 
+		nodo.izq = abb.hallarPosicionDeNodo(clave, dato, nodo.izq)
 	}
 	return nodo
-}
-func buscarMaximo[K comparable,V any](nodo *nodoAbb[K,V]) *nodoAbb[K,V]{
-	if nodo.der == nil{
-		return nodo
-	}
-	return buscarMaximo(nodo.der) 
 }
 
 func (abb *abb[K, V]) buscarClaveEnArbol(clave K, nodo *nodoAbb[K, V]) bool {
@@ -105,6 +67,40 @@ func (abb *abb[K, V]) buscarClaveEnArbol(clave K, nodo *nodoAbb[K, V]) bool {
 	}
 }
 
-func (abb *abb[K, V]) Pertenece(clave K) bool {
-	return abb.buscarClaveEnArbol(clave, abb.raiz)
+func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
+	if nodo == nil {
+		panic("La clave no pertenece al diccionario")
+	}
+	var dato V
+	condicion := abb.comparar(clave, nodo.clave)
+	switch {
+	case condicion == 0:
+		dato := nodo.dato
+		if nodo.izq == nil && nodo.der == nil {
+			return nil, dato
+		} else if nodo.izq == nil {
+			return nodo.der, dato
+		} else if nodo.der == nil {
+			return nodo.izq, dato
+		} else {
+			nodo_maximo := buscarMaximo(nodo.izq)
+			nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
+			nodo.izq, _ = abb.borrar(nodo_maximo.clave, nodo.izq)
+			return nodo, dato
+		}
+	case condicion > 0:
+		nodo.der, dato = abb.borrar(clave, nodo.der)
+		return nodo, dato
+	case condicion < 0:
+		nodo.izq, dato = abb.borrar(clave, nodo.izq)
+		return nodo, dato
+	}
+	return nil, nodo.dato
+}
+
+func buscarMaximo[K comparable, V any](nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
+	if nodo.der == nil {
+		return nodo
+	}
+	return buscarMaximo(nodo.der)
 }
