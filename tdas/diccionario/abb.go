@@ -49,7 +49,7 @@ func (abb *abb[K, V]) buscarClaveEnArbol(clave K, nodo *nodoAbb[K, V]) bool {
 	comparacion := abb.comparar(clave, nodo.clave)
 	if comparacion == 0 {
 		return true
-	} else if comparacion > 0 {
+	} else if comparacion < 0 {
 		return abb.buscarClaveEnArbol(clave, nodo.izq)
 	} else {
 		return abb.buscarClaveEnArbol(clave, nodo.der)
