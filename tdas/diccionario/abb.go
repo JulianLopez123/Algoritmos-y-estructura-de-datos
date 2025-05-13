@@ -103,7 +103,7 @@ func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 func (abb *abb[K, V])inicializoPila(pila TDAPila.Pila[*nodoAbb[K, V]], nodo *nodoAbb[K,V] , desde *K, hasta *K) (TDAPila.Pila[*nodoAbb[K, V]], nodoAbb[K,V], *K,*K){
 	if nodo != nil && abb.comparar(nodo.clave, *desde) >= 0 && abb.comparar(nodo.clave, *hasta) <= 0{
 		pila.Apilar(nodo)
-	}else{
+	}else if nodo == nil{
 		return pila,*nodo,nil,nil
 	}
 	return abb.inicializoPila(pila, nodo.izq , desde, hasta)
@@ -129,16 +129,16 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 	if nodo_actual != nil{
 		clave := nodo_actual.clave
 		if iterRango.condicion(clave){
-		for nodo_actual != nil {
-			if iterRango.condicion(clave){
-				iterRango.pila.Apilar(nodo_actual)
+			for nodo_actual != nil {
+				if iterRango.condicion(clave){
+					iterRango.pila.Apilar(nodo_actual)
+				}
+			nodo_actual = nodo_actual.izq
 			}
-		nodo_actual = nodo_actual.izq
-		}
+		}		
 	}	
 }
-	
-}
+
 func (iterRango *iterRangoAbb[K, V]) condicion(clave K) bool{
 	if iterRango.abb.comparar(clave, iterRango.desde) >= 0 && iterRango.abb.comparar(clave, iterRango.hasta) <= 0{
 		return true
