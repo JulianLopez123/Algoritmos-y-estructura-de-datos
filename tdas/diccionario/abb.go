@@ -21,6 +21,10 @@ type iterAbb[K comparable, V any] struct {
 	pila TDAPila.Pila[*nodoAbb[K, V]]
 }
 
+type iteradorRangoAbb[K comparable, V any] struct {
+	pila TDAPila.Pila[*nodoAbb[K, V]]
+}
+
 func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdenado[K, V] {
 	return &abb[K, V]{raiz: nil, cantidad: 0, comparar: funcion_cmp}
 }
@@ -85,6 +89,21 @@ func (iter *iterAbb[K, V]) Siguiente() {
 		iter.pila.Apilar(nodo_actual)
 		nodo_actual = nodo_actual.izq
 	}
+}
+
+func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
+	iterador := abb.Iterador()
+	abb_rangos := CrearABB[K,V](abb.comparar)
+	for !iterador.HaySiguiente(){
+		clave,dato := iterador.VerActual() 
+		if abb.comparar(clave, *desde) < 0 || abb.comparar(clave, *hasta) > 0{
+			iterador.Siguiente()
+		}else{
+			abb_rangos.Guardar(clave,dato)
+		}
+	}
+	return abb_rangos.Iterador()
+
 }
 
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
