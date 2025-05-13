@@ -22,8 +22,8 @@ type iterAbb[K comparable, V any] struct {
 }
 
 type iterRangoAbb[K comparable, V any] struct {
-	pila TDAPila.Pila[*nodoAbb[K, V]]
-	abb *abb[K,V]
+	pila  TDAPila.Pila[*nodoAbb[K, V]]
+	abb   *abb[K, V]
 	desde *K
 	hasta *K
 }
@@ -37,14 +37,16 @@ func (abb *abb[K, V]) Guardar(clave K, dato V) {
 }
 
 func (abb *abb[K, V]) Pertenece(clave K) bool {
-	return abb.buscarClaveEnArbol(clave, abb.raiz)
+	nodo := abb.buscarNodoEnArbol(clave, abb.raiz)
+	return nodo != nil
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
-	if !abb.Pertenece(clave) {
+	nodo := abb.buscarNodoEnArbol(clave, abb.raiz)
+	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	return abb.buscarDatoEnArbol(clave, abb.raiz)
+	return nodo.dato
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
@@ -95,14 +97,14 @@ func (iter *iterAbb[K, V]) Siguiente() {
 
 func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
-	iterador := &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
+	iterador := &iterRangoAbb[K, V]{abb: abb, pila: pila, desde: desde, hasta: hasta}
 	nodo := abb.raiz
-	for nodo != nil{
-		if abb.comparar(nodo.clave,*iterador.desde) < 0{
+	for nodo != nil {
+		if abb.comparar(nodo.clave, *iterador.desde) < 0 {
 			nodo = nodo.der
-		}else if  abb.comparar(nodo.clave,*iterador.hasta) > 0{
+		} else if abb.comparar(nodo.clave, *iterador.hasta) > 0 {
 			nodo = nodo.izq
-		}else{
+		} else {
 			iterador.pila.Apilar(nodo)
 			nodo = nodo.izq
 		}
@@ -127,12 +129,12 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	}
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
-	for nodo_actual != nil{
-		if iterRango.abb.comparar(nodo_actual.clave,*iterRango.desde) < 0{
+	for nodo_actual != nil {
+		if iterRango.abb.comparar(nodo_actual.clave, *iterRango.desde) < 0 {
 			nodo_actual = nodo_actual.der
-		}else if  iterRango.abb.comparar(nodo_actual.clave,*iterRango.hasta) > 0{
+		} else if iterRango.abb.comparar(nodo_actual.clave, *iterRango.hasta) > 0 {
 			nodo_actual = nodo_actual.izq
-		}else{
+		} else {
 			iterRango.pila.Apilar(nodo_actual)
 			nodo_actual = nodo_actual.izq
 		}
@@ -154,7 +156,7 @@ func (nodo *nodoAbb[K, V]) iterar(visitar func(K, V) bool) {
 	nodo.der.iterar(visitar)
 }
 
-func (abb abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
+func (abb *abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
 	abb.iterarRango(abb.raiz, visitar, desde, hasta)
 }
 
@@ -195,31 +197,17 @@ func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V])
 	return nodo
 }
 
-func (abb *abb[K, V]) buscarClaveEnArbol(clave K, nodo *nodoAbb[K, V]) bool {
+func (abb *abb[K, V]) buscarNodoEnArbol(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo == nil {
-		return false
+		return nil
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
 	if comparacion == 0 {
-		return true
+		return nodo
 	} else if comparacion < 0 {
-		return abb.buscarClaveEnArbol(clave, nodo.izq)
+		return abb.buscarNodoEnArbol(clave, nodo.izq)
 	} else {
-		return abb.buscarClaveEnArbol(clave, nodo.der)
-	}
-}
-
-func (abb *abb[K, V]) buscarDatoEnArbol(clave K, nodo *nodoAbb[K, V]) V {
-	if nodo == nil {
-		panic("La clave no pertenece al diccionario")
-	}
-	comparacion := abb.comparar(clave, nodo.clave)
-	if comparacion == 0 {
-		return nodo.dato
-	} else if comparacion < 0 {
-		return abb.buscarDatoEnArbol(clave, nodo.izq)
-	} else {
-		return abb.buscarDatoEnArbol(clave, nodo.der)
+		return abb.buscarNodoEnArbol(clave, nodo.der)
 	}
 }
 
