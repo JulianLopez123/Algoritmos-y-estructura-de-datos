@@ -23,7 +23,7 @@ type iterAbb[K comparable, V any] struct {
 
 type iterRangoAbb[K comparable, V any] struct {
 	pila TDAPila.Pila[*nodoAbb[K, V]]
-	abb *abb
+	abb *abb[K,V]
 	desde *K
 	hasta *K
 }
@@ -95,18 +95,19 @@ func (iter *iterAbb[K, V]) Siguiente() {
 
 func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
-	pila,_,_,_ = abb.inicializoPila(pila, abb.raiz, desde,hasta)
-
-	return &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
-}
-
-func (abb *abb[K, V])inicializoPila(pila TDAPila.Pila[*nodoAbb[K, V]], nodo *nodoAbb[K,V] , desde *K, hasta *K) (TDAPila.Pila[*nodoAbb[K, V]], nodoAbb[K,V], *K,*K){
-	if nodo == nil{
-		return pila,*nodo,nil,nil
-	}else if abb.comparar(nodo.clave, *desde) >= 0 && abb.comparar(nodo.clave, *hasta) <= 0{
-		pila.Apilar(nodo)
+	iterador := &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
+	nodo := abb.raiz
+	for nodo != nil{
+		if iterador.abb.comparar(nodo.clave,*iterador.desde) < 0{
+			nodo = nodo.der
+		}else if  iterador.abb.comparar(nodo.clave,*iterador.hasta) > 0{
+			nodo = nodo.izq
+		}else{
+			iterador.pila.Apilar(nodo)
+			nodo = nodo.izq
+		}
 	}
-	return abb.inicializoPila(pila, nodo.izq , desde, hasta)
+	return iterador
 }
 
 func (iterRango *iterRangoAbb[K, V]) HaySiguiente() bool{
@@ -130,12 +131,18 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 		if iterRango.rangoValido(nodo_actual.clave){
 			iterRango.pila.Apilar(nodo_actual)
 		}
-		nodo_actual = nodo_actual.izq
-	}	
+		if iterRango.rangoValido(nodo_actual.izq.clave){
+			nodo_actual = nodo_actual.izq
+		}else if iterRango.rangoValido(nodo_actual.der.clave){
+			nodo_actual = nodo_actual.der
+		}else{
+			nodo_actual = nil
+		}	
+	}
 }
 
 func (iterRango *iterRangoAbb[K, V]) rangoValido(clave K) bool{
-	if iterRango.abb.comparar(clave, iterRango.desde) >= 0 && iterRango.abb.comparar(clave, iterRango.hasta) <= 0{
+	if iterRango.abb.comparar(clave, *iterRango.desde) >= 0 && iterRango.abb.comparar(clave, *iterRango.hasta) <= 0{
 		return true
 	}
 	return false
