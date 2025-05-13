@@ -126,16 +126,12 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 	}
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
-	if nodo_actual != nil{
+	for nodo_actual != nil {
 		clave := nodo_actual.clave
 		if iterRango.condicion(clave){
-			for nodo_actual != nil {
-				if iterRango.condicion(clave){
-					iterRango.pila.Apilar(nodo_actual)
-				}
-			nodo_actual = nodo_actual.izq
-			}
-		}		
+			iterRango.pila.Apilar(nodo_actual)
+		}
+		nodo_actual = nodo_actual.izq
 	}	
 }
 
