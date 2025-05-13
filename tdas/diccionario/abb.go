@@ -60,7 +60,7 @@ func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
 	iter := &iterAbb[K, V]{pila: pila}
 
 	for abb.raiz != nil {
-		pila.Apilar(abb.raiz)
+		iter.pila.Apilar(abb.raiz)
 		abb.raiz = abb.raiz.izq
 	}
 
@@ -91,21 +91,21 @@ func (iter *iterAbb[K, V]) Siguiente() {
 	}
 }
 
-<<<<<<< HEAD
-func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
+func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	iterador := abb.Iterador()
-	abb_rangos := CrearABB[K,V](abb.comparar)
-	for !iterador.HaySiguiente(){
-		clave,dato := iterador.VerActual() 
-		if abb.comparar(clave, *desde) < 0 || abb.comparar(clave, *hasta) > 0{
+	abb_rangos := CrearABB[K, V](abb.comparar)
+	for !iterador.HaySiguiente() {
+		clave, dato := iterador.VerActual()
+		if abb.comparar(clave, *desde) < 0 || abb.comparar(clave, *hasta) > 0 {
 			iterador.Siguiente()
-		}else{
-			abb_rangos.Guardar(clave,dato)
+		} else {
+			abb_rangos.Guardar(clave, dato)
 		}
 	}
 	return abb_rangos.Iterador()
+}
 
-func (abb abb[K, V]) Iterar(visitar func(K, V) bool){
+func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
 }
 
@@ -118,6 +118,30 @@ func (nodo *nodoAbb[K, V]) iterar(visitar func(K, V) bool) {
 		return
 	}
 	nodo.der.iterar(visitar)
+}
+
+func (abb abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
+	abb.iterarRango(abb.raiz, visitar, desde, hasta)
+}
+
+func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) {
+	if n == nil {
+		return
+	}
+	condicionDesde := abb.comparar(*desde, n.clave)
+	condicionHasta := abb.comparar(*hasta, n.clave)
+
+	if condicionDesde < 0 && condicionHasta < 0 {
+		abb.iterarRango(n.izq, visitar, desde, hasta)
+	}
+	if condicionDesde <= 0 && condicionHasta >= 0 {
+		if !visitar(n.clave, n.dato) {
+			return
+		}
+	}
+	if condicionHasta > 0 && condicionDesde > 0 {
+		abb.iterarRango(n.der, visitar, desde, hasta)
+	}
 }
 
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
