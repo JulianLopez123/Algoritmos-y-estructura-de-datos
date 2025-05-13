@@ -127,25 +127,16 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 	}
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
-	for nodo_actual != nil {
-		if iterRango.rangoValido(nodo_actual.clave){
-			iterRango.pila.Apilar(nodo_actual)
-		}
-		if iterRango.rangoValido(nodo_actual.izq.clave){
-			nodo_actual = nodo_actual.izq
-		}else if iterRango.rangoValido(nodo_actual.der.clave){
+	for nodo_actual != nil{
+		if iterRango.abb.comparar(nodo_actual.clave,*iterRango.desde) < 0{
 			nodo_actual = nodo_actual.der
+		}else if  iterRango.abb.comparar(nodo_actual.clave,*iterRango.hasta) > 0{
+			nodo_actual = nodo_actual.izq
 		}else{
-			nodo_actual = nil
-		}	
+			iterRango.pila.Apilar(nodo_actual)
+			nodo_actual = nodo_actual.izq
+		}
 	}
-}
-
-func (iterRango *iterRangoAbb[K, V]) rangoValido(clave K) bool{
-	if iterRango.abb.comparar(clave, *iterRango.desde) >= 0 && iterRango.abb.comparar(clave, *iterRango.hasta) <= 0{
-		return true
-	}
-	return false
 }
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool){
