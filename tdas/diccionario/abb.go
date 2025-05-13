@@ -127,15 +127,14 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
 	for nodo_actual != nil {
-		clave := nodo_actual.clave
-		if iterRango.condicion(clave){
+		if iterRango.rangoValido(nodo_actual.clave){
 			iterRango.pila.Apilar(nodo_actual)
 		}
 		nodo_actual = nodo_actual.izq
 	}	
 }
 
-func (iterRango *iterRangoAbb[K, V]) condicion(clave K) bool{
+func (iterRango *iterRangoAbb[K, V]) rangoValido(clave K) bool{
 	if iterRango.abb.comparar(clave, iterRango.desde) >= 0 && iterRango.abb.comparar(clave, iterRango.hasta) <= 0{
 		return true
 	}
@@ -162,13 +161,13 @@ func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V])
 		abb.cantidad++
 		return &nodoAbb[K, V]{clave: clave, dato: dato}
 	}
-	condicion := abb.comparar(clave, nodo.clave)
+	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case condicion == 0:
+	case rangoValido == 0:
 		nodo.dato = dato
-	case condicion > 0:
+	case rangoValido > 0:
 		nodo.der = abb.hallarPosicionDeNodo(clave, dato, nodo.der)
-	case condicion < 0:
+	case rangoValido < 0:
 		nodo.izq = abb.hallarPosicionDeNodo(clave, dato, nodo.izq)
 	}
 	return nodo
@@ -207,9 +206,9 @@ func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
 		panic("La clave no pertenece al diccionario")
 	}
 	var dato V
-	condicion := abb.comparar(clave, nodo.clave)
+	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case condicion == 0:
+	case rangoValido == 0:
 		dato := nodo.dato
 		if nodo.izq == nil && nodo.der == nil {
 			return nil, dato
@@ -223,10 +222,10 @@ func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
 			nodo.izq, _ = abb.borrar(nodo_maximo.clave, nodo.izq)
 			return nodo, dato
 		}
-	case condicion > 0:
+	case rangoValido > 0:
 		nodo.der, dato = abb.borrar(clave, nodo.der)
 		return nodo, dato
-	case condicion < 0:
+	case rangoValido < 0:
 		nodo.izq, dato = abb.borrar(clave, nodo.izq)
 		return nodo, dato
 	}
