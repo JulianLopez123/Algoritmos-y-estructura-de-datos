@@ -68,7 +68,6 @@ func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
 		iter.pila.Apilar(nodo)
 		nodo = nodo.izq
 	}
-
 	return iter
 }
 
