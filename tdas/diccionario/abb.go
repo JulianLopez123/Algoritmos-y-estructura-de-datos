@@ -91,6 +91,7 @@ func (iter *iterAbb[K, V]) Siguiente() {
 	}
 }
 
+<<<<<<< HEAD
 func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 	iterador := abb.Iterador()
 	abb_rangos := CrearABB[K,V](abb.comparar)
@@ -104,6 +105,19 @@ func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 	}
 	return abb_rangos.Iterador()
 
+func (abb abb[K, V]) Iterar(visitar func(K, V) bool){
+	abb.raiz.iterar(visitar)
+}
+
+func (nodo *nodoAbb[K, V]) iterar(visitar func(K, V) bool) {
+	if nodo == nil {
+		return
+	}
+	nodo.izq.iterar(visitar)
+	if !visitar(nodo.clave, nodo.dato) {
+		return
+	}
+	nodo.der.iterar(visitar)
 }
 
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
