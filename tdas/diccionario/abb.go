@@ -61,10 +61,10 @@ func (abb *abb[K, V]) Cantidad() int {
 func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
 	iter := &iterAbb[K, V]{pila: pila}
-
-	for abb.raiz != nil {
-		pila.Apilar(abb.raiz)
-		abb.raiz = abb.raiz.izq
+	nodo := abb.raiz
+	for nodo != nil {
+		iter.pila.Apilar(nodo)
+		nodo = nodo.izq
 	}
 
 	return iter
@@ -93,7 +93,7 @@ func (iter *iterAbb[K, V]) Siguiente() {
 	}
 }
 
-func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
+func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
 	iterador := &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
 	nodo := abb.raiz
@@ -110,18 +110,18 @@ func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 	return iterador
 }
 
-func (iterRango *iterRangoAbb[K, V]) HaySiguiente() bool{
+func (iterRango *iterRangoAbb[K, V]) HaySiguiente() bool {
 	return !iterRango.pila.EstaVacia()
 }
 
-func (iterRango *iterRangoAbb[K, V]) VerActual() (K, V){
+func (iterRango *iterRangoAbb[K, V]) VerActual() (K, V) {
 	if !iterRango.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
 	return iterRango.pila.VerTope().clave, iterRango.pila.VerTope().dato
 }
 
-func (iterRango *iterRangoAbb[K, V]) Siguiente(){
+func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	if !iterRango.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
@@ -139,7 +139,7 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente(){
 	}
 }
 
-func (abb abb[K, V]) Iterar(visitar func(K, V) bool){
+func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
 }
 
@@ -152,6 +152,30 @@ func (nodo *nodoAbb[K, V]) iterar(visitar func(K, V) bool) {
 		return
 	}
 	nodo.der.iterar(visitar)
+}
+
+func (abb abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
+	abb.iterarRango(abb.raiz, visitar, desde, hasta)
+}
+
+func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) {
+	if n == nil {
+		return
+	}
+	condicionDesde := abb.comparar(*desde, n.clave)
+	condicionHasta := abb.comparar(*hasta, n.clave)
+
+	if condicionDesde < 0 && condicionHasta < 0 {
+		abb.iterarRango(n.izq, visitar, desde, hasta)
+	}
+	if condicionDesde <= 0 && condicionHasta >= 0 {
+		if !visitar(n.clave, n.dato) {
+			return
+		}
+	}
+	if condicionHasta > 0 && condicionDesde > 0 {
+		abb.iterarRango(n.der, visitar, desde, hasta)
+	}
 }
 
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
