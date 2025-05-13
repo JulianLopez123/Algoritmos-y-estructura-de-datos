@@ -101,10 +101,10 @@ func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 }
 
 func (abb *abb[K, V])inicializoPila(pila TDAPila.Pila[*nodoAbb[K, V]], nodo *nodoAbb[K,V] , desde *K, hasta *K) (TDAPila.Pila[*nodoAbb[K, V]], nodoAbb[K,V], *K,*K){
-	if nodo != nil && abb.comparar(nodo.clave, *desde) >= 0 && abb.comparar(nodo.clave, *hasta) <= 0{
-		pila.Apilar(nodo)
-	}else if nodo == nil{
+	if nodo == nil{
 		return pila,*nodo,nil,nil
+	}else if abb.comparar(nodo.clave, *desde) >= 0 && abb.comparar(nodo.clave, *hasta) <= 0{
+		pila.Apilar(nodo)
 	}
 	return abb.inicializoPila(pila, nodo.izq , desde, hasta)
 }
