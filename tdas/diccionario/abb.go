@@ -98,9 +98,9 @@ func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
 	iterador := &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
 	nodo := abb.raiz
 	for nodo != nil{
-		if iterador.abb.comparar(nodo.clave,*iterador.desde) < 0{
+		if abb.comparar(nodo.clave,*iterador.desde) < 0{
 			nodo = nodo.der
-		}else if  iterador.abb.comparar(nodo.clave,*iterador.hasta) > 0{
+		}else if  abb.comparar(nodo.clave,*iterador.hasta) > 0{
 			nodo = nodo.izq
 		}else{
 			iterador.pila.Apilar(nodo)
