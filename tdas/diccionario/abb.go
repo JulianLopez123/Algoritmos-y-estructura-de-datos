@@ -97,17 +97,7 @@ func (iter *iterAbb[K, V]) Siguiente() {
 func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
 	iterador := &iterRangoAbb[K, V]{abb: abb, pila: pila, desde: desde, hasta: hasta}
-	nodo := abb.raiz
-	for nodo != nil {
-		if abb.comparar(nodo.clave, *iterador.desde) < 0 {
-			nodo = nodo.der
-		} else if abb.comparar(nodo.clave, *iterador.hasta) > 0 {
-			nodo = nodo.izq
-		} else {
-			iterador.pila.Apilar(nodo)
-			nodo = nodo.izq
-		}
-	}
+	iterador.apilarElementosEnRango(abb.raiz)
 	return iterador
 }
 
@@ -128,17 +118,22 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	}
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
-	for nodo_actual != nil {
-		if iterRango.abb.comparar(nodo_actual.clave, *iterRango.desde) < 0 {
-			nodo_actual = nodo_actual.der
-		} else if iterRango.abb.comparar(nodo_actual.clave, *iterRango.hasta) > 0 {
-			nodo_actual = nodo_actual.izq
+	iterRango.apilarElementosEnRango(nodo_actual)
+}
+
+func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
+	for nodo != nil {
+		if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
+			nodo = nodo.der
+		} else if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
+			nodo = nodo.izq
 		} else {
-			iterRango.pila.Apilar(nodo_actual)
-			nodo_actual = nodo_actual.izq
+			iterRango.pila.Apilar(nodo)
+			nodo = nodo.izq
 		}
 	}
 }
+
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
