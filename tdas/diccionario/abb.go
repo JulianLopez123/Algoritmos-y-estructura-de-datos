@@ -21,8 +21,11 @@ type iterAbb[K comparable, V any] struct {
 	pila TDAPila.Pila[*nodoAbb[K, V]]
 }
 
-type iteradorRangoAbb[K comparable, V any] struct {
+type iterRangoAbb[K comparable, V any] struct {
 	pila TDAPila.Pila[*nodoAbb[K, V]]
+	abb *abb
+	desde *K
+	hasta *K
 }
 
 func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdenado[K, V] {
@@ -68,7 +71,7 @@ func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
 }
 
 func (iter *iterAbb[K, V]) HaySiguiente() bool {
-	return iter.pila.EstaVacia()
+	return !iter.pila.EstaVacia()
 }
 
 func (iter *iterAbb[K, V]) VerActual() (K, V) {
@@ -82,7 +85,6 @@ func (iter *iterAbb[K, V]) Siguiente() {
 	if !iter.HaySiguiente() {
 		panic("El iterador termino de iterar")
 	}
-
 	nodo_eliminado := iter.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
 	for nodo_actual != nil {
@@ -91,19 +93,58 @@ func (iter *iterAbb[K, V]) Siguiente() {
 	}
 }
 
-<<<<<<< HEAD
 func  (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V]{
-	iterador := abb.Iterador()
-	abb_rangos := CrearABB[K,V](abb.comparar)
-	for !iterador.HaySiguiente(){
-		clave,dato := iterador.VerActual() 
-		if abb.comparar(clave, *desde) < 0 || abb.comparar(clave, *hasta) > 0{
-			iterador.Siguiente()
-		}else{
-			abb_rangos.Guardar(clave,dato)
-		}
+	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
+	pila,_,_,_ = abb.inicializoPila(pila, abb.raiz, desde,hasta)
+
+	return &iterRangoAbb[K, V]{abb:abb,pila: pila,desde:desde,hasta:hasta}
+}
+
+func (abb *abb[K, V])inicializoPila(pila TDAPila.Pila[*nodoAbb[K, V]], nodo *nodoAbb[K,V] , desde *K, hasta *K) (TDAPila.Pila[*nodoAbb[K, V]], nodoAbb[K,V], *K,*K){
+	if nodo != nil && abb.comparar(nodo.clave, *desde) >= 0 && abb.comparar(nodo.clave, *hasta) <= 0{
+		pila.Apilar(nodo)
+	}else if nodo == nil{
+		return pila,*nodo,nil,nil
 	}
-	return abb_rangos.Iterador()
+	return abb.inicializoPila(pila, nodo.izq , desde, hasta)
+}
+
+func (iterRango *iterRangoAbb[K, V]) HaySiguiente() bool{
+	return !iterRango.pila.EstaVacia()
+}
+
+func (iterRango *iterRangoAbb[K, V]) VerActual() (K, V){
+	if !iterRango.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	return iterRango.pila.VerTope().clave, iterRango.pila.VerTope().dato
+}
+
+func (iterRango *iterRangoAbb[K, V]) Siguiente(){
+	if !iterRango.HaySiguiente() {
+		panic("El iterador termino de iterar")
+	}
+	nodo_eliminado := iterRango.pila.Desapilar()
+	nodo_actual := nodo_eliminado.der
+	if nodo_actual != nil{
+		clave := nodo_actual.clave
+		if iterRango.condicion(clave){
+			for nodo_actual != nil {
+				if iterRango.condicion(clave){
+					iterRango.pila.Apilar(nodo_actual)
+				}
+			nodo_actual = nodo_actual.izq
+			}
+		}		
+	}	
+}
+
+func (iterRango *iterRangoAbb[K, V]) condicion(clave K) bool{
+	if iterRango.abb.comparar(clave, iterRango.desde) >= 0 && iterRango.abb.comparar(clave, iterRango.hasta) <= 0{
+		return true
+	}
+	return false
+}
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool){
 	abb.raiz.iterar(visitar)
