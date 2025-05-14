@@ -133,7 +133,6 @@ func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
 	}
 }
 
-
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
 }
