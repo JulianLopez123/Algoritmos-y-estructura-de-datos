@@ -37,8 +37,7 @@ func (abb *abb[K, V]) Guardar(clave K, dato V) {
 }
 
 func (abb *abb[K, V]) Pertenece(clave K) bool {
-	nodo := abb.buscarNodoEnArbol(clave, abb.raiz)
-	return nodo != nil
+	return abb.buscarNodoEnArbol(clave, abb.raiz) != nil
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
@@ -196,8 +195,9 @@ func (abb *abb[K, V]) buscarNodoEnArbol(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K
 		return nil
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
-	if comparacion == 0 {
+	if comparacion == 0 && clave == nodo.clave{
 		return nodo
+			
 	} else if comparacion < 0 {
 		return abb.buscarNodoEnArbol(clave, nodo.izq)
 	} else {
