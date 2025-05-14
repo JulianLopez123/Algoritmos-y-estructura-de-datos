@@ -487,10 +487,10 @@ func ejecutarPruebaVolumenABB(b *testing.B, n int) {
 		if a == b {
 			return 0
 		}
-		if a < b {
-			return -1
+		if a > b {
+			return 1
 		}
-		return 1
+		return -1
 	})
 
 	claves := make([]string, n)
@@ -623,10 +623,10 @@ func TestABBIteradorNoLlegaAlFinal(t *testing.T) {
 		if a == b {
 			return 0
 		}
-		if a < b {
-			return -1
+		if a > b {
+			return 1
 		}
-		return 1
+		return -1
 	})
 	claves := []string{"A", "B", "C"}
 	dic.Guardar(claves[0], "")
