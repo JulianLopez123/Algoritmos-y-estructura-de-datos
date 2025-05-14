@@ -120,7 +120,7 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	iterRango.apilarElementosEnRango(nodo_actual)
 }
 
-func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
+func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
 	for nodo != nil {
 		if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
 			nodo = nodo.der
@@ -132,7 +132,6 @@ func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
 		}
 	}
 }
-
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
@@ -173,6 +172,31 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 	}
 }
 
+// func (abb *abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
+// 	iter := &iterRangoAbb[K, V]{abb: abb, desde: desde, hasta: hasta}
+// 	iter.iterarRango(abb.raiz, visitar, desde, hasta)
+// }
+
+// func (iter *iterRangoAbb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) {
+// 	if n == nil {
+// 		return
+// 	}
+// 	condicionDesde := iter.abb.comparar(*desde, n.clave)
+// 	condicionHasta := iter.abb.comparar(*hasta, n.clave)
+
+// 	if condicionDesde < 0 && condicionHasta < 0 {
+// 		iter.iterarRango(n.izq, visitar, desde, hasta)
+// 	}
+// 	if condicionDesde <= 0 && condicionHasta >= 0 {
+// 		if !visitar(n.clave, n.dato) {
+// 			return
+// 		}
+// 	}
+// 	if condicionHasta > 0 && condicionDesde > 0 {
+// 		iter.iterarRango(n.der, visitar, desde, hasta)
+// 	}
+// }
+
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo == nil {
 		abb.cantidad++
@@ -180,7 +204,7 @@ func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V])
 	}
 	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case rangoValido == 0  && clave == nodo.clave:
+	case rangoValido == 0 && clave == nodo.clave:
 		nodo.dato = dato
 	case rangoValido > 0:
 		nodo.der = abb.hallarPosicionDeNodo(clave, dato, nodo.der)
@@ -195,9 +219,9 @@ func (abb *abb[K, V]) buscarNodoEnArbol(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K
 		return nil
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
-	if comparacion == 0 && clave == nodo.clave{
+	if comparacion == 0 && clave == nodo.clave {
 		return nodo
-			
+
 	} else if comparacion < 0 {
 		return abb.buscarNodoEnArbol(clave, nodo.izq)
 	} else {
@@ -212,7 +236,7 @@ func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
 	var dato V
 	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case rangoValido == 0  && clave == nodo.clave:
+	case rangoValido == 0 && clave == nodo.clave:
 		dato := nodo.dato
 		if nodo.izq == nil && nodo.der == nil {
 			return nil, dato
