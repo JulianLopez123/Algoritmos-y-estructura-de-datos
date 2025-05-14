@@ -120,7 +120,7 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	iterRango.apilarElementosEnRango(nodo_actual)
 }
 
-func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
+func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
 	for nodo != nil {
 		if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
 			nodo = nodo.der
@@ -132,7 +132,6 @@ func(iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K,V] ){
 		}
 	}
 }
-
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.raiz.iterar(visitar)
