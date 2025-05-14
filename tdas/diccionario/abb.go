@@ -172,31 +172,6 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 	}
 }
 
-// func (abb *abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
-// 	iter := &iterRangoAbb[K, V]{abb: abb, desde: desde, hasta: hasta}
-// 	iter.iterarRango(abb.raiz, visitar, desde, hasta)
-// }
-
-// func (iter *iterRangoAbb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) {
-// 	if n == nil {
-// 		return
-// 	}
-// 	condicionDesde := iter.abb.comparar(*desde, n.clave)
-// 	condicionHasta := iter.abb.comparar(*hasta, n.clave)
-
-// 	if condicionDesde < 0 && condicionHasta < 0 {
-// 		iter.iterarRango(n.izq, visitar, desde, hasta)
-// 	}
-// 	if condicionDesde <= 0 && condicionHasta >= 0 {
-// 		if !visitar(n.clave, n.dato) {
-// 			return
-// 		}
-// 	}
-// 	if condicionHasta > 0 && condicionDesde > 0 {
-// 		iter.iterarRango(n.der, visitar, desde, hasta)
-// 	}
-// }
-
 func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo == nil {
 		abb.cantidad++
