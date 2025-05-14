@@ -8,14 +8,18 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var TAMS_VOLUMEN_ABB = []int{1500,2000,5000,10000,20000} //menores que en hash(sin redimension se vuelven peor en tiempo)
+var TAMS_VOLUMEN_ABB = []int{1500, 2000, 5000, 10000, 20000} //menores que en hash(sin redimension se vuelven peor en tiempo)
 
 func TestABBDiccionarioVacio(t *testing.T) {
 	t.Log("Comprueba que Diccionario vacio no tiene claves")
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	require.EqualValues(t, 0, dic.Cantidad())
 	require.False(t, dic.Pertenece("A"))
@@ -26,16 +30,20 @@ func TestABBDiccionarioVacio(t *testing.T) {
 func TestABBDiccionarioClaveDefault(t *testing.T) {
 	t.Log("Prueba sobre un abb vacío que si justo buscamos la clave que es el default del tipo de dato, " +
 		"sigue sin existir")
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	require.False(t, dic.Pertenece(""))
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { dic.Obtener("") })
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { dic.Borrar("") })
 
-	dicNum := TDADiccionario.CrearABB[int, string](func(a int,b int) int {return a-b})
+	dicNum := TDADiccionario.CrearABB[int, string](func(a int, b int) int { return a - b })
 	require.False(t, dicNum.Pertenece(0))
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { dicNum.Obtener(0) })
 	require.PanicsWithValue(t, "La clave no pertenece al diccionario", func() { dicNum.Borrar(0) })
@@ -43,10 +51,14 @@ func TestABBDiccionarioClaveDefault(t *testing.T) {
 
 func TestABBUnElement(t *testing.T) {
 	t.Log("Comprueba que Diccionario con un elemento tiene esa Clave, unicamente")
-	dic := TDADiccionario.CrearABB[string, int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar("A", 10)
 	require.EqualValues(t, 1, dic.Cantidad())
@@ -67,10 +79,14 @@ func TestABBDiccionarioGuardar(t *testing.T) {
 	claves := []string{clave1, clave2, clave3}
 	valores := []string{valor1, valor2, valor3}
 
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	require.False(t, dic.Pertenece(claves[0]))
 	require.False(t, dic.Pertenece(claves[0]))
@@ -105,10 +121,14 @@ func TestABBReemplazoDato(t *testing.T) {
 	t.Log("Guarda un par de claves, y luego vuelve a guardar, buscando que el dato se haya reemplazado")
 	clave := "Gato"
 	clave2 := "Perro"
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(clave, "miau")
 	dic.Guardar(clave2, "guau")
@@ -131,7 +151,7 @@ func TestABBReemplazoDatoHopscotch(t *testing.T) {
 	t.Log("Guarda bastantes claves, y luego reemplaza sus datos. Luego valida que todos los datos sean " +
 		"correctos. Para una implementación Hopscotch, detecta errores al hacer lugar o guardar elementos.")
 
-	dic := TDADiccionario.CrearABB[int, int](func(a int,b int) int {return a-b})
+	dic := TDADiccionario.CrearABB[int, int](func(a int, b int) int { return a - b })
 	for i := 0; i < 500; i++ {
 		dic.Guardar(i, i)
 	}
@@ -156,10 +176,14 @@ func TestABBDiccionarioBorrar(t *testing.T) {
 	valor3 := "moo"
 	claves := []string{clave1, clave2, clave3}
 	valores := []string{valor1, valor2, valor3}
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 
 	require.False(t, dic.Pertenece(claves[0]))
@@ -192,10 +216,14 @@ func TestABBDiccionarioBorrar(t *testing.T) {
 func TestABBReutlizacionDeBorrados(t *testing.T) {
 	t.Log("Prueba de caja blanca: revisa que no haya problema " +
 		"reinsertando un elemento borrado")
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	clave := "hola"
 	dic.Guardar(clave, "mundo!")
@@ -210,7 +238,7 @@ func TestABBReutlizacionDeBorrados(t *testing.T) {
 
 func TestABBConClavesNumericas(t *testing.T) {
 	t.Log("Valida que no solo funcione con strings")
-	dic := TDADiccionario.CrearABB[int, string](func(a int,b int) int {return a-b})
+	dic := TDADiccionario.CrearABB[int, string](func(a int, b int) int { return a - b })
 	clave := 10
 	valor := "Gatito"
 
@@ -262,10 +290,14 @@ func TestABBConClavesNumericas(t *testing.T) {
 
 func TestABBClaveVacia(t *testing.T) {
 	t.Log("Guardamos una clave vacía (i.e. \"\") y deberia funcionar sin problemas")
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	clave := ""
 	dic.Guardar(clave, clave)
@@ -276,10 +308,14 @@ func TestABBClaveVacia(t *testing.T) {
 
 func TestABBValorNulo(t *testing.T) {
 	t.Log("Probamos que el valor puede ser nil sin problemas")
-	dic := TDADiccionario.CrearABB[string, *int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, *int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	clave := "Pez"
 	dic.Guardar(clave, nil)
@@ -295,10 +331,14 @@ func TestABBCadenaLargaParticular(t *testing.T) {
 	claves := make([]string, 10)
 	cadena := "%d~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
 		"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	valores := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
 	for i := 0; i < 10; i++ {
@@ -316,7 +356,7 @@ func TestABBCadenaLargaParticular(t *testing.T) {
 }
 
 func TestABBGuardarYBorrarRepetidasVeces(t *testing.T) {
-	dic := TDADiccionario.CrearABB[int, int](func(a int,b int) int {return a-b})
+	dic := TDADiccionario.CrearABB[int, int](func(a int, b int) int { return a - b })
 	for i := 0; i < 1000; i++ {
 		dic.Guardar(i, i)
 		require.True(t, dic.Pertenece(i))
@@ -340,10 +380,14 @@ func TestABBIteradorInternoClaves(t *testing.T) {
 	clave2 := "Perro"
 	clave3 := "Vaca"
 	claves := []string{clave1, clave2, clave3}
-	dic := TDADiccionario.CrearABB[string, *int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, *int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(claves[0], nil)
 	dic.Guardar(claves[1], nil)
@@ -376,10 +420,14 @@ func TestABBIteradorInternoValores(t *testing.T) {
 	clave4 := "Burrito"
 	clave5 := "Hamster"
 
-	dic := TDADiccionario.CrearABB[string, int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(clave1, 6)
 	dic.Guardar(clave2, 2)
@@ -406,10 +454,14 @@ func TestABBIteradorInternoValoresConBorrados(t *testing.T) {
 	clave4 := "Burrito"
 	clave5 := "Hamster"
 
-	dic := TDADiccionario.CrearABB[string, int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(clave0, 7)
 	dic.Guardar(clave1, 6)
@@ -431,10 +483,14 @@ func TestABBIteradorInternoValoresConBorrados(t *testing.T) {
 }
 
 func ejecutarPruebaVolumenABB(b *testing.B, n int) {
-	dic := TDADiccionario.CrearABB[string, int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a < b { return -1 }
-    return 1
+	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a < b {
+			return -1
+		}
+		return 1
 	})
 
 	claves := make([]string, n)
@@ -497,10 +553,14 @@ func BenchmarkDiccionarioABB(b *testing.B) {
 
 func TestABBIterarDiccionarioVacio(t *testing.T) {
 	t.Log("Iterar sobre diccionario vacio es simplemente tenerlo al final")
-	dic := TDADiccionario.CrearABB[string, int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	iter := dic.Iterador()
 	require.False(t, iter.HaySiguiente())
@@ -519,10 +579,14 @@ func TestABBDiccionarioIterar(t *testing.T) {
 	valor3 := "moo"
 	claves := []string{clave1, clave2, clave3}
 	valores := []string{valor1, valor2, valor3}
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(claves[0], valores[0])
 	dic.Guardar(claves[1], valores[1])
@@ -555,10 +619,14 @@ func TestABBDiccionarioIterar(t *testing.T) {
 
 func TestABBIteradorNoLlegaAlFinal(t *testing.T) {
 	t.Log("Crea un iterador y no lo avanza. Luego crea otro iterador y lo avanza.")
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a < b { return -1 }
-    return 1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a < b {
+			return -1
+		}
+		return 1
 	})
 	claves := []string{"A", "B", "C"}
 	dic.Guardar(claves[0], "")
@@ -593,10 +661,14 @@ func TestABBPruebaIterarTrasBorrados(t *testing.T) {
 	clave2 := "Perro"
 	clave3 := "Vaca"
 
-	dic := TDADiccionario.CrearABB[string, string](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, string](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 	dic.Guardar(clave1, "")
 	dic.Guardar(clave2, "")
@@ -621,10 +693,14 @@ func TestABBPruebaIterarTrasBorrados(t *testing.T) {
 }
 
 func ejecutarPruebasVolumenIteradorABB(b *testing.B, n int) {
-	dic := TDADiccionario.CrearABB[string, *int](func(a string,b string) int {
-	if a == b { return 0 } 
-	if a > b { return 1 }
-    return -1
+	dic := TDADiccionario.CrearABB[string, *int](func(a string, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
 	})
 
 	claves := make([]string, n)
@@ -696,7 +772,7 @@ func TestABBVolumenIteradorCorte(t *testing.T) {
 	t.Log("Prueba de volumen de iterador interno, para validar que siempre que se indique que se corte" +
 		" la iteración con la función visitar, se corte")
 
-	dic := TDADiccionario.CrearABB[int, int](func(a int,b int) int {return a-b})
+	dic := TDADiccionario.CrearABB[int, int](func(a int, b int) int { return a - b })
 
 	/* Inserta 'n' parejas en el abb */
 	for i := 0; i < 5000; i++ {
