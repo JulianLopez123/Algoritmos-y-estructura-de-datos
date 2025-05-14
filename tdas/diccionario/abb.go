@@ -180,7 +180,7 @@ func (abb *abb[K, V]) hallarPosicionDeNodo(clave K, dato V, nodo *nodoAbb[K, V])
 	}
 	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case rangoValido == 0:
+	case rangoValido == 0  && clave == nodo.clave:
 		nodo.dato = dato
 	case rangoValido > 0:
 		nodo.der = abb.hallarPosicionDeNodo(clave, dato, nodo.der)
@@ -212,7 +212,7 @@ func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
 	var dato V
 	rangoValido := abb.comparar(clave, nodo.clave)
 	switch {
-	case rangoValido == 0:
+	case rangoValido == 0  && clave == nodo.clave:
 		dato := nodo.dato
 		if nodo.izq == nil && nodo.der == nil {
 			return nil, dato
