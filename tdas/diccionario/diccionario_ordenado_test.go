@@ -908,7 +908,66 @@ func TestIterarRangoABBOrdenDescendente(t *testing.T) {
 		iter.Siguiente()
 	}
 }
+func TestIteradorRangoDesdeNil(t *testing.T) {
+	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
+	dic.Guardar(4, "")
+	dic.Guardar(3, "")
+	dic.Guardar(8, "")
+	dic.Guardar(1, "")
+	dic.Guardar(2, "")
+	dic.Guardar(5, "")
+	hasta := 5
+	iter := dic.IteradorRango(nil, &hasta)
+	var claves []int
 
+	for iter.HaySiguiente() {
+		clave, _ := iter.VerActual()
+		claves = append(claves, clave)
+		iter.Siguiente()
+	}
+	resultado_esperado := []int{1, 2, 3, 4, 5}
+	require.Equal(t, claves, resultado_esperado)
+}
+
+func TestIteradorRangoHastaNil(t *testing.T) {
+	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
+	dic.Guardar(5, "")
+	dic.Guardar(3, "")
+	dic.Guardar(10, "")
+	dic.Guardar(2, "")
+	dic.Guardar(1, "")
+	dic.Guardar(4, "")
+	desde := 4
+	iter := dic.IteradorRango(&desde, nil)
+	var claves []int
+
+	for iter.HaySiguiente() {
+		clave, _ := iter.VerActual()
+		claves = append(claves, clave)
+		iter.Siguiente()
+	}
+	resultado_esperado := []int{4, 5, 10}
+	require.Equal(t, claves, resultado_esperado)
+}
+func TestIteradorRangoDesdeYHastaNil(t *testing.T) {
+	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
+	dic.Guardar(5, "")
+	dic.Guardar(3, "")
+	dic.Guardar(10, "")
+	dic.Guardar(2, "")
+	dic.Guardar(1, "")
+	dic.Guardar(4, "")
+	iter := dic.IteradorRango(nil, nil)
+	var claves []int
+
+	for iter.HaySiguiente() {
+		clave, _ := iter.VerActual()
+		claves = append(claves, clave)
+		iter.Siguiente()
+	}
+	resultado_esperado := []int{1, 2, 3, 4, 5, 10}
+	require.Equal(t, claves, resultado_esperado)
+}
 func TestIterarRangoVolumen(t *testing.T) {
 	dic := TDADiccionario.CrearABB[int, int](func(a int, b int) int { return a - b })
 	for i := 0; i < 7000; i++ {

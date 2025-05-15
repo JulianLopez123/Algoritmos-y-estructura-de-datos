@@ -165,7 +165,7 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
 	for nodo != nil {
 		if iterRango.desde == nil {
-			if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) < 0 {
+			if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) <= 0 {
 				iterRango.pila.Apilar(nodo)
 			}
 			nodo = nodo.izq
