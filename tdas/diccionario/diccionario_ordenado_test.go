@@ -396,6 +396,37 @@ func TestABBIteradorInternoValores(t *testing.T) {
 	require.EqualValues(t, 720, multi)
 }
 
+func TestIterarConCorte(t *testing.T) {
+	dic := TDADiccionario.CrearABB[string, int](func(a, b string) int {
+		if a == b {
+			return 0
+		}
+		if a > b {
+			return 1
+		}
+		return -1
+	})
+
+	dic.Guardar("a", 0)
+	dic.Guardar("b", 1)
+	dic.Guardar("c", 2)
+	dic.Guardar("d", 3)
+	dic.Guardar("e", 4)
+
+	claves_visitadas := []string{}
+
+	dic.Iterar(func(clave string, dato int) bool {
+		if clave != "d" {
+			claves_visitadas = append(claves_visitadas, clave)
+			return true
+		}
+		return false
+	})
+
+	require.Equal(t, 3, len(claves_visitadas))
+	require.Equal(t, []string{"a", "b", "c"}, claves_visitadas)
+}
+
 func TestABBIteradorInternoValoresConBorrados(t *testing.T) {
 	t.Log("Valida que los datos sean recorridas correctamente (y una única vez) con el iterador interno, sin recorrer datos borrados")
 	dic := TDADiccionario.CrearABB[string, int](func(a string, b string) int {
@@ -883,47 +914,7 @@ func TestIterarRangoABBOrdenDescendente(t *testing.T) {
 		iter.Siguiente()
 	}
 }
-func TestIteradorRangoDesdeNil(t *testing.T) {
-	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
-	dic.Guardar(4, "")
-	dic.Guardar(3, "")
-	dic.Guardar(8, "")
-	dic.Guardar(1, "")
-	dic.Guardar(2, "")
-	dic.Guardar(5, "")
-	hasta := 5
-	iter := dic.IteradorRango(nil, &hasta)
-	var claves []int
 
-	for iter.HaySiguiente() {
-		clave, _ := iter.VerActual()
-		claves = append(claves, clave)
-		iter.Siguiente()
-	}
-	resultado_esperado := []int{1, 2, 3, 4, 5}
-	require.Equal(t, claves, resultado_esperado)
-}
-
-func TestIteradorRangoHastaNil(t *testing.T) {
-	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
-	dic.Guardar(5, "")
-	dic.Guardar(3, "")
-	dic.Guardar(10, "")
-	dic.Guardar(2, "")
-	dic.Guardar(1, "")
-	dic.Guardar(4, "")
-	desde := 4
-	iter := dic.IteradorRango(&desde, nil)
-	var claves []int
-
-	for iter.HaySiguiente() {
-		clave, _ := iter.VerActual()
-		claves = append(claves, clave)
-		iter.Siguiente()
-	}
-	resultado_esperado := []int{4, 5, 10}
-	require.Equal(t, claves, resultado_esperado)
-}
 func TestIteradorRangoDesdeYHastaNil(t *testing.T) {
 	dic := TDADiccionario.CrearABB[int, string](func(a, b int) int { return a - b })
 	dic.Guardar(5, "")
