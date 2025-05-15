@@ -1067,3 +1067,43 @@ func TestIterarRangoConCorte(t *testing.T) {
 	require.Equal(t, 2, len(claves_visitadas))
 	require.Equal(t, []int{8, 9}, claves_visitadas)
 }
+
+func TestIterarRangoSinDesde(t *testing.T) {
+	dic := TDADiccionario.CrearABB[int, int](func(a, b int) int { return a - b })
+
+	for i := 0; i < 20; i++ {
+		dic.Guardar(i, i)
+	}
+
+	desde := (*int)(nil)
+	hasta := 15
+	claves := []int{}
+	esperado := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}
+	dic.IterarRango(desde, &hasta, func(clave, dato int) bool {
+		claves = append(claves, clave)
+		return true
+	})
+
+	require.Equal(t, len(claves), len(esperado))
+	require.Equal(t, esperado, claves)
+}
+
+func TestIterarRangoSinHasta(t *testing.T) {
+	dic := TDADiccionario.CrearABB[int, int](func(a, b int) int { return a - b })
+
+	for i := 0; i < 20; i++ {
+		dic.Guardar(i, i)
+	}
+
+	desde := 8
+	hasta := (*int)(nil)
+	claves := []int{}
+	esperado := []int{8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}
+	dic.IterarRango(&desde, hasta, func(clave, dato int) bool {
+		claves = append(claves, clave)
+		return true
+	})
+
+	require.Equal(t, len(claves), len(esperado))
+	require.Equal(t, esperado, claves)
+}

@@ -156,18 +156,15 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 	if n == nil {
 		return
 	}
-	condicionDesde := abb.comparar(*desde, n.clave)
-	condicionHasta := abb.comparar(*hasta, n.clave)
-
-	if condicionDesde < 0 {
+	if desde == nil || abb.comparar(*desde, n.clave) < 0 {
 		abb.iterarRango(n.izq, visitar, desde, hasta)
 	}
-	if condicionDesde <= 0 && condicionHasta >= 0 {
+	if (desde == nil || abb.comparar(*desde, n.clave) <= 0) && (hasta == nil || abb.comparar(*hasta, n.clave) >= 0) {
 		if !visitar(n.clave, n.dato) {
 			return
 		}
 	}
-	if condicionHasta > 0 {
+	if hasta == nil || abb.comparar(*hasta, n.clave) > 0 {
 		abb.iterarRango(n.der, visitar, desde, hasta)
 	}
 }
