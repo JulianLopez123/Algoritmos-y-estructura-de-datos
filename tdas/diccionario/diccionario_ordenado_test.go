@@ -864,29 +864,29 @@ func TestIterarRangoTodoElABB(t *testing.T) {
 
 func TestIterarRangoABBCiertosElementosEnOrdenDescendente(t *testing.T) {
 	dic := TDADiccionario.CrearABB[int, int](func(a, b int) int { return b - a })
-	dic.Guardar(32,2)
-	dic.Guardar(22,2)
-	dic.Guardar(1,2)
-	dic.Guardar(13,2)
-	dic.Guardar(17,2)
-	dic.Guardar(5,2)
+	dic.Guardar(32, 2)
+	dic.Guardar(22, 2)
+	dic.Guardar(1, 2)
+	dic.Guardar(13, 2)
+	dic.Guardar(17, 2)
+	dic.Guardar(5, 2)
 
 	desde := 23
 	hasta := 2
 	iter := dic.IteradorRango(&desde, &hasta)
 	clave, _ := iter.VerActual()
-	require.Equal(t, 22,clave)
+	require.Equal(t, 22, clave)
 	iter.Siguiente()
 	clave, _ = iter.VerActual()
-	require.Equal(t, 17,clave)
+	require.Equal(t, 17, clave)
 	iter.Siguiente()
 	clave, _ = iter.VerActual()
-	require.Equal(t, 13,clave)
+	require.Equal(t, 13, clave)
 	iter.Siguiente()
 	clave, _ = iter.VerActual()
-	require.Equal(t, 5,clave)
+	require.Equal(t, 5, clave)
 	iter.Siguiente()
-	
+
 }
 func TestIterarRangoABBOrdenDescendente(t *testing.T) {
 	dic := TDADiccionario.CrearABB[int, int](func(a, b int) int { return b - a })

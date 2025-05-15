@@ -95,6 +95,9 @@ func (iter *iterAbb[K, V]) Siguiente() {
 
 func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
+	if desde == nil && hasta == nil {
+		return abb.Iterador()
+	}
 	iterador := &iterRangoAbb[K, V]{abb: abb, pila: pila, desde: desde, hasta: hasta}
 	iterador.apilarElementosEnRango(abb.raiz)
 	return iterador
@@ -118,19 +121,6 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	nodo_eliminado := iterRango.pila.Desapilar()
 	nodo_actual := nodo_eliminado.der
 	iterRango.apilarElementosEnRango(nodo_actual)
-}
-
-func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
-	for nodo != nil {
-		if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
-			nodo = nodo.der
-		} else if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
-			nodo = nodo.izq
-		} else {
-			iterRango.pila.Apilar(nodo)
-			nodo = nodo.izq
-		}
-	}
 }
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
@@ -169,6 +159,33 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 	}
 	if condicionHasta > 0 && condicionDesde > 0 {
 		abb.iterarRango(n.der, visitar, desde, hasta)
+	}
+}
+
+func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
+	for nodo != nil {
+		if iterRango.desde == nil {
+			if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) < 0 {
+				iterRango.pila.Apilar(nodo)
+			}
+			nodo = nodo.izq
+		} else if iterRango.hasta == nil {
+			if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
+				nodo = nodo.der
+			} else {
+				iterRango.pila.Apilar(nodo)
+				nodo = nodo.izq
+			}
+		} else {
+			if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
+				nodo = nodo.der
+			} else if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
+				nodo = nodo.izq
+			} else {
+				iterRango.pila.Apilar(nodo)
+				nodo = nodo.izq
+			}
+		}
 	}
 }
 
