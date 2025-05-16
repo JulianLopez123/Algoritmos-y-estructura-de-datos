@@ -131,21 +131,26 @@ func (abb *abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato
 	abb.iterarRango(abb.raiz, visitar, desde, hasta)
 }
 
-func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) {
+func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, desde *K, hasta *K) bool {
 	if n == nil {
-		return
+		return true
 	}
-	if desde == nil || abb.comparar(*desde, n.clave) < 0 {
-		abb.iterarRango(n.izq, visitar, desde, hasta)
-	}
-	if (desde == nil || abb.comparar(*desde, n.clave) <= 0) && (hasta == nil || abb.comparar(*hasta, n.clave) >= 0) {
-		if !visitar(n.clave, n.dato) {
-			return
+	if desde == nil || abb.comparar(n.clave, *desde) > 0 {
+		if !abb.iterarRango(n.izq, visitar, desde, hasta) {
+			return false
 		}
 	}
-	if hasta == nil || abb.comparar(*hasta, n.clave) > 0 {
-		abb.iterarRango(n.der, visitar, desde, hasta)
+	if (desde == nil || abb.comparar(n.clave, *desde) >= 0) && (hasta == nil || abb.comparar(n.clave, *hasta) <= 0) {
+		if !visitar(n.clave, n.dato) {
+			return false
+		}
 	}
+	if hasta == nil || abb.comparar(n.clave, *hasta) < 0 {
+		if !abb.iterarRango(n.der, visitar, desde, hasta) {
+			return false
+		}
+	}
+	return true
 }
 
 func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
