@@ -124,18 +124,7 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 }
 
 func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
-	abb.raiz.iterar(visitar)
-}
-
-func (nodo *nodoAbb[K, V]) iterar(visitar func(K, V) bool) {
-	if nodo == nil {
-		return
-	}
-	nodo.izq.iterar(visitar)
-	if !visitar(nodo.clave, nodo.dato) {
-		return
-	}
-	nodo.der.iterar(visitar)
+	abb.IterarRango(nil, nil, visitar)
 }
 
 func (abb *abb[K, V]) IterarRango(desde *K, hasta *K, visitar func(clave K, dato V) bool) {
