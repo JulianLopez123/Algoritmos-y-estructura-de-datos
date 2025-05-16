@@ -123,7 +123,7 @@ func (iterRango *iterRangoAbb[K, V]) Siguiente() {
 	iterRango.apilarElementosEnRango(nodo_actual)
 }
 
-func (abb abb[K, V]) Iterar(visitar func(K, V) bool) {
+func (abb *abb[K, V]) Iterar(visitar func(K, V) bool) {
 	abb.IterarRango(nil, nil, visitar)
 }
 
