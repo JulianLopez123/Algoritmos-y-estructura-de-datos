@@ -17,10 +17,6 @@ type nodoAbb[K comparable, V any] struct {
 	dato  V
 }
 
-type iterAbb[K comparable, V any] struct {
-	pila TDAPila.Pila[*nodoAbb[K, V]]
-}
-
 type iterRangoAbb[K comparable, V any] struct {
 	pila  TDAPila.Pila[*nodoAbb[K, V]]
 	abb   *abb[K, V]
@@ -60,44 +56,11 @@ func (abb *abb[K, V]) Cantidad() int {
 }
 
 func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
-	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
-	iter := &iterAbb[K, V]{pila: pila}
-	nodo := abb.raiz
-	for nodo != nil {
-		iter.pila.Apilar(nodo)
-		nodo = nodo.izq
-	}
-	return iter
-}
-
-func (iter *iterAbb[K, V]) HaySiguiente() bool {
-	return !iter.pila.EstaVacia()
-}
-
-func (iter *iterAbb[K, V]) VerActual() (K, V) {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar")
-	}
-	return iter.pila.VerTope().clave, iter.pila.VerTope().dato
-}
-
-func (iter *iterAbb[K, V]) Siguiente() {
-	if !iter.HaySiguiente() {
-		panic("El iterador termino de iterar")
-	}
-	nodo_eliminado := iter.pila.Desapilar()
-	nodo_actual := nodo_eliminado.der
-	for nodo_actual != nil {
-		iter.pila.Apilar(nodo_actual)
-		nodo_actual = nodo_actual.izq
-	}
+	return abb.IteradorRango(nil, nil)
 }
 
 func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
-	if desde == nil && hasta == nil {
-		return abb.Iterador()
-	}
 	iterador := &iterRangoAbb[K, V]{abb: abb, pila: pila, desde: desde, hasta: hasta}
 	iterador.apilarElementosEnRango(abb.raiz)
 	return iterador
@@ -155,7 +118,10 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 
 func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
 	for nodo != nil {
-		if iterRango.desde == nil {
+		if iterRango.desde == nil && iterRango.hasta == nil {
+			iterRango.pila.Apilar(nodo)
+			nodo = nodo.izq
+		} else if iterRango.desde == nil {
 			if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) <= 0 {
 				iterRango.pila.Apilar(nodo)
 			}
