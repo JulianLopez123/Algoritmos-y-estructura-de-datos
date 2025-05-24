@@ -30,8 +30,8 @@ func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdena
 
 func (abb *abb[K, V]) Guardar(clave K, dato V) {
 	encontrado := abb.Pertenece(clave)
-	nodo := abb.buscarNodoEnArbol(clave,&dato, abb.raiz)
-	if !encontrado{
+	nodo := abb.buscarNodoEnArbol(clave, &dato, abb.raiz)
+	if !encontrado {
 		abb.cantidad++
 	}
 	abb.raiz = nodo
@@ -42,7 +42,7 @@ func (abb *abb[K, V]) Pertenece(clave K) bool {
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
-	nodo := abb.buscarNodoEnArbol(clave,nil, abb.raiz)
+	nodo := abb.buscarNodoEnArbol(clave, nil, abb.raiz)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
@@ -50,13 +50,6 @@ func (abb *abb[K, V]) Obtener(clave K) V {
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
-	// nodo := abb.buscarNodoEnArbol(clave,nil,abb.raiz)
-	// if nodo == nil{
-	// 	panic("La clave no pertenece al diccionario")
-	// }
-	// abb.raiz = nodo
-	// abb.cantidad--
-	// return nodo.dato
 	var dato V
 	abb.raiz, dato = abb.borrar(clave, abb.raiz)
 	abb.cantidad--
@@ -158,31 +151,29 @@ func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V])
 	}
 }
 
-func (abb *abb[K, V]) buscarNodoEnArbol(clave K,dato *V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
+func (abb *abb[K, V]) buscarNodoEnArbol(clave K, dato *V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo == nil {
-		if dato != nil{
-			return &nodoAbb[K, V]{clave:clave,dato:*dato}
+		if dato != nil {
+			return &nodoAbb[K, V]{clave: clave, dato: *dato}
 		}
 		return nil
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
 	switch {
-	case comparacion == 0:
-		if dato != nil{
-			nodo.dato = *dato
-		}
+	case comparacion == 0 && dato != nil:
+		nodo.dato = *dato
 	case comparacion > 0:
-		nodo_der := abb.buscarNodoEnArbol( clave,dato, nodo.der)
-		if dato == nil{
+		nodo_der := abb.buscarNodoEnArbol(clave, dato, nodo.der)
+		if dato == nil {
 			return nodo_der
 		}
 		nodo.der = nodo_der
 	case comparacion < 0:
-		nodo_izq := abb.buscarNodoEnArbol(clave,dato, nodo.izq)
-		if dato == nil{
+		nodo_izq := abb.buscarNodoEnArbol(clave, dato, nodo.izq)
+		if dato == nil {
 			return nodo_izq
 		}
-		nodo.izq = nodo_izq 
+		nodo.izq = nodo_izq
 	}
 	return nodo
 }
