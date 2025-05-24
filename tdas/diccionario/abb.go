@@ -60,21 +60,28 @@ func (abb *abb[K, V]) Borrar(clave K) V {
 	}
 	nodo_eliminado := nodo.dato
 	abb.cantidad--
-	if nodo.izq == nil && nodo.der == nil {
-		nodo = nil
-		return nodo_eliminado
-	} else if nodo.izq == nil {
-		nodo.clave, nodo.dato = nodo.der.clave, nodo.der.dato
-		return nodo_eliminado
-	} else if nodo.der == nil {
-		nodo.clave, nodo.dato = nodo.izq.clave, nodo.izq.dato
-		return nodo_eliminado
-	} else {
+	// if nodo.izq == nil && nodo.der == nil {
+	// 	nodo = nil
+	// 	return nodo_eliminado
+	// } else if nodo.izq == nil {
+	// 	nodo.clave, nodo.dato = nodo.der.clave, nodo.der.dato
+	// 	return nodo_eliminado
+	// } else if nodo.der == nil {
+	// 	nodo.clave, nodo.dato = nodo.izq.clave, nodo.izq.dato
+	// 	return nodo_eliminado
+	// } else {
+	// 	nodo_maximo := buscarMaximo(nodo.izq)
+	// 	nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
+	// 	abb.Borrar(nodo_maximo.clave)
+	// 	return nodo_eliminado
+	// }
+	if nodo.izq != nil && nodo.der != nil {
 		nodo_maximo := buscarMaximo(nodo.izq)
 		nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
 		abb.Borrar(nodo_maximo.clave)
 		return nodo_eliminado
 	}
+
 }
 
 func (abb *abb[K, V]) Cantidad() int {
