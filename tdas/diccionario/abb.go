@@ -23,26 +23,32 @@ type iterRangoAbb[K comparable, V any] struct {
 	desde *K
 	hasta *K
 }
+type operacion int
+
+const (
+	GUARDAR operacion = iota
+	BORRAR
+	PERTENECE_U_OBTENER
+)
 
 func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdenado[K, V] {
 	return &abb[K, V]{raiz: nil, cantidad: 0, comparar: funcion_cmp}
 }
 
 func (abb *abb[K, V]) Guardar(clave K, dato V) {
-	encontrado := abb.Pertenece(clave)
-	nodo := abb.buscarNodoEnArbol(clave, &dato, abb.raiz)
-	if !encontrado {
+	nodo, hallado := abb.buscarNodoEnArbol(clave, &dato, abb.raiz, GUARDAR)
+	if hallado == nil {
 		abb.cantidad++
 	}
 	abb.raiz = nodo
 }
-
 func (abb *abb[K, V]) Pertenece(clave K) bool {
-	return abb.buscarNodoEnArbol(clave, nil, abb.raiz) != nil
+	nodo, _ := abb.buscarNodoEnArbol(clave, nil, abb.raiz, PERTENECE_U_OBTENER)
+	return nodo != nil
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
-	nodo := abb.buscarNodoEnArbol(clave, nil, abb.raiz)
+	nodo, _ := abb.buscarNodoEnArbol(clave, nil, abb.raiz, PERTENECE_U_OBTENER)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
@@ -50,10 +56,13 @@ func (abb *abb[K, V]) Obtener(clave K) V {
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
-	var dato V
-	abb.raiz, dato = abb.borrar(clave, abb.raiz)
+	nuevoNodo, dato := abb.buscarNodoEnArbol(clave, nil, abb.raiz, BORRAR)
+	if dato == nil {
+		panic("La clave no pertenece al diccionario")
+	}
+	abb.raiz = nuevoNodo
 	abb.cantidad--
-	return dato
+	return *dato
 }
 
 func (abb *abb[K, V]) Cantidad() int {
@@ -122,91 +131,78 @@ func (abb *abb[K, V]) iterarRango(n *nodoAbb[K, V], visitar func(K, V) bool, des
 }
 
 func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V]) {
-	for nodo != nil {
-		if iterRango.desde == nil && iterRango.hasta == nil {
-			iterRango.pila.Apilar(nodo)
-			nodo = nodo.izq
-		} else if iterRango.desde == nil {
-			if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) <= 0 {
-				iterRango.pila.Apilar(nodo)
-			}
-			nodo = nodo.izq
-		} else if iterRango.hasta == nil {
-			if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
-				nodo = nodo.der
-			} else {
-				iterRango.pila.Apilar(nodo)
-				nodo = nodo.izq
-			}
-		} else {
-			if iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
-				nodo = nodo.der
-			} else if iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
-				nodo = nodo.izq
-			} else {
-				iterRango.pila.Apilar(nodo)
-				nodo = nodo.izq
-			}
-		}
+	if nodo == nil {
+		return
+	}
+	if iterRango.desde != nil && iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
+		iterRango.apilarElementosEnRango(nodo.der)
+	}
+	if (iterRango.desde == nil || iterRango.abb.comparar(nodo.clave, *iterRango.desde) >= 0) && (iterRango.hasta == nil || iterRango.abb.comparar(nodo.clave, *iterRango.hasta) <= 0) {
+		iterRango.pila.Apilar(nodo)
+		iterRango.apilarElementosEnRango(nodo.izq)
+	}
+	if iterRango.hasta != nil && iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
+		iterRango.apilarElementosEnRango(nodo.izq)
 	}
 }
 
-func (abb *abb[K, V]) buscarNodoEnArbol(clave K, dato *V, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
+func (abb *abb[K, V]) buscarNodoEnArbol(clave K, dato *V, nodo *nodoAbb[K, V], operacion operacion) (*nodoAbb[K, V], *V) {
 	if nodo == nil {
-		if dato != nil {
-			return &nodoAbb[K, V]{clave: clave, dato: *dato}
+		if operacion == GUARDAR {
+			return &nodoAbb[K, V]{clave: clave, dato: *dato}, nil
 		}
-		return nil
+		return nil, nil
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
 	switch {
-	case comparacion == 0 && dato != nil:
-		nodo.dato = *dato
+	case comparacion == 0:
+		switch operacion {
+		case GUARDAR:
+			nodo.dato = *dato
+			return nodo, &nodo.dato
+		case BORRAR:
+			nodoBorrado, datoBorrado := abb.borrar(nodo)
+			return nodoBorrado, &datoBorrado
+		default:
+			return nodo, &nodo.dato
+		}
 	case comparacion > 0:
-		nodo_der := abb.buscarNodoEnArbol(clave, dato, nodo.der)
-		if dato == nil {
-			return nodo_der
+		nodo_der, resultado := abb.buscarNodoEnArbol(clave, dato, nodo.der, operacion)
+		if operacion == PERTENECE_U_OBTENER {
+			return nodo_der, nil
 		}
 		nodo.der = nodo_der
+		return nodo, resultado
+
 	case comparacion < 0:
-		nodo_izq := abb.buscarNodoEnArbol(clave, dato, nodo.izq)
-		if dato == nil {
-			return nodo_izq
+		nodo_izq, resultado := abb.buscarNodoEnArbol(clave, dato, nodo.izq, operacion)
+		if operacion == PERTENECE_U_OBTENER {
+			return nodo_izq, nil
 		}
 		nodo.izq = nodo_izq
+		return nodo, resultado
 	}
-	return nodo
+	return nodo, nil
 }
 
-func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
+func (abb *abb[K, V]) borrar(nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
+	var nul V
 	if nodo == nil {
-		panic("La clave no pertenece al diccionario")
+		return nil, nul
 	}
-	var dato V
-	rangoValido := abb.comparar(clave, nodo.clave)
-	switch {
-	case rangoValido == 0:
-		dato := nodo.dato
-		if nodo.izq == nil && nodo.der == nil {
-			return nil, dato
-		} else if nodo.izq == nil {
-			return nodo.der, dato
-		} else if nodo.der == nil {
-			return nodo.izq, dato
-		} else {
-			nodo_maximo := buscarMaximo(nodo.izq)
-			nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
-			nodo.izq, _ = abb.borrar(nodo_maximo.clave, nodo.izq)
-			return nodo, dato
-		}
-	case rangoValido > 0:
-		nodo.der, dato = abb.borrar(clave, nodo.der)
-		return nodo, dato
-	case rangoValido < 0:
-		nodo.izq, dato = abb.borrar(clave, nodo.izq)
+	dato := nodo.dato
+	if nodo.izq == nil && nodo.der == nil {
+		return nil, dato
+	} else if nodo.izq == nil {
+		return nodo.der, dato
+	} else if nodo.der == nil {
+		return nodo.izq, dato
+	} else {
+		predecesor := buscarMaximo(nodo.izq)
+		nodo.clave, nodo.dato = predecesor.clave, predecesor.dato
+		nodo.izq, _ = abb.borrar(nodo.izq)
 		return nodo, dato
 	}
-	return nil, nodo.dato
 }
 
 func buscarMaximo[K comparable, V any](nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
