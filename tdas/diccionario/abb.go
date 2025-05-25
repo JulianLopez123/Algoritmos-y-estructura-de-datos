@@ -149,7 +149,7 @@ func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V])
 func (abb *abb[K, V]) buscarNodoEnArbol(clave K, dato *V, nodo *nodoAbb[K, V], operacion operacion) (*nodoAbb[K, V], *V) {
 	if nodo == nil {
 		if operacion == GUARDAR {
-			return &nodoAbb[K, V]{clave: clave, dato: *dato}, nil
+			return crearNodo(clave, *dato), nil
 		}
 		return nil, nil
 	}
@@ -210,4 +210,8 @@ func buscarMaximo[K comparable, V any](nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 		return nodo
 	}
 	return buscarMaximo(nodo.der)
+}
+
+func crearNodo[K comparable, V any](clave K, dato V) *nodoAbb[K, V] {
+	return &nodoAbb[K, V]{clave: clave, dato: dato}
 }
