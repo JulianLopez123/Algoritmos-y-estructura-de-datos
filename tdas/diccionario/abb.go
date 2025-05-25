@@ -56,11 +56,11 @@ func (abb *abb[K, V]) Obtener(clave K) V {
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
-	nuevoNodo, dato := abb.buscarNodoEnArbol(clave, nil, abb.raiz, BORRAR)
+	nodo, dato := abb.buscarNodoEnArbol(clave, nil, abb.raiz, BORRAR)
 	if dato == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	abb.raiz = nuevoNodo
+	abb.raiz = nodo
 	abb.cantidad--
 	return *dato
 }
