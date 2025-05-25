@@ -161,8 +161,8 @@ func (abb *abb[K, V]) buscarNodoEnArbol(clave K, dato *V, nodo *nodoAbb[K, V], o
 			nodo.dato = *dato
 			return nodo, &nodo.dato
 		case BORRAR:
-			nodoBorrado, datoBorrado := abb.borrar(nodo)
-			return nodoBorrado, &datoBorrado
+			nodo_eliminado, dato := abb.borrar(nodo)
+			return nodo_eliminado, &dato
 		default:
 			return nodo, &nodo.dato
 		}
