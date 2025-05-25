@@ -18,10 +18,10 @@ type nodoAbb[K comparable, V any] struct {
 }
 
 type iterRangoAbb[K comparable, V any] struct {
-	pila  TDAPila.Pila[*nodoAbb[K, V]]
-	abb   *abb[K, V]
-	desde *K
-	hasta *K
+	pila        TDAPila.Pila[*nodoAbb[K, V]]
+	comparacion func(K, K) int
+	desde       *K
+	hasta       *K
 }
 type operacion int
 
@@ -75,7 +75,7 @@ func (abb *abb[K, V]) Iterador() IterDiccionario[K, V] {
 
 func (abb *abb[K, V]) IteradorRango(desde *K, hasta *K) IterDiccionario[K, V] {
 	pila := TDAPila.CrearPilaDinamica[*nodoAbb[K, V]]()
-	iterador := &iterRangoAbb[K, V]{abb: abb, pila: pila, desde: desde, hasta: hasta}
+	iterador := &iterRangoAbb[K, V]{comparacion: abb.comparar, pila: pila, desde: desde, hasta: hasta}
 	iterador.apilarElementosEnRango(abb.raiz)
 	return iterador
 }
@@ -134,14 +134,14 @@ func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V])
 	if nodo == nil {
 		return
 	}
-	if iterRango.desde != nil && iterRango.abb.comparar(nodo.clave, *iterRango.desde) < 0 {
+	if iterRango.desde != nil && iterRango.comparacion(nodo.clave, *iterRango.desde) < 0 {
 		iterRango.apilarElementosEnRango(nodo.der)
 	}
-	if (iterRango.desde == nil || iterRango.abb.comparar(nodo.clave, *iterRango.desde) >= 0) && (iterRango.hasta == nil || iterRango.abb.comparar(nodo.clave, *iterRango.hasta) <= 0) {
+	if (iterRango.desde == nil || iterRango.comparacion(nodo.clave, *iterRango.desde) >= 0) && (iterRango.hasta == nil || iterRango.comparacion(nodo.clave, *iterRango.hasta) <= 0) {
 		iterRango.pila.Apilar(nodo)
 		iterRango.apilarElementosEnRango(nodo.izq)
 	}
-	if iterRango.hasta != nil && iterRango.abb.comparar(nodo.clave, *iterRango.hasta) > 0 {
+	if iterRango.hasta != nil && iterRango.comparacion(nodo.clave, *iterRango.hasta) > 0 {
 		iterRango.apilarElementosEnRango(nodo.izq)
 	}
 }
