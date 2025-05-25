@@ -198,7 +198,7 @@ func (abb *abb[K, V]) borrar(nodo *nodoAbb[K, V]) (*nodoAbb[K, V], V) {
 	} else {
 		predecesor := buscarMaximo(nodo.izq)
 		nodo.clave, nodo.dato = predecesor.clave, predecesor.dato
-		nodo.izq, _ = abb.borrar(nodo.izq)
+		nodo.izq, _ = abb.buscarNodoEnArbol(nodo.clave, nil, nodo.izq, BORRAR)
 		return nodo, dato
 	}
 }
