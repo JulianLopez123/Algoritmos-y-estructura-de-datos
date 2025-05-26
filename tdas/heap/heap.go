@@ -6,13 +6,17 @@ type colaConPrioridad[T any] struct {
 	cmp   func(T, T) int
 }
 
+const PROPORCION_DE_OCUPACION_MINIMA = 4
+const CONSTANTE_DE_REDIMENSION = 2
+const CAPACIDAD_MINIMA = 5
+
 func CrearHeap[T any](funcion_cmp func(T, T) int) ColaPrioridad[T] {
-	return &colaConPrioridad[T]{cant: 0, cmp: funcion_cmp}
+	return &colaConPrioridad[T]{datos: make([]T,CAPACIDAD_MINIMA),cant: 0, cmp: funcion_cmp}
 }
 
 func CrearHeapArr[T any](arreglo []T, funcion_cmp func(T, T) int) ColaPrioridad[T] {
 	cola := &colaConPrioridad[T]{datos: arreglo, cant: len(arreglo), cmp: funcion_cmp}
-	cola.heapify(cola.datos,cola.cant,cola.cmp)
+	cola.heapify(arreglo,len(arreglo),funcion_cmp)
 	return cola
 }
 
@@ -21,20 +25,31 @@ func (heap *colaConPrioridad[T]) EstaVacia() bool {
 }
 
 func (heap *colaConPrioridad[T]) Encolar(elemento T) {
+	if len(heap.datos) == heap.cant {
+		nuevo_tamaño := cap(heap.datos) * CONSTANTE_DE_REDIMENSION
+		heap.redimensionar(nuevo_tamaño)
+	}
 	heap.cant++
 	heap.datos[heap.cant-1] = elemento
 	heap.heapify(heap.datos, heap.cant-1,heap.cmp)
 }
 
 func (heap *colaConPrioridad[T]) VerMax() T {
+	if heap.EstaVacia(){
+		panic("La cola esta vacia")
+	}
 	return heap.datos[0]
 }
 
 func (heap *colaConPrioridad[T]) Desencolar() T {
-	if heap.EstaVacia(){
-		panic("La cola esta vacia")
+	dato_eliminado:= heap.VerMax()
+
+	if len(heap.datos) >= PROPORCION_DE_OCUPACION_MINIMA*heap.cant {
+		capacidad_heap_datos := cap(heap.datos)
+		nuevo_tamaño := max(capacidad_heap_datos / CONSTANTE_DE_REDIMENSION, CAPACIDAD_MINIMA)
+		heap.redimensionar(nuevo_tamaño)
 	}
-	dato_eliminado:= heap.datos[0]
+
 	heap.datos[0], heap.datos[heap.cant-1] = heap.datos[heap.cant-1], heap.datos[0]
 	heap.cant--
 	heap.downHeap(0)
@@ -86,4 +101,11 @@ func (heap *colaConPrioridad[T]) downHeap(posicion_padre int){
 			heap.downHeap(pos_hijo_izq)
 		}
 	}
+}
+
+
+func (heap *colaConPrioridad[T]) redimensionar(nuevo_tamaño int) {
+	nuevo_slice := make([]T, nuevo_tamaño)
+	copy(nuevo_slice, heap.datos)
+	heap.datos = nuevo_slice
 }
