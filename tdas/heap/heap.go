@@ -25,10 +25,14 @@ func (heap *colaConPrioridad[T]) Encolar(elemento T) {
 }
 
 func (heap *colaConPrioridad[T]) VerMax() T {
+	if heap.EstaVacia() {
+		panic("El heap esta vacio")
+	}
 	return heap.datos[0]
 }
 
 func (heap *colaConPrioridad[T]) Desencolar() T {
+
 }
 
 func (heap *colaConPrioridad[T]) Cantidad() int {
@@ -36,16 +40,13 @@ func (heap *colaConPrioridad[T]) Cantidad() int {
 }
 
 func (heap *colaConPrioridad[T]) heapify(arr []T, i int) {
-	nodo_padre := (i - 1) / 2
-	comparacion := heap.cmp(arr[i], arr[nodo_padre])
-	if comparacion == 0 {
+	if i == 0 {
 		return
 	}
+	nodo_padre := (i - 1) / 2
+	comparacion := heap.cmp(arr[i], arr[nodo_padre])
 	if comparacion > 0 {
 		arr[i], arr[nodo_padre] = arr[nodo_padre], arr[i]
 		heap.heapify(arr, nodo_padre)
-	}
-	if comparacion < 0 {
-		return
 	}
 }
