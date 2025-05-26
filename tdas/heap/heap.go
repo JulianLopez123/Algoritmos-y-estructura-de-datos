@@ -11,12 +11,12 @@ const CONSTANTE_DE_REDIMENSION = 2
 const CAPACIDAD_MINIMA = 5
 
 func CrearHeap[T any](funcion_cmp func(T, T) int) ColaPrioridad[T] {
-	return &colaConPrioridad[T]{datos: make([]T,CAPACIDAD_MINIMA),cant: 0, cmp: funcion_cmp}
+	return &colaConPrioridad[T]{datos: make([]T, CAPACIDAD_MINIMA), cant: 0, cmp: funcion_cmp}
 }
 
 func CrearHeapArr[T any](arreglo []T, funcion_cmp func(T, T) int) ColaPrioridad[T] {
+	heapify(arreglo, len(arreglo), funcion_cmp)
 	cola := &colaConPrioridad[T]{datos: arreglo, cant: len(arreglo), cmp: funcion_cmp}
-	cola.heapify(arreglo,len(arreglo),funcion_cmp)
 	return cola
 }
 
@@ -31,28 +31,28 @@ func (heap *colaConPrioridad[T]) Encolar(elemento T) {
 	}
 	heap.cant++
 	heap.datos[heap.cant-1] = elemento
-	heap.heapify(heap.datos, heap.cant-1,heap.cmp)
+	upHeap(heap.datos, heap.cant, heap.cant-1, heap.cmp)
 }
 
 func (heap *colaConPrioridad[T]) VerMax() T {
-	if heap.EstaVacia(){
+	if heap.EstaVacia() {
 		panic("La cola esta vacia")
 	}
 	return heap.datos[0]
 }
 
 func (heap *colaConPrioridad[T]) Desencolar() T {
-	dato_eliminado:= heap.VerMax()
+	dato_eliminado := heap.VerMax()
 
 	if len(heap.datos) >= PROPORCION_DE_OCUPACION_MINIMA*heap.cant {
 		capacidad_heap_datos := cap(heap.datos)
-		nuevo_tamaño := max(capacidad_heap_datos / CONSTANTE_DE_REDIMENSION, CAPACIDAD_MINIMA)
+		nuevo_tamaño := max(capacidad_heap_datos/CONSTANTE_DE_REDIMENSION, CAPACIDAD_MINIMA)
 		heap.redimensionar(nuevo_tamaño)
 	}
 
 	heap.datos[0], heap.datos[heap.cant-1] = heap.datos[heap.cant-1], heap.datos[0]
 	heap.cant--
-	heap.downHeap(0)
+	downHeap(heap.datos, heap.cant, 0, heap.cmp)
 	return dato_eliminado
 }
 
@@ -60,49 +60,71 @@ func (heap *colaConPrioridad[T]) Cantidad() int {
 	return heap.cant
 }
 
-func (heap *colaConPrioridad[T]) heapify(arr []T, largo int, cmp func(T, T) int) {
-	if largo == 0{
-		return 
+func HeapSort[T any](elementos []T, funcion_cmp func(T, T) int) {
+	largo_relativo := len(elementos) - 1
+	heapify(elementos, len(elementos), funcion_cmp)
+	for largo_relativo != 0 {
+		elementos[0], elementos[largo_relativo] = elementos[largo_relativo], elementos[0]
+		largo_relativo--
+		downHeap(elementos, largo_relativo, 0, funcion_cmp)
+
 	}
-	heap.datos = arr
-	heap.cant = largo
-	heap.cmp = cmp
-	
-	ultimo_nodo_con_hijos := (largo /2) -1
-	for i := ultimo_nodo_con_hijos; i > -1;i--{
-		heap.downHeap(i)
+
+}
+
+func heapify[T any](arr []T, largo int, cmp func(T, T) int) {
+	if largo == 0 {
+		return
+	}
+	largo_relativo := largo / 2
+	ultimo_nodo_con_hijos := largo_relativo - 1
+	for i := ultimo_nodo_con_hijos; i > -1; i-- {
+		downHeap(arr, largo_relativo, i, cmp)
 	}
 }
 
-func (heap *colaConPrioridad[T]) downHeap(posicion_padre int){
-	pos_hijo_izq := 2 * posicion_padre + 1
-	pos_hijo_der := 2 * posicion_padre + 2
-	if pos_hijo_izq >= heap.cant{
+func upHeap[T any](arr []T, largo int, posicion_hijo int, func_cmp func(T, T) int) {
+	posicion_padre := (posicion_hijo - 1) / 2
+	if posicion_hijo >= largo || posicion_padre < 0 {
 		return
 	}
-	padre := heap.datos[posicion_padre]
-	hijo_izq := heap.datos[pos_hijo_izq]
-	
-	if pos_hijo_der >= heap.cant{
-		if heap.cmp(hijo_izq,padre) > 0{
-			heap.datos[posicion_padre], heap.datos[pos_hijo_izq] = heap.datos[pos_hijo_izq], heap.datos[posicion_padre]
+	padre := arr[posicion_padre]
+	hijo := arr[posicion_hijo]
+
+	if func_cmp(hijo, padre) > 0 {
+		arr[posicion_padre], arr[posicion_hijo] = arr[posicion_hijo], arr[posicion_padre]
+		upHeap(arr, largo, posicion_padre, func_cmp)
+	}
+}
+
+func downHeap[T any](arr []T, largo int, posicion_padre int, func_cmp func(T, T) int) {
+	pos_hijo_izq := 2*posicion_padre + 1
+	pos_hijo_der := 2*posicion_padre + 2
+	if pos_hijo_izq >= largo {
+		return
+	}
+	padre := arr[posicion_padre]
+	hijo_izq := arr[pos_hijo_izq]
+
+	if pos_hijo_der >= largo {
+		if func_cmp(hijo_izq, padre) > 0 {
+			arr[posicion_padre], arr[pos_hijo_izq] = arr[pos_hijo_izq], arr[posicion_padre]
 		}
 		return
 	}
 
-	hijo_der := heap.datos[pos_hijo_der]
+	hijo_der := arr[pos_hijo_der]
 
-	if heap.cmp(hijo_der,padre) > 0 ||  heap.cmp(hijo_izq,padre) > 0{
-		if heap.cmp(hijo_der,hijo_izq) > 0{
-			heap.datos[posicion_padre], heap.datos[pos_hijo_der] = heap.datos[pos_hijo_der], heap.datos[posicion_padre]
-			heap.downHeap(pos_hijo_der)
-		}else{
-			heap.datos[posicion_padre], heap.datos[pos_hijo_izq] = heap.datos[pos_hijo_izq], heap.datos[posicion_padre]
-			heap.downHeap(pos_hijo_izq)
+	if func_cmp(hijo_der, padre) > 0 || func_cmp(hijo_izq, padre) > 0 {
+		if func_cmp(hijo_der, hijo_izq) > 0 {
+			arr[posicion_padre], arr[pos_hijo_der] = arr[pos_hijo_der], arr[posicion_padre]
+			downHeap(arr, largo, pos_hijo_der, func_cmp)
+		} else {
+			arr[posicion_padre], arr[pos_hijo_izq] = arr[pos_hijo_izq], arr[posicion_padre]
+			downHeap(arr, largo, pos_hijo_der, func_cmp)
 		}
 	}
 }
-
 
 func (heap *colaConPrioridad[T]) redimensionar(nuevo_tamaño int) {
 	nuevo_slice := make([]T, nuevo_tamaño)
