@@ -9,14 +9,20 @@ type colaConPrioridad[T any] struct {
 const PROPORCION_DE_OCUPACION_MINIMA = 4
 const CONSTANTE_DE_REDIMENSION = 2
 const CAPACIDAD_MINIMA = 5
+const CORRIMIENTO_HIJO_IZQUIERDO = 1
+const CORRIMIENTO_HIJO_DERECHO = 2
+const FACTOR_DE_BUSQUEDA_PADRE_O_HIJO = 2
 
 func CrearHeap[T any](funcion_cmp func(T, T) int) ColaPrioridad[T] {
 	return &colaConPrioridad[T]{datos: make([]T, CAPACIDAD_MINIMA), cant: 0, cmp: funcion_cmp}
 }
 
 func CrearHeapArr[T any](arreglo []T, funcion_cmp func(T, T) int) ColaPrioridad[T] {
-	heapify(arreglo, len(arreglo), funcion_cmp)
-	cola := &colaConPrioridad[T]{datos: arreglo, cant: len(arreglo), cmp: funcion_cmp}
+	nuevo_arr := make([]T, max(CAPACIDAD_MINIMA, len(arreglo)))
+	copy(nuevo_arr, arreglo) //no modifico el arreglo original
+	heapify(nuevo_arr, len(arreglo), funcion_cmp)
+	cola := &colaConPrioridad[T]{datos: nuevo_arr, cant: len(arreglo), cmp: funcion_cmp}
+
 	return cola
 }
 
@@ -61,25 +67,20 @@ func (heap *colaConPrioridad[T]) Cantidad() int {
 }
 
 func HeapSort[T any](elementos []T, funcion_cmp func(T, T) int) {
-	largo_relativo := len(elementos) - 1
 	heapify(elementos, len(elementos), funcion_cmp)
-	for largo_relativo != 0 {
-		elementos[0], elementos[largo_relativo] = elementos[largo_relativo], elementos[0]
-		largo_relativo--
-		downHeap(elementos, largo_relativo, 0, funcion_cmp)
-
+	for i := len(elementos) - 1; i > 0; i-- {
+		elementos[0], elementos[i] = elementos[i], elementos[0]
+		downHeap(elementos, i, 0, funcion_cmp)
 	}
-
 }
 
 func heapify[T any](arr []T, largo int, cmp func(T, T) int) {
 	if largo == 0 {
 		return
 	}
-	largo_relativo := largo / 2
-	ultimo_nodo_con_hijos := largo_relativo - 1
+	ultimo_nodo_con_hijos := (largo / 2) - 1
 	for i := ultimo_nodo_con_hijos; i > -1; i-- {
-		downHeap(arr, largo_relativo, i, cmp)
+		downHeap(arr, largo, i, cmp)
 	}
 }
 
@@ -88,41 +89,28 @@ func upHeap[T any](arr []T, largo int, posicion_hijo int, func_cmp func(T, T) in
 	if posicion_hijo >= largo || posicion_padre < 0 {
 		return
 	}
-	padre := arr[posicion_padre]
-	hijo := arr[posicion_hijo]
-
-	if func_cmp(hijo, padre) > 0 {
+	if posicion_hijo < largo && posicion_padre >= 0 && func_cmp(arr[posicion_hijo], arr[posicion_padre]) > 0 {
 		arr[posicion_padre], arr[posicion_hijo] = arr[posicion_hijo], arr[posicion_padre]
 		upHeap(arr, largo, posicion_padre, func_cmp)
 	}
 }
 
 func downHeap[T any](arr []T, largo int, posicion_padre int, func_cmp func(T, T) int) {
+	// pos_hijo_izq := FACTOR_DE_BUSQUEDA_PADRE_O_HIJO*posicion_padre + CORRIMIENTO_HIJO_IZQUIERDO
+	// pos_hijo_der := FACTOR_DE_BUSQUEDA_PADRE_O_HIJO*posicion_padre + CORRIMIENTO_HIJO_DERECHO
 	pos_hijo_izq := 2*posicion_padre + 1
 	pos_hijo_der := 2*posicion_padre + 2
-	if pos_hijo_izq >= largo {
-		return
+	pos_elemento_mayor := posicion_padre
+
+	if pos_hijo_izq < largo && func_cmp(arr[pos_hijo_izq], arr[pos_elemento_mayor]) > 0 {
+		pos_elemento_mayor = pos_hijo_izq
 	}
-	padre := arr[posicion_padre]
-	hijo_izq := arr[pos_hijo_izq]
-
-	if pos_hijo_der >= largo {
-		if func_cmp(hijo_izq, padre) > 0 {
-			arr[posicion_padre], arr[pos_hijo_izq] = arr[pos_hijo_izq], arr[posicion_padre]
-		}
-		return
+	if pos_hijo_der < largo && func_cmp(arr[pos_hijo_der], arr[pos_elemento_mayor]) > 0 {
+		pos_elemento_mayor = pos_hijo_der
 	}
-
-	hijo_der := arr[pos_hijo_der]
-
-	if func_cmp(hijo_der, padre) > 0 || func_cmp(hijo_izq, padre) > 0 {
-		if func_cmp(hijo_der, hijo_izq) > 0 {
-			arr[posicion_padre], arr[pos_hijo_der] = arr[pos_hijo_der], arr[posicion_padre]
-			downHeap(arr, largo, pos_hijo_der, func_cmp)
-		} else {
-			arr[posicion_padre], arr[pos_hijo_izq] = arr[pos_hijo_izq], arr[posicion_padre]
-			downHeap(arr, largo, pos_hijo_der, func_cmp)
-		}
+	if pos_elemento_mayor != posicion_padre {
+		arr[posicion_padre], arr[pos_elemento_mayor] = arr[pos_elemento_mayor], arr[posicion_padre]
+		downHeap(arr, largo, pos_elemento_mayor, func_cmp)
 	}
 }
 
