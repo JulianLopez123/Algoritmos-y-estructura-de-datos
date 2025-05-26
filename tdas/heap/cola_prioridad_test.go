@@ -161,3 +161,31 @@ func BenchmarkHeap(b *testing.B) {
 		})
 	}
 }
+
+func TestRedimension(t *testing.T) {
+	heap := TDAHeap.CrearHeap[int](func(a, b int) int { return a - b })
+
+	for i := 0; i < 100; i++ {
+		heap.Encolar(i)
+	}
+
+	require.Equal(t, 100, heap.Cantidad())
+	require.Equal(t, 99, heap.VerMax())
+
+	for i := 99; i >= 0; i-- {
+		require.Equal(t, i, heap.Desencolar())
+	}
+
+	for i := 0; i < 200; i++ {
+		heap.Encolar(i)
+	}
+
+	require.Equal(t, 200, heap.Cantidad())
+	require.Equal(t, 199, heap.VerMax())
+
+	for i := 199; i >= 0; i-- {
+		require.Equal(t, i, heap.Desencolar())
+	}
+
+	require.True(t, heap.EstaVacia())
+}
