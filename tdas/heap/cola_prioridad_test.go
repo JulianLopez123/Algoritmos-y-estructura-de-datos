@@ -122,8 +122,34 @@ func TestEncoloYDesencoloElementosIguales(t *testing.T) {
 	require.True(t, heap.EstaVacia())
 }
 
-func TestHeapify(t *testing.T) {
+func TestHeapifyArregloDesordenado(t *testing.T) {
 	arr := []int{5, 8, 9, 6, 3, 2}
+	heap := TDAHeap.CrearHeapArr[int](arr, func(a, b int) int { return a - b })
+
+	require.Equal(t, len(arr), heap.Cantidad())
+
+	arr_ordenado := []int{9, 8, 6, 5, 3, 2}
+
+	for i := 0; i < len(arr); i++ {
+		require.Equal(t, arr_ordenado[i], heap.Desencolar())
+	}
+}
+
+func TestHeapifyArregloInvertido(t *testing.T) {
+	arr := []int{2, 3, 5, 6, 8, 9}
+	heap := TDAHeap.CrearHeapArr[int](arr, func(a, b int) int { return a - b })
+
+	require.Equal(t, len(arr), heap.Cantidad())
+
+	arr_ordenado := []int{9, 8, 6, 5, 3, 2}
+
+	for i := 0; i < len(arr); i++ {
+		require.Equal(t, arr_ordenado[i], heap.Desencolar())
+	}
+}
+
+func TestHeapifyArregloOrdenado(t *testing.T) {
+	arr := []int{9, 8, 6, 5, 3, 2}
 	heap := TDAHeap.CrearHeapArr[int](arr, func(a, b int) int { return a - b })
 
 	require.Equal(t, len(arr), heap.Cantidad())
@@ -188,4 +214,13 @@ func TestRedimension(t *testing.T) {
 	}
 
 	require.True(t, heap.EstaVacia())
+}
+
+func TestHeapSort(t *testing.T) {
+	arr := []int{3, 1, 4, 1, 5, 9, 2}
+	TDAHeap.HeapSort(arr, func(a, b int) int { return a - b })
+
+	esperado := []int{1, 1, 2, 3, 4, 5, 9}
+
+	require.Equal(t, esperado, arr)
 }
