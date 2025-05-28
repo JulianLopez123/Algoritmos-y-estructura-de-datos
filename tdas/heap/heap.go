@@ -11,7 +11,8 @@ const CONSTANTE_DE_REDIMENSION = 2
 const CAPACIDAD_MINIMA = 5
 const CORRIMIENTO_HIJO_IZQUIERDO = 1
 const CORRIMIENTO_HIJO_DERECHO = 2
-const FACTOR_DE_BUSQUEDA_PADRE_O_HIJO = 2
+const CORRIMIENTO_PADRE = 1
+const FACTOR_DE_BUSQUEDA = 2
 
 func CrearHeap[T any](funcion_cmp func(T, T) int) ColaPrioridad[T] {
 	return &colaConPrioridad[T]{datos: make([]T, CAPACIDAD_MINIMA), cant: 0, cmp: funcion_cmp}
@@ -78,7 +79,7 @@ func heapify[T any](arr []T, largo int, cmp func(T, T) int) {
 	if largo == 0 {
 		return
 	}
-	ultimo_nodo_con_hijos := (largo / 2) - 1
+	ultimo_nodo_con_hijos := (largo / FACTOR_DE_BUSQUEDA) - CORRIMIENTO_PADRE
 	for i := ultimo_nodo_con_hijos; i > -1; i-- {
 		downHeap(arr, largo, i, cmp)
 	}
@@ -88,7 +89,7 @@ func upHeap[T any](arr []T, posicion_hijo int, func_cmp func(T, T) int) {
 	if posicion_hijo == 0 {
 		return
 	}
-	posicion_padre := (posicion_hijo - 1) / 2
+	posicion_padre := (posicion_hijo - CORRIMIENTO_PADRE) / FACTOR_DE_BUSQUEDA
 	if func_cmp(arr[posicion_hijo], arr[posicion_padre]) > 0 {
 		arr[posicion_padre], arr[posicion_hijo] = arr[posicion_hijo], arr[posicion_padre]
 		upHeap(arr, posicion_padre, func_cmp)
@@ -96,8 +97,8 @@ func upHeap[T any](arr []T, posicion_hijo int, func_cmp func(T, T) int) {
 }
 
 func downHeap[T any](arr []T, largo int, posicion_padre int, func_cmp func(T, T) int) {
-	pos_hijo_izq := 2*posicion_padre + 1
-	pos_hijo_der := 2*posicion_padre + 2
+	pos_hijo_izq := FACTOR_DE_BUSQUEDA*posicion_padre + CORRIMIENTO_HIJO_IZQUIERDO
+	pos_hijo_der := FACTOR_DE_BUSQUEDA*posicion_padre + CORRIMIENTO_HIJO_DERECHO
 	pos_elemento_mayor := posicion_padre
 
 	if pos_hijo_izq < largo && func_cmp(arr[pos_hijo_izq], arr[pos_elemento_mayor]) > 0 {
