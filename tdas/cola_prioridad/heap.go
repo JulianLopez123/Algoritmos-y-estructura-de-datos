@@ -43,7 +43,7 @@ func (heap *colaConPrioridad[T]) Encolar(elemento T) {
 
 func (heap *colaConPrioridad[T]) VerMax() T {
 	if heap.EstaVacia() {
-		panic("El heap esta vacio")
+		panic("La cola esta vacia")
 	}
 	return heap.datos[0]
 }
