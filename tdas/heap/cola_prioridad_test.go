@@ -241,6 +241,15 @@ func TestHeapSort(t *testing.T) {
 	require.Equal(t, esperado, arr)
 }
 
+func TestHeapSortStrings(t *testing.T) {
+	arr := []string{"hola","si","como estas?"}
+	TDAHeap.HeapSort(arr, func(a, b string) int { return len(a) - len(b) })
+
+	esperado := []string{"si","hola","como estas?"}
+
+	require.Equal(t, esperado, arr)
+}
+
 func TestHeapSortArrVacio(t *testing.T) {
 	arr := []int{}
 	TDAHeap.HeapSort(arr, func(a, b int) int { return a - b })
