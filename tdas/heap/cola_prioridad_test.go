@@ -148,6 +148,22 @@ func TestHeapifyArregloInvertido(t *testing.T) {
 	}
 }
 
+func TestDosHeapsMismoArr(t *testing.T) {
+	arr := []int{4,2,4,6,1,2,8}
+
+	heap_arr := TDAHeap.CrearHeapArr[int](arr, func(a, b int) int { return a - b })
+	heap := TDAHeap.CrearHeap(func(a, b int) int { return a - b })
+
+	for i := 0; i < len(arr);i++{
+		heap.Encolar(arr[i])
+	}
+	
+	for i:=0; i < len(arr);i++{
+		require.Equal(t,heap.Desencolar(),heap_arr.Desencolar())
+	}
+
+}
+
 func TestHeapifyArregloOrdenado(t *testing.T) {
 	arr := []int{9, 8, 6, 5, 3, 2}
 	heap := TDAHeap.CrearHeapArr[int](arr, func(a, b int) int { return a - b })
@@ -223,4 +239,26 @@ func TestHeapSort(t *testing.T) {
 	esperado := []int{1, 1, 2, 3, 4, 5, 9}
 
 	require.Equal(t, esperado, arr)
+}
+
+func TestHeapSortArrVacio(t *testing.T){
+	arr := []int{}
+	TDAHeap.HeapSort(arr, func(a, b int) int { return a - b })
+
+	esperado := []int{}
+	
+	require.Equal(t,arr,esperado)
+}
+
+func TestDesencolarYHeapsortDevuelvenArrConOrdenOpuesto(t *testing.T){
+	arr := []int{3, 1, 4, 1, 5, 9, 2}
+	heap := TDAHeap.CrearHeapArr(arr,func(a, b int) int { return a - b })
+
+	var arr_esperado []int
+	for i :=0; i < len(arr) ; i++{
+		arr_esperado = append(arr_esperado,heap.Desencolar())
+	}
+	TDAHeap.HeapSort(arr,func(a, b int) int { return b - a })
+	require.Equal(t, arr_esperado,arr)
+
 }
