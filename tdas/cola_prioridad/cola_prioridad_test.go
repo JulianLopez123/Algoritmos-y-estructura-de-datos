@@ -14,8 +14,8 @@ func TestHeapVacio(t *testing.T) {
 	heap := TDAHeap.CrearHeap[int](func(a, b int) int { return a - b })
 
 	require.True(t, heap.EstaVacia())
-	require.PanicsWithValue(t, "El heap esta vacio", func() { heap.VerMax() })
-	require.PanicsWithValue(t, "El heap esta vacio", func() { heap.Desencolar() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.Desencolar() })
 }
 
 func TestUnElemento(t *testing.T) {
@@ -25,13 +25,13 @@ func TestUnElemento(t *testing.T) {
 	require.Equal(t, 1, heap.Cantidad())
 	require.Equal(t, 1, heap.VerMax())
 	require.Equal(t, 1, heap.Desencolar())
-	require.PanicsWithValue(t, "El heap esta vacio", func() { heap.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.VerMax() })
 }
 
 func TestHeapGuardar(t *testing.T) {
 	heap := TDAHeap.CrearHeap[int](func(a, b int) int { return a - b })
 
-	require.PanicsWithValue(t, "El heap esta vacio", func() { heap.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.VerMax() })
 	heap.Encolar(1)
 	require.Equal(t, 1, heap.Cantidad())
 	require.Equal(t, 1, heap.VerMax())
@@ -79,7 +79,7 @@ func TestDiferenteTipoDeDato(t *testing.T) {
 	require.Equal(t, 1, heap.Cantidad())
 	require.Equal(t, "hola", heap.VerMax())
 	heap.Desencolar()
-	require.PanicsWithValue(t, "El heap esta vacio", func() { heap.VerMax() })
+	require.PanicsWithValue(t, "La cola esta vacia", func() { heap.VerMax() })
 }
 
 func TestGuardarYBorrarRepetidasVeces(t *testing.T) {
