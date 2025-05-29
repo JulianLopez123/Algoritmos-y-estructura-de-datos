@@ -34,7 +34,7 @@ func (abb *abb[K, V]) Guardar(clave K, dato V) {
 		abb.cantidad++
 	}
 
-	nodo, padre := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
+	nodo, padre := abb.buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	if nodo == nil {
 		nodo = crearNodo(clave, dato)
 		condicion := abb.comparar(nodo.clave, padre.clave)
@@ -48,12 +48,12 @@ func (abb *abb[K, V]) Guardar(clave K, dato V) {
 	nodo.dato = dato
 }
 func (abb *abb[K, V]) Pertenece(clave K) bool {
-	nodo, _ := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
+	nodo, _ := abb.buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	return nodo != nil
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
-	nodo, _ := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
+	nodo, _ := abb.buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
@@ -61,7 +61,7 @@ func (abb *abb[K, V]) Obtener(clave K) V {
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
-	nodo, padre := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
+	nodo, padre := abb.buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
@@ -180,7 +180,7 @@ func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 
 }
 
-func (abb *abb[K, V]) _buscarNodoYPadreEnArbol(clave K, nodo *nodoAbb[K, V], padre *nodoAbb[K, V]) (*nodoAbb[K, V], *nodoAbb[K, V]) {
+func (abb *abb[K, V]) buscarNodoYPadreEnArbol(clave K, nodo *nodoAbb[K, V], padre *nodoAbb[K, V]) (*nodoAbb[K, V], *nodoAbb[K, V]) {
 	if nodo == nil {
 		return nil, padre
 	}
@@ -188,9 +188,9 @@ func (abb *abb[K, V]) _buscarNodoYPadreEnArbol(clave K, nodo *nodoAbb[K, V], pad
 	if comparacion == 0 {
 		return nodo, padre
 	} else if comparacion > 0 {
-		return abb._buscarNodoYPadreEnArbol(clave, nodo.der, nodo)
+		return abb.buscarNodoYPadreEnArbol(clave, nodo.der, nodo)
 	} else {
-		return abb._buscarNodoYPadreEnArbol(clave, nodo.izq, nodo)
+		return abb.buscarNodoYPadreEnArbol(clave, nodo.izq, nodo)
 	}
 }
 
