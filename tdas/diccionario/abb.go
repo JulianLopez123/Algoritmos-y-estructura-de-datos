@@ -65,7 +65,7 @@ func (abb *abb[K, V]) Borrar(clave K) V {
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	nodo_eliminado := abb.borrar(clave, nodo)
+	nodo_eliminado := abb.borrar(nodo)
 
 	if padre == nil {
 		abb.raiz = nodo_eliminado
@@ -162,7 +162,7 @@ func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V])
 	}
 }
 
-func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
+func (abb *abb[K, V]) borrar(nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo.izq == nil {
 		return nodo.der
 	} else if nodo.der == nil {
