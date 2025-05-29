@@ -19,7 +19,7 @@ func CrearHeap[T any](funcion_cmp func(T, T) int) ColaPrioridad[T] {
 }
 
 func CrearHeapArr[T any](arreglo []T, funcion_cmp func(T, T) int) ColaPrioridad[T] {
-	nuevo_arr := make([]T, max(CAPACIDAD_MINIMA, len(arreglo)))
+	nuevo_arr := make([]T, max(CAPACIDAD_MINIMA, len(arreglo))*CONSTANTE_DE_REDIMENSION)
 	copy(nuevo_arr, arreglo)
 	heapify(nuevo_arr, len(arreglo), funcion_cmp)
 	cola := &colaConPrioridad[T]{datos: nuevo_arr, cant: len(arreglo), cmp: funcion_cmp}
