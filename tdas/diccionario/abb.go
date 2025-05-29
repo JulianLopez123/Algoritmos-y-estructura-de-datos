@@ -207,11 +207,10 @@ func (abb *abb[K, V]) buscarNodoEnArbol(clave1 K, nodo *nodoAbb[K, V]) *nodoAbb[
 	comparacion := abb.comparar(clave1, nodo.clave)
 	if comparacion > 0 {
 		return abb.buscarNodoEnArbol(clave1, nodo.der)
-	} else if comparacion == 0 {
-		return nodo
-	} else {
+	} else if comparacion < 0 {
 		return abb.buscarNodoEnArbol(clave1, nodo.izq)
-	}
+	} 
+	return nodo
 }
 
 func buscarMaximo[K comparable, V any](nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
