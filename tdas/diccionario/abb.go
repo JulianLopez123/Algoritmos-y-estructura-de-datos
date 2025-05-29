@@ -65,7 +65,6 @@ func (abb *abb[K, V]) Borrar(clave K) V {
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	dato := nodo.dato
 	nodo_eliminado := abb.borrar(clave, nodo)
 
 	if padre == nil {
@@ -79,7 +78,7 @@ func (abb *abb[K, V]) Borrar(clave K) V {
 		}
 	}
 	abb.cantidad--
-	return dato
+	return nodo.dato
 }
 
 func (abb *abb[K, V]) Cantidad() int {
