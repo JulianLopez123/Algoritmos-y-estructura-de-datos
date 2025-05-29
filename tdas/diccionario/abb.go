@@ -29,31 +29,31 @@ func CrearABB[K comparable, V any](funcion_cmp func(K, K) int) DiccionarioOrdena
 }
 
 func (abb *abb[K, V]) Guardar(clave K, dato V) {
-	if abb.raiz == nil{
-		abb.raiz = crearNodo(clave,dato)
+	if abb.raiz == nil {
+		abb.raiz = crearNodo(clave, dato)
 		abb.cantidad++
 	}
 
-	nodo,padre := abb._buscarNodoYPadreEnArbol(clave,abb.raiz,nil)
-	if nodo == nil{
-		nodo = crearNodo(clave,dato)
-		condicion := abb.comparar(nodo.clave,padre.clave)
-		if condicion < 0{
+	nodo, padre := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
+	if nodo == nil {
+		nodo = crearNodo(clave, dato)
+		condicion := abb.comparar(nodo.clave, padre.clave)
+		if condicion < 0 {
 			padre.izq = nodo
-		}else{
+		} else {
 			padre.der = nodo
 		}
-		abb.cantidad ++
+		abb.cantidad++
 	}
 	nodo.dato = dato
 }
 func (abb *abb[K, V]) Pertenece(clave K) bool {
-	nodo,_:= abb._buscarNodoYPadreEnArbol(clave, abb.raiz,nil)
+	nodo, _ := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	return nodo != nil
 }
 
 func (abb *abb[K, V]) Obtener(clave K) V {
-	nodo,_ := abb._buscarNodoYPadreEnArbol(clave,abb.raiz,nil)
+	nodo, _ := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
@@ -61,18 +61,25 @@ func (abb *abb[K, V]) Obtener(clave K) V {
 }
 
 func (abb *abb[K, V]) Borrar(clave K) V {
-	nodo,padre := abb._buscarNodoYPadreEnArbol(clave,abb.raiz,nil)
+	nodo, padre := abb._buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	condicion := abb.comparar(nodo.clave,padre.clave)
-	if condicion < 0{
-		padre.izq = abb.borrar(clave,nodo)
-	}else{
-		padre.der = abb.borrar(clave,nodo)
+	dato := nodo.dato
+	nodo_eliminado := abb.borrar(clave, nodo)
+
+	if padre == nil {
+		abb.raiz = nodo_eliminado
+	} else {
+		condicion := abb.comparar(nodo.clave, padre.clave)
+		if condicion < 0 {
+			padre.izq = nodo_eliminado
+		} else {
+			padre.der = nodo_eliminado
+		}
 	}
 	abb.cantidad--
-	return nodo.dato
+	return dato
 }
 
 func (abb *abb[K, V]) Cantidad() int {
@@ -156,42 +163,43 @@ func (iterRango *iterRangoAbb[K, V]) apilarElementosEnRango(nodo *nodoAbb[K, V])
 	}
 }
 
-func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K,V]) (*nodoAbb[K, V]){
-	if nodo == nil {
-		return nil
-	}
-	
+func (abb *abb[K, V]) borrar(clave K, nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	if nodo.izq == nil {
 		return nodo.der
 	} else if nodo.der == nil {
 		return nodo.izq
-	} else {
-		predecesor := buscarMaximo(nodo.izq)
-		nodo.clave, nodo.dato = predecesor.clave, predecesor.dato
-		nodo.izq = abb.borrar(nodo.clave,nodo.izq)
-		return nodo
 	}
+	nodo_maximo, padre := buscarMaximoYPadre(nodo.izq, nodo)
+	nodo.clave, nodo.dato = nodo_maximo.clave, nodo_maximo.dato
+	if padre == nodo {
+		nodo.izq = nodo_maximo.izq
+	} else {
+		padre.der = nodo_maximo.izq
+	}
+
+	return nodo
+
 }
 
-func (abb *abb[K, V]) _buscarNodoYPadreEnArbol(clave K, nodo *nodoAbb[K, V],padre *nodoAbb[K, V])(*nodoAbb[K, V],*nodoAbb[K, V]){
-	if nodo == nil{
-		return nil,padre
+func (abb *abb[K, V]) _buscarNodoYPadreEnArbol(clave K, nodo *nodoAbb[K, V], padre *nodoAbb[K, V]) (*nodoAbb[K, V], *nodoAbb[K, V]) {
+	if nodo == nil {
+		return nil, padre
 	}
 	comparacion := abb.comparar(clave, nodo.clave)
-	if comparacion == 0{
-		return nodo,padre
-	}else if comparacion > 0{
-		return abb._buscarNodoYPadreEnArbol(clave, nodo.der,nodo)
-	}else{
-		return abb._buscarNodoYPadreEnArbol(clave,nodo.izq,nodo)
+	if comparacion == 0 {
+		return nodo, padre
+	} else if comparacion > 0 {
+		return abb._buscarNodoYPadreEnArbol(clave, nodo.der, nodo)
+	} else {
+		return abb._buscarNodoYPadreEnArbol(clave, nodo.izq, nodo)
 	}
 }
 
-func buscarMaximo[K comparable, V any](nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
+func buscarMaximoYPadre[K comparable, V any](nodo, padre *nodoAbb[K, V]) (*nodoAbb[K, V], *nodoAbb[K, V]) {
 	if nodo.der == nil {
-		return nodo
+		return nodo, padre
 	}
-	return buscarMaximo(nodo.der)
+	return buscarMaximoYPadre(nodo.der, nodo)
 }
 
 func crearNodo[K comparable, V any](clave K, dato V) *nodoAbb[K, V] {
