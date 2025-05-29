@@ -32,6 +32,7 @@ func (abb *abb[K, V]) Guardar(clave K, dato V) {
 	if abb.raiz == nil {
 		abb.raiz = crearNodo(clave, dato)
 		abb.cantidad++
+		return
 	}
 
 	nodo, padre := abb.buscarNodoYPadreEnArbol(clave, abb.raiz, nil)
