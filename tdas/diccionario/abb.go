@@ -66,20 +66,21 @@ func (abb *abb[K, V]) Borrar(clave K) V {
 	if nodo == nil {
 		panic("La clave no pertenece al diccionario")
 	}
-	nodo_eliminado := abb.borrar(nodo)
+	dato := nodo.dato
+	nodo_reemplazante := abb.borrar(nodo)
 
 	if padre == nil {
-		abb.raiz = nodo_eliminado
+		abb.raiz = nodo_reemplazante
 	} else {
 		condicion := abb.comparar(nodo.clave, padre.clave)
 		if condicion < 0 {
-			padre.izq = nodo_eliminado
+			padre.izq = nodo_reemplazante
 		} else {
-			padre.der = nodo_eliminado
+			padre.der = nodo_reemplazante
 		}
 	}
 	abb.cantidad--
-	return nodo.dato
+	return dato
 }
 
 func (abb *abb[K, V]) Cantidad() int {
@@ -176,7 +177,6 @@ func (abb *abb[K, V]) borrar(nodo *nodoAbb[K, V]) *nodoAbb[K, V] {
 	} else {
 		padre.der = nodo_maximo.izq
 	}
-
 	return nodo
 
 }
