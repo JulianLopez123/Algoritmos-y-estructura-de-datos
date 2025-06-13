@@ -30,3 +30,7 @@ func CrearVuelo(entrada []string) Vuelo{
 func (vuelo *vuelo) Obtener_fecha()string{
 	return vuelo.fecha
 }
+
+func (vuelo *vuelo) Obtener_numero_vuelo()int{
+	return vuelo.numero_vuelo
+}
