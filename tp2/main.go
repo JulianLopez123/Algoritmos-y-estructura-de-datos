@@ -7,14 +7,19 @@ import (
 	"tdas/diccionario"
 )
 
-func comparacion_fechas(fecha1 string,fecha2 string){
-	//..
+
+func comparacion_fechas_ascendente(fecha1 string,fecha2 string) int{
+	if fecha1 > fecha2{
+		return 1
+	}else if fecha1 < fecha2{
+		return -1 
+	}
+	return 0
 }
 
 
-func agregar_archivo(ruta string){
-	abb := diccionario.CrearABB[string,Vuelo](comparacion_fechas)
-
+func agregar_archivo(ruta string,hash *diccionario.Diccionario){
+	
 	archivo, _ := os.Open(ruta)
 	defer archivo.Close()
 	lectura := bufio.NewScanner(archivo)
@@ -22,15 +27,19 @@ func agregar_archivo(ruta string){
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea,",")
 		vuelo := CrearVuelo(linea_sep)
-		abb.Guardar(vuelo.Obtener_fecha(),vuelo)
+		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
 	}
 }
 
 func main(){
 	args := os.Args
+
+	hash := diccionario.CrearHash[int,*Vuelo]()
+	abb := diccionario.CrearABB[string,*Vuelo](comparacion_fechas_ascendente)
+
 	switch args[1]{
 	case "agregar_archivo":
-		agregar_archivo(args[2])
+		agregar_archivo(args[2],hash)
 
 	// case "ver_tablero":
 	// 	printVuelos(args[2])	
@@ -38,6 +47,7 @@ func main(){
 }
 
 // func printVuelos(ruta string){
+// 
 // 	archivo, _ := os.Open(ruta)
 // 	defer archivo.Close()
 // 	lectura := bufio.NewScanner(archivo)
