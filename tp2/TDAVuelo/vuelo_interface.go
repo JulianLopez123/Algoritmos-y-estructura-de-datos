@@ -1,4 +1,4 @@
-package tp2
+package TDAVuelo
 
 type Vuelo interface {
 
