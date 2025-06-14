@@ -2,7 +2,9 @@ package TDAVuelo
 
 type Vuelo interface {
 
-	Obtener_fecha() string
+	Fecha() string
 
-	Obtener_numero_vuelo() int
+	Numero_vuelo() int
+
+	Obtener_toda_info()string
 }

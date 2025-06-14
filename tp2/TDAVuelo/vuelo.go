@@ -1,6 +1,9 @@
 package TDAVuelo
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type vuelo struct {
 	numero_vuelo int
@@ -27,10 +30,25 @@ func CrearVuelo(entrada []string) Vuelo{
 	retraso_salida:retraso_salida,tiempo_vuelo: tiempo_vuelo,cancelado: cancelado,}
 }
 
-func (vuelo *vuelo) Obtener_fecha()string{
+func (vuelo *vuelo) Fecha()string{
 	return vuelo.fecha
 }
 
-func (vuelo *vuelo) Obtener_numero_vuelo()int{
+func (vuelo *vuelo) Numero_vuelo()int{
 	return vuelo.numero_vuelo
+}
+
+func (vuelo *vuelo) Obtener_toda_info()string{
+	return fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d\n",
+			vuelo.numero_vuelo,
+			vuelo.aerolinea,
+			vuelo.aeropuerto_origen,
+			vuelo.aeropuerto_destino,
+			vuelo.numero_cola,
+			vuelo.prioridad,
+			vuelo.fecha,
+			vuelo.retraso_salida,
+			vuelo.tiempo_vuelo,
+			vuelo.cancelado,
+		)
 }
