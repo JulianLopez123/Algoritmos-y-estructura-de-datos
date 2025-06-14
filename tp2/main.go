@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"tdas/diccionario"
 )
@@ -36,20 +35,7 @@ func agregar_archivo(ruta string) {
 	printVuelosEnArchivo(ruta, hash)
 }
 
-func main() {
-	args := os.Args
 
-	operacion := args[1]
-
-	switch operacion {
-	case "agregar_archivo":
-		agregar_archivo(args[2])
-
-	case "ver_tablero":
-		cant_vuelos, _ := strconv.Atoi(args[2])
-		ver_tablero(cant_vuelos, args[3], args[4], args[5])
-	}
-}
 
 func ver_tablero(cant_vuelos int, modo, desde, hasta string) {
 	var abb diccionario.DiccionarioOrdenado[string, Vuelo]
