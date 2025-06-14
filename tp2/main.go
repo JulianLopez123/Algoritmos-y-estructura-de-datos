@@ -25,18 +25,18 @@ func comparacion_fechas_descendente(fecha1,fecha2 string) int{
 }
 
 
-func agregar_archivo(ruta string){
-	hash := diccionario.CrearHash[int,*TDAVuelo.Vuelo]()
-	archivo, _ := os.Open(ruta)
-	defer archivo.Close()
-	lectura := bufio.NewScanner(archivo)
-	for lectura.Scan() {
-		linea := lectura.Text()
-		linea_sep := strings.Split(linea,",")
-		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
-	}
-}
+// func agregar_archivo(ruta string){
+// 	hash := diccionario.CrearHash[int,*TDAVuelo.Vuelo]()
+// 	archivo, _ := os.Open(ruta)
+// 	defer archivo.Close()
+// 	lectura := bufio.NewScanner(archivo)
+// 	for lectura.Scan() {
+// 		linea := lectura.Text()
+// 		linea_sep := strings.Split(linea,",")
+// 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
+// 		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
+// 	}
+// }
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
 
