@@ -6,5 +6,5 @@ type Vuelo interface {
 
 	Numero_vuelo() int
 
-	Obtener_toda_info()string
+	Obtener_string()string
 }

@@ -53,6 +53,11 @@ func main() {
 			if !ver_tablero(cant_vuelos, parametros[2], parametros[3], parametros[4],abb){
 				imprimirError(operacion)
 			}
+		case "info_vuelo":
+			numero_vuelo,_:= strconv.Atoi(parametros[1])
+			if !info_vuelo(numero_vuelo,hash){
+				imprimirError(operacion)
+			}
 		}
 	}
 	
@@ -115,6 +120,16 @@ func agregar_archivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vue
 		abb.Guardar(vuelo.Fecha(),vuelo)
 	}
 	fmt.Println("OK")
+	return true
+}
+
+func info_vuelo(numero_vuelo int, hash diccionario.Diccionario[int,TDAVuelo.Vuelo])bool{
+	if !hash.Pertenece(numero_vuelo){
+		return false
+	}
+	vuelo:= hash.Obtener(numero_vuelo)
+	fmt.Println(vuelo.Obtener_string()) 
+	println("OK")
 	return true
 }
 
