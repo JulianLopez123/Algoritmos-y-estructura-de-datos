@@ -37,6 +37,7 @@ func comparacion_fechas_descendente(fecha1,fecha2 string) int{
 // 		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
 // 	}
 // }
+
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
 
@@ -99,14 +100,41 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 }
 
 
-// func recuperar_datos_almacenados(){
-// 	datos_almacenados, _ := os.Open("datos_almacenados.csv")
-// 	defer datos_almacenados.Close()
-// 	lectura := bufio.NewScanner(datos_almacenados)
-// 	for lectura.Scan() {
-// 		vuelo := lectura.Text()
-// 		vuelo_sep := strings.Split(vuelo,",")
-// 		vuelos_juntos := strings.Join(vuelo_sep, "	")
-// 		fmt.Println(vuelos_juntos)
-// 	}
-// }
+func agregar_archivo(ruta string) {
+	hash := diccionario.CrearHash[int, TDAVuelo.Vuelo]()
+	archivo, _ := os.Open(ruta)
+	defer archivo.Close()
+	lectura := bufio.NewScanner(archivo)
+	for lectura.Scan() {
+		linea := lectura.Text()
+		linea_sep := strings.Split(linea, ",")
+		vuelo := TDAVuelo.CrearVuelo(linea_sep)
+		hash.Guardar(vuelo.Obtener_numero_vuelo(), vuelo)
+	}
+	printVuelosEnArchivo(ruta, hash)
+}
+
+
+func printVuelosEnArchivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vuelo]) {
+	archivo, _ := os.Open(ruta)
+	iterador := hash.Iterador()
+	defer archivo.Close()
+	write := bufio.NewWriter(archivo)
+	for iterador.HaySiguiente() {
+		_,vuelo := iterador.VerActual()
+		linea := fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d\n",
+			vuelo.numero_vuelo,
+			vuelo.aerolinea,
+			vuelo.aeropuerto_origen,
+			vuelo.aeropuerto_destino,
+			vuelo.numero_cola,
+			vuelo.prioridad,
+			vuelo.fecha,
+			vuelo.retraso_salida,
+			vuelo.tiempo_vuelo,
+			vuelo.cancelado,
+		)
+		write.WriteString(linea)
+	}
+	write.Flush()
+}
