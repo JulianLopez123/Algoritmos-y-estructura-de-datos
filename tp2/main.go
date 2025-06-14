@@ -6,9 +6,15 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"tdas/cola_prioridad"
 	"tdas/diccionario"
 	"tp2/TDAVuelo"
 )
+
+type numVuelo_prioridad struct {
+	numero_vuelo int
+	prioridad int
+}
 
 
 func comparacion_fechas_ascendente(fecha1 string,fecha2 string) int{
@@ -33,10 +39,21 @@ func comparacion_fechas_ascendente(fecha1 string,fecha2 string) int{
 // 	}
 // }
 
+func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int { //heap maximos
+	resultado :=  a.prioridad - b.prioridad 
+	if resultado == 0{
+		return a.numero_vuelo - b.numero_vuelo
+	}
+	return resultado
+}
+
+
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
 	hash := diccionario.CrearHash[int, TDAVuelo.Vuelo]()
 	abb := diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
+	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
+
 	for {
 		lectura.Scan()
 		linea := lectura.Text()
@@ -45,7 +62,7 @@ func main() {
 
 		switch operacion {
 		case "agregar_archivo":
-			if !agregar_archivo(parametros[1],hash,abb){
+			if !agregar_archivo(parametros[1],hash,abb,heap){
 				imprimirError(operacion)
 			}
 		case "ver_tablero":
@@ -56,6 +73,11 @@ func main() {
 		case "info_vuelo":
 			numero_vuelo,_:= strconv.Atoi(parametros[1])
 			if !info_vuelo(numero_vuelo,hash){
+				imprimirError(operacion)
+			}
+		case "prioridad_vuelos":
+			cant_vuelos,_ := strconv.Atoi(parametros[1])
+			if !prioridad_vuelos(cant_vuelos,heap){
 				imprimirError(operacion)
 			}
 		}
@@ -105,7 +127,7 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string,abb diccionario.Diccion
 }
 
 
-func agregar_archivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vuelo],abb diccionario.DiccionarioOrdenado[string,TDAVuelo.Vuelo])bool {
+func agregar_archivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vuelo],abb diccionario.DiccionarioOrdenado[string,TDAVuelo.Vuelo], heap cola_prioridad.ColaPrioridad[numVuelo_prioridad])bool {
 	archivo, err := os.Open(ruta)
 	if err != nil{
 		return false
@@ -116,8 +138,10 @@ func agregar_archivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vue
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea, ",")
 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
+		num_vuelo_prioridad := numVuelo_prioridad{numero_vuelo:vuelo.Numero_vuelo(),prioridad: vuelo.Prioridad()}
 		hash.Guardar(vuelo.Numero_vuelo(), vuelo)
 		abb.Guardar(vuelo.Fecha(),vuelo)
+		heap.Encolar(num_vuelo_prioridad)
 	}
 	fmt.Println("OK")
 	return true
@@ -133,20 +157,19 @@ func info_vuelo(numero_vuelo int, hash diccionario.Diccionario[int,TDAVuelo.Vuel
 	return true
 }
 
+func prioridad_vuelos(cant_vuelos int,heap cola_prioridad.ColaPrioridad[numVuelo_prioridad]) bool{
+	top := make([]numVuelo_prioridad,cant_vuelos)
+	for i := 0; i < cant_vuelos;i++{
+		top[i] = heap.Desencolar()
+	}
+	for i:= 0; i < cant_vuelos;i++{
+		numero_vuelo,prioridad := top[i].numero_vuelo,top[i].prioridad
+		fmt.Println(prioridad,"-",numero_vuelo)
+	}
+	fmt.Println("OK")
+	return true
+}
 
-// func printVuelosEnArchivo(ruta string, hash diccionario.Diccionario[int, TDAVuelo.Vuelo]) {
-// 	archivo, _ := os.Open(ruta)
-// 	iterador := hash.Iterador()
-// 	defer archivo.Close()
-// 	write := bufio.NewWriter(archivo)
-// 	for iterador.HaySiguiente() {
-// 		_,vuelo := iterador.VerActual()
-// 		linea := vuelo.Obtener_toda_info()
-// 		write.WriteString(linea)
-// 		iterador.Siguiente()
-// 	}
-// 	write.Flush()
-// }
 
 func imprimirError(comando string){
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
