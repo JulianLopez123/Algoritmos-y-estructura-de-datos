@@ -53,15 +53,18 @@ func main(){
 }
 
 func ver_tablero(cant_vuelos int,modo,desde,hasta string){
+	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || comparacion_fechas_ascendente(desde,hasta) < 0{
+		fmt.Println("Error en comando ver_tablero")
+	}
+
 	var abb diccionario.DiccionarioOrdenado[string, Vuelo]
 	if modo == "desc"{
 		abb = diccionario.CrearABB[string,Vuelo](comparacion_fechas_descendente)
 	}else if modo == "asc"{
 		abb = diccionario.CrearABB[string,Vuelo](comparacion_fechas_ascendente)
-	}else{
-		panic("Error en el modo de ordenamiento")
 	}
 
+	
 	datos_almacenados, _ := os.Open("datos_almacenados.csv")
 	defer datos_almacenados.Close()
 	lectura := bufio.NewScanner(datos_almacenados)
@@ -69,18 +72,23 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea,",")
 		vuelo := CrearVuelo(linea_sep)
-		abb.Guardar(vuelo.Obtener_fecha(),vuelo)
+		clave := fmt.Sprintf("%s - %s",vuelo.Obtener_fecha(),vuelo.Obtener_numero_vuelo())
+		abb.Guardar(clave,vuelo)
 	}
+
+	clave_desde := fmt.Sprintf("%s - 00000000",desde)//clave minima
+	clave_hasta := fmt.Sprintf("%s - 99999999",hasta)
 	var contador int
 	
 	abb.IterarRango(&desde , &hasta, func(clave string, dato Vuelo)bool{
 		if contador == cant_vuelos{
 			return false
 		}
-		fmt.Println()
+		fmt.Println(clave)
 		contador ++
 		return true
 	})
+	fmt.Println("OK")
 	
 }
 
