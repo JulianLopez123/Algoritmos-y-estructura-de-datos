@@ -1,4 +1,4 @@
-package tp2
+package main
 
 import (
 	"bufio"
@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"tdas/diccionario"
+	"tp2/TDAVuelo"
 )
 
 
@@ -25,31 +26,37 @@ func comparacion_fechas_descendente(fecha1,fecha2 string) int{
 
 
 func agregar_archivo(ruta string){
-	hash := diccionario.CrearHash[int,*Vuelo]()
+	hash := diccionario.CrearHash[int,*TDAVuelo.Vuelo]()
 	archivo, _ := os.Open(ruta)
 	defer archivo.Close()
 	lectura := bufio.NewScanner(archivo)
 	for lectura.Scan() {
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea,",")
-		vuelo := CrearVuelo(linea_sep)
+		vuelo := TDAVuelo.CrearVuelo(linea_sep)
 		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
 	}
 }
+func main() {
+	lectura := bufio.NewScanner(os.Stdin)
+	
+	
+	for {
+		lectura.Scan()
+		linea := lectura.Text()
+		parametros := strings.Split(linea, " ")
+		operacion := parametros[0]
 
-func main(){
-	args := os.Args
+		switch operacion {
+		case "agregar_archivo":
+			agregar_archivo(parametros[1])
 
-	operacion := args[1]
-
-	switch operacion{
-	// case "agregar_archivo":
-	// 	agregar_archivo(args[2])
-
-	case "ver_tablero":
-		cant_vuelos,_ := strconv.Atoi(args[2])
-		ver_tablero(cant_vuelos,args[3],args[4],args[5])	
+		case "ver_tablero":
+			cant_vuelos, _ := strconv.Atoi(parametros[1])
+			ver_tablero(cant_vuelos, parametros[2], parametros[3], parametros[4])
+		}
 	}
+	
 }
 
 func ver_tablero(cant_vuelos int,modo,desde,hasta string){
@@ -57,11 +64,11 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 		fmt.Println("Error en comando ver_tablero")
 	}
 
-	var abb diccionario.DiccionarioOrdenado[string, Vuelo]
+	var abb diccionario.DiccionarioOrdenado[string, TDAVuelo.Vuelo]
 	if modo == "desc"{
-		abb = diccionario.CrearABB[string,Vuelo](comparacion_fechas_descendente)
+		abb = diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_descendente)
 	}else if modo == "asc"{
-		abb = diccionario.CrearABB[string,Vuelo](comparacion_fechas_ascendente)
+		abb = diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	}
 
 	
@@ -71,16 +78,16 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 	for lectura.Scan() {
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea,",")
-		vuelo := CrearVuelo(linea_sep)
+		vuelo := TDAVuelo.CrearVuelo(linea_sep)
 		clave := fmt.Sprintf("%s - %s",vuelo.Obtener_fecha(),vuelo.Obtener_numero_vuelo())
 		abb.Guardar(clave,vuelo)
 	}
 
-	clave_desde := fmt.Sprintf("%s - 00000000",desde)//clave minima
-	clave_hasta := fmt.Sprintf("%s - 99999999",hasta)
+	// clave_desde := fmt.Sprintf("%s - 00000000",desde)//clave minima
+	// clave_hasta := fmt.Sprintf("%s - 99999999",hasta)
 	var contador int
 	
-	abb.IterarRango(&desde , &hasta, func(clave string, dato Vuelo)bool{
+	abb.IterarRango(&desde , &hasta, func(clave string, dato TDAVuelo.Vuelo)bool{
 		if contador == cant_vuelos{
 			return false
 		}
