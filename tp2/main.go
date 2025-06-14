@@ -39,8 +39,7 @@ func agregar_archivo(ruta string){
 }
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
-	
-	
+
 	for {
 		lectura.Scan()
 		linea := lectura.Text()
