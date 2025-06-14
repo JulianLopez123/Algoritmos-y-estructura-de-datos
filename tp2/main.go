@@ -34,7 +34,7 @@ func comparacion_fechas_descendente(fecha1,fecha2 string) int{
 // 		linea := lectura.Text()
 // 		linea_sep := strings.Split(linea,",")
 // 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-// 		hash.Guardar(vuelo.Obtener_numero_vuelo(),&vuelo)
+// 		hash.Guardar(vuelo.Numero_vuelo(),&vuelo)
 // 	}
 // }
 
@@ -53,15 +53,17 @@ func main() {
 
 		case "ver_tablero":
 			cant_vuelos, _ := strconv.Atoi(parametros[1])
-			ver_tablero(cant_vuelos, parametros[2], parametros[3], parametros[4])
+			if ver_tablero(cant_vuelos, parametros[2], parametros[3], parametros[4]){
+				fmt.Fprintln(os.Stderr, "Error en comando", operacion)
+			}
 		}
 	}
 	
 }
 
-func ver_tablero(cant_vuelos int,modo,desde,hasta string){
+func ver_tablero(cant_vuelos int,modo,desde,hasta string)bool{
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || comparacion_fechas_ascendente(desde,hasta) < 0{
-		fmt.Println("Error en comando ver_tablero")
+		return false //con errores
 	}
 
 	var abb diccionario.DiccionarioOrdenado[string, TDAVuelo.Vuelo]
@@ -79,7 +81,7 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea,",")
 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-		clave := fmt.Sprintf("%s - %s",vuelo.Obtener_fecha(),vuelo.Obtener_numero_vuelo())
+		clave := fmt.Sprintf("%s - %s",vuelo.Fecha(),vuelo.Numero_vuelo())
 		abb.Guardar(clave,vuelo)
 	}
 
@@ -96,7 +98,7 @@ func ver_tablero(cant_vuelos int,modo,desde,hasta string){
 		return true
 	})
 	fmt.Println("OK")
-	
+	return true //sin errores
 }
 
 
@@ -109,7 +111,7 @@ func agregar_archivo(ruta string) {
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea, ",")
 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-		hash.Guardar(vuelo.Obtener_numero_vuelo(), vuelo)
+		hash.Guardar(vuelo.Numero_vuelo(), vuelo)
 	}
 	printVuelosEnArchivo(ruta, hash)
 }
@@ -122,19 +124,9 @@ func printVuelosEnArchivo(ruta string, hash diccionario.Diccionario[int, TDAVuel
 	write := bufio.NewWriter(archivo)
 	for iterador.HaySiguiente() {
 		_,vuelo := iterador.VerActual()
-		linea := fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d\n",
-			vuelo.numero_vuelo,
-			vuelo.aerolinea,
-			vuelo.aeropuerto_origen,
-			vuelo.aeropuerto_destino,
-			vuelo.numero_cola,
-			vuelo.prioridad,
-			vuelo.fecha,
-			vuelo.retraso_salida,
-			vuelo.tiempo_vuelo,
-			vuelo.cancelado,
-		)
+		linea := vuelo.Obtener_toda_info()
 		write.WriteString(linea)
+		iterador.Siguiente()
 	}
 	write.Flush()
 }
