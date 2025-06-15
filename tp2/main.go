@@ -20,15 +20,6 @@ type numVuelo_prioridad struct {
 	prioridad    int
 }
 
-// func comparacion_fechas_ascendente(fecha1 string, fecha2 string) int {
-// 	if fecha1 > fecha2 {
-// 		return 1
-// 	} else if fecha1 < fecha2 {
-// 		return -1
-// 	}
-// 	return 0
-// }
-
 func comparacion_fechas_ascendente(fecha1 tuple, fecha2 tuple) int {
 	result := strings.Compare(fecha1.fecha, fecha2.fecha)
 	if result == 0 {
@@ -49,12 +40,13 @@ func main() {
 	lectura := bufio.NewScanner(os.Stdin)
 	hash := diccionario.CrearHash[string, TDAVuelo.Vuelo]()
 	abb := diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
-	// hash := diccionario.CrearHash[int, TDAVuelo.Vuelo]()
-	// abb := diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 
 	for {
 		lectura.Scan()
 		linea := lectura.Text()
+		if linea == ""{
+			break
+		}
 		parametros := strings.Split(linea, " ")
 		operacion := parametros[0]
 
@@ -96,13 +88,6 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 { //|| comparacion_fechas_ascendente(desde,hasta) < 0
 		return false //con errores
 	}
-
-	// var abb diccionario.DiccionarioOrdenado[string, TDAVuelo.Vuelo]
-	// if modo == "desc"{
-	//
-	//	}else if modo == "asc"{
-	//		abb = diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
-	//	}
 
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
@@ -197,13 +182,18 @@ func borrar(fecha_desde,fecha_hasta string, abb diccionario.DiccionarioOrdenado[
 	desde := tuple{fecha: fecha_desde, codigo: "0"}
 	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}
 
+	var claves []tuple
 	abb.IterarRango(&desde, &hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
-		vuelo := hash.Obtener(clave.codigo)
-		fmt.Println(vuelo.Obtener_string())
-		abb.Borrar(clave)
-		hash.Borrar(clave.codigo)
+		claves = append(claves, clave)
 		return true
 	})
+	for i:=0;i<len(claves);i++{
+		codigo := claves[i].codigo
+		vuelo := hash.Obtener(codigo)
+		fmt.Println(vuelo.Obtener_string())
+		hash.Borrar(codigo)
+	}
+
 	fmt.Println("OK")
 	return true
 }
