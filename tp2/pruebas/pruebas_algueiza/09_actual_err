@@ -1,0 +1,5 @@
+panic: runtime error: index out of range [1] with length 1
+
+goroutine 1 [running]:
+main.main()
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:64 +0x946
