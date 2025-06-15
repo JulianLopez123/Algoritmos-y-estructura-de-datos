@@ -81,6 +81,8 @@ func main() {
 			if !siguiente_vuelo(parametros[1],parametros[2],parametros[3],abb){
 				imprimirError(operacion)
 			}
+		default:
+			imprimirError(operacion)
 		}
 	}
 
