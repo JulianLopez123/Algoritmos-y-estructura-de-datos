@@ -1,9 +1,9 @@
 panic: La clave no pertenece al diccionario
 
 goroutine 1 [running]:
-tdas/diccionario.(*hashAbierto[...]).Obtener(0x35?, {0xc0000ba4c0?, 0x0?})
+tdas/diccionario.(*hashAbierto[...]).Obtener(0x35?, {0xc00001e580?, 0x0?})
 	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tdas/diccionario/hash.go:57 +0x65
-main.borrar({0xc0000b4097, 0x13}, {0xc0000b40ab, 0x13}, {0x4d09d8, 0xc0000b0198}, {0x4d0870, 0xc0000a2090})
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:209 +0x1b4
+main.borrar({0xc00001a217, 0x13}, {0xc00001a22b, 0x13}, {0x4d0ab8, 0xc0000101b0}, {0x4d0950, 0xc000102090})
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:224 +0x1b4
 main.main()
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:89 +0x285
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:101 +0x275

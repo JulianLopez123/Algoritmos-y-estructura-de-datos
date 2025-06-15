@@ -1,5 +1,1 @@
-panic: runtime error: index out of range [2] with length 2
-
-goroutine 1 [running]:
-main.main()
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:89 +0x953
+Error en comando borrar
