@@ -81,7 +81,6 @@ func main() {
 			imprimirError(operacion)
 		}
 	}
-
 }
 
 func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]) bool {
@@ -95,18 +94,19 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	iter := abb.IteradorRango(&nose, &nose2)
 	var resultados []tuple
 
-	for iter.HaySiguiente() && len(resultados) < cant_vuelos {
+	for iter.HaySiguiente() {
 		clave, _ := iter.VerActual()
 		resultados = append(resultados, clave)
 		iter.Siguiente()
 	}
 
 	if modo == "asc" {
-		for _, clave := range resultados {
+		for i := 0; i < cant_vuelos; i++ {
+			clave := resultados[i]
 			fmt.Println(clave.fecha, "-", clave.codigo)
 		}
 	} else {
-		for i := len(resultados) - 1; i >= 0; i-- {
+		for i := len(resultados) - 1; i >= (len(resultados) - cant_vuelos); i-- {
 			clave := resultados[i]
 			fmt.Println(clave.fecha, "-", clave.codigo)
 		}
