@@ -5,5 +5,7 @@ type Vuelo interface {
 
 	Numero_vuelo() string
 
-	Obtener_toda_info() string
+	Prioridad() int
+
+	Obtener_string() string
 }
