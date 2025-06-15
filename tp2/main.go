@@ -134,20 +134,25 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
 
-	var contador int
 	if modo == "desc" {
 		//desde, hasta = hasta, desde
-		nose, nose2 = nose2, nose
+		//nose, nose2 = nose2, nose
+		nose = tuple{fecha: hasta, codigo: "0"}
+		nose2 = tuple{fecha: desde, codigo: "99999999999"}
 	}
 
-	abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
-		if contador == cant_vuelos {
-			return false
-		}
-		fmt.Println(clave.fecha, "-", clave.codigo)
-		contador++
-		return true
-	})
+	if modo == "asc" {
+		var contador int
+		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			if contador == cant_vuelos {
+				return false
+			}
+			fmt.Println(clave.fecha, "-", clave.codigo)
+			contador++
+			return true
+		})
+	}
+
 	fmt.Println("OK")
 	return true //sin errores
 }
@@ -201,18 +206,6 @@ func prioridad_vuelos(cant_vuelos int, hash diccionario.Diccionario[string, TDAV
 	fmt.Println("OK")
 	return true
 }
-
-// func borrar(abb diccionario.DiccionarioOrdenado[string, TDAVuelo.Vuelo], desde, hasta string) {
-// 	if comparacion_fechas_ascendente(desde, hasta) < 0 {
-// 		fmt.Println("Error en el comando borrar")
-// 	}
-
-// 	// abb.IterarRango(&desde, &hasta, func(clave string, dato TDAVuelo.Vuelo) bool {
-
-// 	// })
-// 	abb.IteradorRango(&desde, &hasta)
-// 	fmt.Println("OK")
-// }
 
 func imprimirError(comando string) {
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
