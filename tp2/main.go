@@ -68,7 +68,9 @@ func main() {
 				imprimirError(operacion)
 			}
 		case "siguiente_vuelo":
-
+			if !siguiente_vuelo(parametros[1],parametros[2],parametros[3]){
+				imprimirError(operacion)
+			}
 		}
 	}
 	
@@ -164,6 +166,10 @@ func prioridad_vuelos(cant_vuelos int,hash diccionario.Diccionario[int,TDAVuelo.
 	}
 	fmt.Println("OK")
 	return true
+}
+
+func siguiente_vuelo(origen,destino,fecha string)bool{
+	
 }
 
 
