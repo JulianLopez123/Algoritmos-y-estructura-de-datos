@@ -1,4 +1,4 @@
-panic: La clave no pertenece al diccionario
+panic: runtime error: index out of range [20] with length 20
 
 goroutine 1 [running]:
 tdas/diccionario.(*hashAbierto[...]).Obtener(0x35?, {0xc00001e580?, 0x0?})
@@ -7,3 +7,4 @@ tp2/TDATabla.(*tabla).Borrar(0xc000074020, {0xc000103a70?, 0x4cfce8?, 0x1?})
 	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/TDATabla/tabla.go:216 +0x245
 main.main()
 	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:35 +0x27e
+  

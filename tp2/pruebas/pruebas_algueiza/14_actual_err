@@ -1,0 +1,7 @@
+panic: runtime error: index out of range [-1]
+
+goroutine 1 [running]:
+main.ver_tablero(0x3, {0xc000020b0e, 0x4}, {0xc000020b13, 0x13}, {0xc000020b27, 0x13}, {0x4d09d8, 0xc0000101b0})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:110 +0x4ab
+main.main()
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:60 +0x4a6

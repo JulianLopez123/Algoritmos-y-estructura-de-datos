@@ -1,1 +1,5 @@
-Error en comando borrar
+panic: runtime error: index out of range [2] with length 2
+
+goroutine 1 [running]:
+main.main()
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:77 +0x953
