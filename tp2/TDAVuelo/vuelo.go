@@ -38,8 +38,12 @@ func (vuelo *vuelo) Numero_vuelo()int{
 	return vuelo.numero_vuelo
 }
 
-func (vuelo *vuelo) Obtener_toda_info()string{
-	return fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d\n",
+func (vuelo *vuelo) Prioridad()int{
+	return vuelo.prioridad
+}
+
+func (vuelo *vuelo) Obtener_string()string{
+	return fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d",
 			vuelo.numero_vuelo,
 			vuelo.aerolinea,
 			vuelo.aeropuerto_origen,
