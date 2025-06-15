@@ -1,12 +1,15 @@
 package TDAVuelo
 
 type Vuelo interface {
-
 	Fecha() string
 
-	Numero_vuelo() int
+	Numero_vuelo() string
 
-	Prioridad()int 
+	Prioridad() int
 
-	Obtener_string()string
+	Aeropuerto_origen() string
+
+	Aeropuerto_destino() string
+
+	Obtener_string() string
 }
