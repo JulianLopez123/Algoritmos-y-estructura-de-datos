@@ -1,1 +1,7 @@
-Error en comando prioridad_vuelos
+panic: runtime error: makeslice: len out of range
+
+goroutine 1 [running]:
+main.prioridad_vuelos(0xfffffffffffffffd, {0x4d0428, 0xc00007c090})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:157 +0x165
+main.main()
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:69 +0x76f
