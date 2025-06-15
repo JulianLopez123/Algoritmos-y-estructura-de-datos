@@ -16,7 +16,7 @@ type tuple struct {
 	codigo string
 }
 type numVuelo_prioridad struct {
-	numero_vuelo int
+	numero_vuelo string
 	prioridad    int
 }
 
@@ -62,7 +62,7 @@ func comparacion_fechas_ascendente(fecha1 tuple, fecha2 tuple) int {
 func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int { //heap maximos
 	resultado := a.prioridad - b.prioridad
 	if resultado == 0 {
-		return a.numero_vuelo - b.numero_vuelo
+		return strings.Compare(a.numero_vuelo, b.numero_vuelo)
 	}
 	return resultado
 }
@@ -91,8 +91,7 @@ func main() {
 				imprimirError(operacion)
 			}
 		case "info_vuelo":
-			numero_vuelo, _ := strconv.Atoi(parametros[1])
-			if !info_vuelo(numero_vuelo, hash) {
+			if !info_vuelo(parametros[1], hash) {
 				imprimirError(operacion)
 			}
 		case "prioridad_vuelos":
@@ -145,7 +144,7 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 		if contador == cant_vuelos {
 			return false
 		}
-		fmt.Println(clave)
+		fmt.Println(clave.fecha, "-", clave.codigo)
 		contador++
 		return true
 	})
@@ -171,7 +170,7 @@ func agregar_archivo(ruta string, hash diccionario.Diccionario[string, TDAVuelo.
 	return true
 }
 
-func info_vuelo(numero_vuelo int, hash diccionario.Diccionario[int, TDAVuelo.Vuelo]) bool {
+func info_vuelo(numero_vuelo string, hash diccionario.Diccionario[string, TDAVuelo.Vuelo]) bool {
 	if !hash.Pertenece(numero_vuelo) {
 		return false
 	}
@@ -181,7 +180,7 @@ func info_vuelo(numero_vuelo int, hash diccionario.Diccionario[int, TDAVuelo.Vue
 	return true
 }
 
-func prioridad_vuelos(cant_vuelos int, hash diccionario.Diccionario[int, TDAVuelo.Vuelo]) bool {
+func prioridad_vuelos(cant_vuelos int, hash diccionario.Diccionario[string, TDAVuelo.Vuelo]) bool {
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
 	iterador := hash.Iterador()
 	for iterador.HaySiguiente() {

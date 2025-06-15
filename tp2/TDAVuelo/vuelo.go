@@ -43,7 +43,7 @@ func (vuelo *vuelo) Prioridad() int {
 }
 
 func (vuelo *vuelo) Obtener_string() string {
-	return fmt.Sprintf("%d,%s,%s,%s,%s,%d,%s,%02d,%d,%d",
+	return fmt.Sprintf("%s %s %s %s %s %d %s %02d %d %d",
 		vuelo.numero_vuelo,
 		vuelo.aerolinea,
 		vuelo.aeropuerto_origen,
