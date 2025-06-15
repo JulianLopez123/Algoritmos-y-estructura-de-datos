@@ -139,7 +139,7 @@ func info_vuelo(numero_vuelo string, hash diccionario.Diccionario[string, TDAVue
 	}
 	vuelo := hash.Obtener(numero_vuelo)
 	fmt.Println(vuelo.Obtener_string())
-	println("OK")
+	fmt.Println("OK")
 	return true
 }
 
