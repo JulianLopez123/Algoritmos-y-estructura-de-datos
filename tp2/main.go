@@ -80,6 +80,8 @@ func main() {
 			if !prioridad_vuelos(cant_vuelos,hash){
 				imprimirError(operacion)
 			}
+		case "siguiente_vuelo":
+			
 		}
 	}
 	
@@ -169,7 +171,6 @@ func prioridad_vuelos(cant_vuelos int,hash diccionario.Diccionario[int,TDAVuelo.
 	for i := 0; i < cant_vuelos;i++{
 		top[i] = heap.Desencolar()
 	}
-	fmt.Println("ee")
 	for i:= 0; i < cant_vuelos;i++{
 		numero_vuelo,prioridad := top[i].numero_vuelo,top[i].prioridad
 		fmt.Println(prioridad,"-",numero_vuelo)
