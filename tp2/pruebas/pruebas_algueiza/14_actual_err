@@ -1,7 +1,11 @@
-panic: runtime error: index out of range [-1]
+panic: La pila esta vacia
 
 goroutine 1 [running]:
-main.ver_tablero(0x3, {0xc000020b0e, 0x4}, {0xc000020b13, 0x13}, {0xc000020b27, 0x13}, {0x4d09d8, 0xc0000101b0})
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:110 +0x4ab
+tdas/pila.(*pilaDinamica[...]).VerTope(...)
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tdas/pila/pila_dinamica.go:48
+tdas/pila.(*pilaDinamica[...]).Desapilar(0x0?)
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tdas/pila/pila_dinamica.go:27 +0x15c
+main.ver_tablero(0x3, {0xc000020b0e, 0x4}, {0xc000020b13, 0x13}, {0xc000020b27, 0x13}, {0x4d2338, 0xc0000101b0})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:182 +0x436
 main.main()
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:60 +0x4a6
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:69 +0x569

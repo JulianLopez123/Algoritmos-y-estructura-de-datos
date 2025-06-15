@@ -1,9 +1,9 @@
 panic: La clave no pertenece al diccionario
 
 goroutine 1 [running]:
-tdas/diccionario.(*hashAbierto[...]).Obtener(0x36?, {0xc0002fd480?, 0x0?})
+tdas/diccionario.(*hashAbierto[...]).Obtener(0x37?, {0xc000295fc0?, 0x0?})
 	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tdas/diccionario/hash.go:57 +0x65
-main.borrar({0xc0000b4067, 0x13}, {0xc0000b407b, 0x13}, {0x4d09d8, 0xc0000b0198}, {0x4d05c8, 0xc0000a2090})
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:197 +0x1b4
+main.borrar({0xc00001a1b7, 0x13}, {0xc00001a1cb, 0x13}, {0x4d2338, 0xc0000101b0}, {0x4d1ec8, 0xc00007c090})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:255 +0x1b4
 main.main()
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:77 +0x285
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:102 +0x275
