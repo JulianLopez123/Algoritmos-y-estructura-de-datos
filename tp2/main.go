@@ -81,6 +81,10 @@ func main() {
 			if !siguiente_vuelo(parametros[1],parametros[2],parametros[3],abb){
 				imprimirError(operacion)
 			}
+		case "borrar":
+			if !borrar(parametros[1],parametros[2],abb,hash){
+				imprimirError(operacion)
+			}
 		default:
 			imprimirError(operacion)
 		}
@@ -175,7 +179,6 @@ func siguiente_vuelo(origen,destino,desde string, abb diccionario.DiccionarioOrd
 	hallado := false
 	fecha := tuple{fecha: desde, codigo: "0"}
 	abb.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
-		
 		if origen == vuelo.Aeropuerto_origen() && destino == vuelo.Aeropuerto_destino() {
 			fmt.Println(clave.fecha, "-", clave.codigo)
 			hallado = true
@@ -186,6 +189,21 @@ func siguiente_vuelo(origen,destino,desde string, abb diccionario.DiccionarioOrd
 	if !hallado{
 		fmt.Println("No hay vuelo registrado desde",origen ,"hacia", destino,"desde",desde)
 	}
+	fmt.Println("OK")
+	return true
+}
+
+func borrar(fecha_desde,fecha_hasta string, abb diccionario.DiccionarioOrdenado[tuple,TDAVuelo.Vuelo],hash diccionario.Diccionario[string,TDAVuelo.Vuelo])bool{
+	desde := tuple{fecha: fecha_desde, codigo: "0"}
+	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}
+
+	abb.IterarRango(&desde, &hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+		vuelo := hash.Obtener(clave.codigo)
+		fmt.Println(vuelo.Obtener_string())
+		abb.Borrar(clave)
+		hash.Borrar(clave.codigo)
+		return true
+	})
 	fmt.Println("OK")
 	return true
 }
