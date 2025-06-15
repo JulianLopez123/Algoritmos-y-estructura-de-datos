@@ -8,6 +8,7 @@ import (
 	"strings"
 	"tdas/cola_prioridad"
 	"tdas/diccionario"
+	"tdas/pila"
 	"tp2/TDAVuelo"
 )
 
@@ -15,6 +16,7 @@ type tuple struct {
 	fecha  string
 	codigo string
 }
+
 type numVuelo_prioridad struct {
 	numero_vuelo string
 	prioridad    int
@@ -53,51 +55,51 @@ func main() {
 		switch operacion {
 		case "agregar_archivo":
 			if !verificarCantParametros(parametros, 2) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			if !agregar_archivo(parametros[1], hash, abb) {
 				imprimirError(operacion)
 			}
 		case "ver_tablero":
 			if !verificarCantParametros(parametros, 5) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			cant_vuelos, _ := strconv.Atoi(parametros[1])
 			if !ver_tablero(cant_vuelos, parametros[2], parametros[3], parametros[4], abb) {
 				imprimirError(operacion)
 			}
 		case "info_vuelo":
 			if !verificarCantParametros(parametros, 2) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			if !info_vuelo(parametros[1], hash) {
 				imprimirError(operacion)
 			}
 		case "prioridad_vuelos":
 			if !verificarCantParametros(parametros, 2) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			cant_vuelos, _ := strconv.Atoi(parametros[1])
 			if !prioridad_vuelos(cant_vuelos, hash) {
 				imprimirError(operacion)
 			}
 		case "siguiente_vuelo":
 			if !verificarCantParametros(parametros, 4) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			if !siguiente_vuelo(parametros[1], parametros[2], parametros[3], abb) {
 				imprimirError(operacion)
 			}
 		case "borrar":
 			if !verificarCantParametros(parametros, 3) {
-           	 	imprimirError(operacion)
-            	continue
-        	}
+				imprimirError(operacion)
+				continue
+			}
 			if !borrar(parametros[1], parametros[2], abb, hash) {
 				imprimirError(operacion)
 			}
@@ -105,7 +107,6 @@ func main() {
 			imprimirError(operacion)
 		}
 	}
-
 }
 
 func agregar_archivo(ruta string, hash diccionario.Diccionario[string, TDAVuelo.Vuelo], abb diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]) bool {
@@ -121,44 +122,69 @@ func agregar_archivo(ruta string, hash diccionario.Diccionario[string, TDAVuelo.
 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
 		hash.Guardar(vuelo.Numero_vuelo(), vuelo)
 	}
-	
-	hash.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool{
+
+	hash.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
 		abb.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.Numero_vuelo()}, dato)
 		return true
 	})
-	
 
 	fmt.Println("OK")
 	return true
 }
 
 func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]) bool {
-	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde,hasta) > 0{ //
+	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { //
 		return false //con errores
 	}
 
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
 
-	iter := abb.IteradorRango(&nose, &nose2)
-	var resultados []tuple
+	// iter := abb.IteradorRango(&nose, &nose2)
+	// var resultados []tuple
 
-	for iter.HaySiguiente() && len(resultados) < cant_vuelos {
-		clave, _ := iter.VerActual()
-		resultados = append(resultados, clave)
-		iter.Siguiente()
-	}
+	// for iter.HaySiguiente() {
+	// 	clave, _ := iter.VerActual()
+	// 	resultados = append(resultados, clave)
+	// 	iter.Siguiente()
+	// }
+
+	// if modo == "asc" {
+	// 	for i := 0; i < cant_vuelos; i++ {
+	// 		clave := resultados[i]
+	// 		fmt.Println(clave.fecha, "-", clave.codigo)
+	// 	}
+	// } else {
+	// 	for i := len(resultados) - 1; i >= (len(resultados) - cant_vuelos); i-- {
+	// 		clave := resultados[i]
+	// 		fmt.Println(clave.fecha, "-", clave.codigo)
+	// 	}
+	// }
 
 	if modo == "asc" {
-		for _, clave := range resultados {
+		var contador_asc int
+		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			if contador_asc == cant_vuelos {
+				return false
+			}
 			fmt.Println(clave.fecha, "-", clave.codigo)
-		}
-	} else {
-		for i := len(resultados) - 1; i >= 0; i-- {
-			clave := resultados[i]
-			fmt.Println(clave.fecha, "-", clave.codigo)
+			contador_asc++
+			return true
+		})
+	}
+
+	if modo == "desc" {
+		pila := pila.CrearPilaDinamica[tuple]()
+		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			pila.Apilar(clave)
+			return true
+		})
+		for i := 0; i < cant_vuelos && !pila.EstaVacia(); i++ {
+			tope := pila.Desapilar()
+			fmt.Println(tope.fecha, "-", tope.codigo)
 		}
 	}
+
 	fmt.Println("OK")
 	return true //sin errores
 }
@@ -174,7 +200,7 @@ func info_vuelo(numero_vuelo string, hash diccionario.Diccionario[string, TDAVue
 }
 
 func prioridad_vuelos(cant_vuelos int, hash diccionario.Diccionario[string, TDAVuelo.Vuelo]) bool {
-	if cant_vuelos < 0{
+	if cant_vuelos < 0 {
 		return false
 	}
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
@@ -240,6 +266,6 @@ func imprimirError(comando string) {
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
 }
 
-func verificarCantParametros(parametros []string,cantidad int)bool{
+func verificarCantParametros(parametros []string, cantidad int) bool {
 	return len(parametros) == cantidad
 }
