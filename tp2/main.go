@@ -16,6 +16,7 @@ type tuple struct {
 	fecha  string
 	codigo string
 }
+
 type numVuelo_prioridad struct {
 	numero_vuelo string
 	prioridad    int
@@ -178,7 +179,7 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 			pila.Apilar(clave)
 			return true
 		})
-		for i := 0; i < cant_vuelos; i++ {
+		for i := 0; i < cant_vuelos && !pila.EstaVacia(); i++ {
 			tope := pila.Desapilar()
 			fmt.Println(tope.fecha, "-", tope.codigo)
 		}

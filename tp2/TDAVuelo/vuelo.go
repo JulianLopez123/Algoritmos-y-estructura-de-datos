@@ -42,7 +42,7 @@ func (vuelo *vuelo) Prioridad() int {
 	return vuelo.prioridad
 }
 
-func (vuelo *vuelo) Aeropuerto_origen() string{
+func (vuelo *vuelo) Aeropuerto_origen() string {
 	return vuelo.aeropuerto_origen
 }
 
