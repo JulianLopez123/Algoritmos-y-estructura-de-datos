@@ -8,6 +8,7 @@ import (
 	"strings"
 	"tdas/cola_prioridad"
 	"tdas/diccionario"
+	"tdas/pila"
 	"tp2/TDAVuelo"
 )
 
@@ -91,26 +92,51 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
 
-	iter := abb.IteradorRango(&nose, &nose2)
-	var resultados []tuple
+	// iter := abb.IteradorRango(&nose, &nose2)
+	// var resultados []tuple
 
-	for iter.HaySiguiente() {
-		clave, _ := iter.VerActual()
-		resultados = append(resultados, clave)
-		iter.Siguiente()
-	}
+	// for iter.HaySiguiente() {
+	// 	clave, _ := iter.VerActual()
+	// 	resultados = append(resultados, clave)
+	// 	iter.Siguiente()
+	// }
 
+	// if modo == "asc" {
+	// 	for i := 0; i < cant_vuelos; i++ {
+	// 		clave := resultados[i]
+	// 		fmt.Println(clave.fecha, "-", clave.codigo)
+	// 	}
+	// } else {
+	// 	for i := len(resultados) - 1; i >= (len(resultados) - cant_vuelos); i-- {
+	// 		clave := resultados[i]
+	// 		fmt.Println(clave.fecha, "-", clave.codigo)
+	// 	}
+	// }
+
+	var contador1 int
 	if modo == "asc" {
+		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			if contador1 == cant_vuelos {
+				return false
+			}
+			fmt.Println(clave.fecha, "-", clave.codigo)
+			contador1++
+			return true
+		})
+	}
+
+	pila := pila.CrearPilaDinamica[tuple]()
+	if modo == "desc" {
+		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			pila.Apilar(clave)
+			return true
+		})
 		for i := 0; i < cant_vuelos; i++ {
-			clave := resultados[i]
-			fmt.Println(clave.fecha, "-", clave.codigo)
-		}
-	} else {
-		for i := len(resultados) - 1; i >= (len(resultados) - cant_vuelos); i-- {
-			clave := resultados[i]
-			fmt.Println(clave.fecha, "-", clave.codigo)
+			tope := pila.Desapilar()
+			fmt.Println(tope.fecha, "-", tope.codigo)
 		}
 	}
+
 	fmt.Println("OK")
 	return true //sin errores
 }
