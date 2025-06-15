@@ -44,7 +44,7 @@ func main() {
 	for {
 		lectura.Scan()
 		linea := lectura.Text()
-		if linea == ""{
+		if linea == "" {
 			break
 		}
 		parametros := strings.Split(linea, " ")
@@ -92,25 +92,25 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
 
-	if modo == "desc" {
-		//desde, hasta = hasta, desde
-		//nose, nose2 = nose2, nose
-		nose = tuple{fecha: hasta, codigo: "0"}
-		nose2 = tuple{fecha: desde, codigo: "99999999999"}
+	iter := abb.IteradorRango(&nose, &nose2)
+	var resultados []tuple
+
+	for iter.HaySiguiente() && len(resultados) < cant_vuelos {
+		clave, _ := iter.VerActual()
+		resultados = append(resultados, clave)
+		iter.Siguiente()
 	}
 
 	if modo == "asc" {
-		var contador int
-		abb.IterarRango(&nose, &nose2, func(clave tuple, dato TDAVuelo.Vuelo) bool {
-			if contador == cant_vuelos {
-				return false
-			}
+		for _, clave := range resultados {
 			fmt.Println(clave.fecha, "-", clave.codigo)
-			contador++
-			return true
-		})
+		}
+	} else {
+		for i := len(resultados) - 1; i >= 0; i-- {
+			clave := resultados[i]
+			fmt.Println(clave.fecha, "-", clave.codigo)
+		}
 	}
-
 	fmt.Println("OK")
 	return true //sin errores
 }
@@ -192,7 +192,7 @@ func borrar(fecha_desde, fecha_hasta string, abb diccionario.DiccionarioOrdenado
 		claves = append(claves, clave)
 		return true
 	})
-	for i:=0;i<len(claves);i++{
+	for i := 0; i < len(claves); i++ {
 		codigo := claves[i].codigo
 		vuelo := hash.Obtener(codigo)
 		fmt.Println(vuelo.Obtener_string())
