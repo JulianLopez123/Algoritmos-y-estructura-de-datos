@@ -1,8 +1,7 @@
-Error en comando borrar
 panic: runtime error: index out of range [20] with length 20
 
 goroutine 1 [running]:
-main.ver_tablero(0x64, {0xc0000ba510, 0x3}, {0xc0000ba514, 0x13}, {0xc0000ba528, 0x13}, {0x4d0838, 0xc0000b0198})
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:106 +0x5bf
+main.ver_tablero(0x64, {0xc0000ba7d0, 0x3}, {0xc0000ba7d4, 0x13}, {0xc0000ba7e8, 0x13}, {0x4d09d8, 0xc0000b0198})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:105 +0x5bf
 main.main()
-	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:60 +0x450
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:60 +0x4a6
