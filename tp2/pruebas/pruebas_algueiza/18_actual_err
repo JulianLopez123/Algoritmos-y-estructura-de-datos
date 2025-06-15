@@ -4,6 +4,6 @@ goroutine 1 [running]:
 tdas/diccionario.(*hashAbierto[...]).Obtener(0x35?, {0xc0000ba4c0?, 0x0?})
 	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tdas/diccionario/hash.go:57 +0x65
 main.borrar({0xc0000b4097, 0x13}, {0xc0000b40ab, 0x13}, {0x4d09d8, 0xc0000b0198}, {0x4d0870, 0xc0000a2090})
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:197 +0x1b4
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:209 +0x1b4
 main.main()
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:77 +0x285
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:89 +0x285

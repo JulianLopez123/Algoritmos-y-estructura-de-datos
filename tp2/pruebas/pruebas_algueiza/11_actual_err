@@ -2,6 +2,6 @@ panic: runtime error: makeslice: len out of range
 
 goroutine 1 [running]:
 main.prioridad_vuelos(0xfffffffffffffffd, {0x4d0870, 0xc000102090})
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:156 +0x165
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:168 +0x165
 main.main()
-	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:69 +0x7af
+	/home/julian/fiuba/algoritm/Algoritmos-y-estructura-de-datos/tp2/main.go:75 +0x7af
