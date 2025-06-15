@@ -7,5 +7,9 @@ type Vuelo interface {
 
 	Prioridad() int
 
+	Aeropuerto_origen() string
+
+	Aeropuerto_destino() string
+
 	Obtener_string() string
 }

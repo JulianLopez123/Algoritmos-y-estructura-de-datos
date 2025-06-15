@@ -37,28 +37,6 @@ func comparacion_fechas_ascendente(fecha1 tuple, fecha2 tuple) int {
 	return result
 }
 
-// func comparacion_fechas_ascendente(fecha1 string, fecha2 string) int {
-// 	if fecha1 > fecha2 {
-// 		return 1
-// 	} else if fecha1 < fecha2 {
-// 		return -1
-// 	}
-// 	return 0
-// }
-
-// func agregar_archivo(ruta string){
-// 	hash := diccionario.CrearHash[int,*TDAVuelo.Vuelo]()
-// 	archivo, _ := os.Open(ruta)
-// 	defer archivo.Close()
-// 	lectura := bufio.NewScanner(archivo)
-// 	for lectura.Scan() {
-// 		linea := lectura.Text()
-// 		linea_sep := strings.Split(linea,",")
-// 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-// 		hash.Guardar(vuelo.Numero_vuelo(),&vuelo)
-// 	}
-// }
-
 func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int { //heap maximos
 	resultado := a.prioridad - b.prioridad
 	if resultado == 0 {
@@ -100,7 +78,15 @@ func main() {
 				imprimirError(operacion)
 			}
 		case "siguiente_vuelo":
-
+			if !siguiente_vuelo(parametros[1], parametros[2], parametros[3], abb) {
+				imprimirError(operacion)
+			}
+		case "borrar":
+			if !borrar(parametros[1], parametros[2], abb, hash) {
+				imprimirError(operacion)
+			}
+		default:
+			imprimirError(operacion)
 		}
 	}
 
@@ -117,19 +103,6 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	//	}else if modo == "asc"{
 	//		abb = diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	//	}
-	// datos_almacenados, _ := os.Open("datos_almacenados.csv")
-	// defer datos_almacenados.Close()
-	// lectura := bufio.NewScanner(datos_almacenados)
-	// for lectura.Scan() {
-	// 	linea := lectura.Text()
-	// 	linea_sep := strings.Split(linea, ",")
-	// 	vuelo := TDAVuelo.CrearVuelo(linea_sep)
-	// 	clave := fmt.Sprintf("%s - %d", vuelo.Fecha(), vuelo.Numero_vuelo())
-	// 	abb.Guardar(clave, vuelo)
-	// }
-
-	// clave_desde := fmt.Sprintf("%s - 00000000",desde)//clave minima
-	// clave_hasta := fmt.Sprintf("%s - 99999999",hasta)
 
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
@@ -203,6 +176,39 @@ func prioridad_vuelos(cant_vuelos int, hash diccionario.Diccionario[string, TDAV
 		numero_vuelo, prioridad := top[i].numero_vuelo, top[i].prioridad
 		fmt.Println(prioridad, "-", numero_vuelo)
 	}
+	fmt.Println("OK")
+	return true
+}
+
+func siguiente_vuelo(origen, destino, desde string, abb diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]) bool {
+	hallado := false
+	fecha := tuple{fecha: desde, codigo: "0"}
+	abb.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
+		if origen == vuelo.Aeropuerto_origen() && destino == vuelo.Aeropuerto_destino() {
+			fmt.Println(clave.fecha, "-", clave.codigo)
+			hallado = true
+			return false
+		}
+		return true
+	})
+	if !hallado {
+		fmt.Println("No hay vuelo registrado desde", origen, "hacia", destino, "desde", desde)
+	}
+	fmt.Println("OK")
+	return true
+}
+
+func borrar(fecha_desde, fecha_hasta string, abb diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo], hash diccionario.Diccionario[string, TDAVuelo.Vuelo]) bool {
+	desde := tuple{fecha: fecha_desde, codigo: "0"}
+	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}
+
+	abb.IterarRango(&desde, &hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+		vuelo := hash.Obtener(clave.codigo)
+		fmt.Println(vuelo.Obtener_string())
+		abb.Borrar(clave)
+		hash.Borrar(clave.codigo)
+		return true
+	})
 	fmt.Println("OK")
 	return true
 }
