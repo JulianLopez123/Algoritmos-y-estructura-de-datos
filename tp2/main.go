@@ -117,19 +117,6 @@ func ver_tablero(cant_vuelos int, modo string, desde, hasta string, abb dicciona
 	//	}else if modo == "asc"{
 	//		abb = diccionario.CrearABB[string,TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	//	}
-	// datos_almacenados, _ := os.Open("datos_almacenados.csv")
-	// defer datos_almacenados.Close()
-	// lectura := bufio.NewScanner(datos_almacenados)
-	// for lectura.Scan() {
-	// 	linea := lectura.Text()
-	// 	linea_sep := strings.Split(linea, ",")
-	// 	vuelo := TDAVuelo.CrearVuelo(linea_sep)
-	// 	clave := fmt.Sprintf("%s - %d", vuelo.Fecha(), vuelo.Numero_vuelo())
-	// 	abb.Guardar(clave, vuelo)
-	// }
-
-	// clave_desde := fmt.Sprintf("%s - 00000000",desde)//clave minima
-	// clave_hasta := fmt.Sprintf("%s - 99999999",hasta)
 
 	nose := tuple{fecha: desde, codigo: "0"}
 	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
