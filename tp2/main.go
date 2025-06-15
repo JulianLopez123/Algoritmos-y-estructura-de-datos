@@ -26,19 +26,6 @@ func comparacion_fechas_ascendente(fecha1 string,fecha2 string) int{
 	return 0
 }
 
-// func agregar_archivo(ruta string){
-// 	hash := diccionario.CrearHash[int,*TDAVuelo.Vuelo]()
-// 	archivo, _ := os.Open(ruta)
-// 	defer archivo.Close()
-// 	lectura := bufio.NewScanner(archivo)
-// 	for lectura.Scan() {
-// 		linea := lectura.Text()
-// 		linea_sep := strings.Split(linea,",")
-// 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-// 		hash.Guardar(vuelo.Numero_vuelo(),&vuelo)
-// 	}
-// }
-
 func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int { //heap maximos
 	resultado :=  a.prioridad - b.prioridad 
 	if resultado == 0{
@@ -81,7 +68,7 @@ func main() {
 				imprimirError(operacion)
 			}
 		case "siguiente_vuelo":
-			
+
 		}
 	}
 	
