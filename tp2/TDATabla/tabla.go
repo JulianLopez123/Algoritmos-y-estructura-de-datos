@@ -61,6 +61,7 @@ func CrearTabla()Tabla{
 func (tabla *tabla) Agregar_archivo(parametros []string){
 	if !verificarCantParametros(parametros,PARAMETROS_AGREGAR_ARCHIVO){
 		imprimirError("agregar_archivo")
+		return
 	}
 	ruta := parametros[1]
 	archivo, err := os.Open(ruta)
@@ -98,6 +99,7 @@ func (tabla *tabla) Ver_tablero(parametros []string){
 
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde,hasta) > 0{ //
 		imprimirError("ver_tablero")
+		return
 	}
 
 	fecha_desde := tuple{fecha: desde, codigo: "0"}
@@ -176,7 +178,7 @@ func (tabla *tabla)Prioridad_vuelos(parametros []string){
 		return
 	}
 	cant_vuelos,_ := strconv.Atoi(parametros[1])
-	if cant_vuelos < 0{
+	if cant_vuelos <= 0{
 		imprimirError("prioridad_vuelos")
 		return
 	}
@@ -201,13 +203,18 @@ func (tabla *tabla)Prioridad_vuelos(parametros []string){
 }
 
 func (tabla *tabla) Borrar(parametros []string){
-	if !verificarCantParametros(parametros,PARAMETROS_BORRAR){
+	if !verificarCantParametros(parametros,PARAMETROS_BORRAR)  {
 		imprimirError("borrar")
 		return
 	}
 
 	fecha_desde := parametros[1]
 	fecha_hasta := parametros[2]
+
+	if strings.Compare(fecha_desde,fecha_hasta) > 0{
+		imprimirError("borrar")
+		return
+	}
 
 	desde := tuple{fecha: fecha_desde, codigo: "0"}
 	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}

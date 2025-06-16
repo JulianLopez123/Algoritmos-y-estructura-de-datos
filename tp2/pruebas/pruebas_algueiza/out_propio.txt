@@ -2977,7 +2977,6 @@ OK
 96 - 1369
 OK
 OK
-OK
 3005 BJ PRG HND P8000G 23 2023-05-30T13:07:00 3 851 0
 OK
 408 GZ WAW MAD T8000A 64 2023-05-01T05:13:00 0 597 0
@@ -3036,8 +3035,6 @@ OK
 88 - 1504
 88 - 1643
 88 - 2126
-OK
-OK
 OK
 OK
 OK
@@ -3284,7 +3281,6 @@ OK
 84 - 1036
 84 - 1263
 OK
-OK
 1321 SL AMS FRA E8000R 81 2023-05-30T21:08:00 -2 1155 0
 OK
 100 - 1249
@@ -3356,7 +3352,6 @@ OK
 90 - 2514
 90 - 2738
 90 - 3289
-OK
 OK
 OK
 OK
@@ -3435,8 +3430,6 @@ OK
 93 - 1319
 93 - 1381
 OK
-OK
-OK
 100 - 1249
 100 - 525
 99 - 652
@@ -3491,8 +3484,6 @@ OK
 88 - 457
 OK
 2180 QZ MAD BRC M8000U 37 2023-05-31T08:46:00 0 1021 0
-OK
-OK
 OK
 OK
 1222 HZ WAW SCL D8000W 61 2023-05-31T09:30:00 5 1069 0
@@ -3587,7 +3578,6 @@ OK
 82 - 115
 82 - 2852
 82 - 338
-OK
 OK
 100 - 1249
 100 - 525
@@ -3822,7 +3812,6 @@ No hay vuelo registrado desde EZE hacia MAD desde 2023-05-20T04:20:00
 OK
 OK
 OK
-OK
 100 - 1249
 100 - 525
 99 - 652
@@ -3838,8 +3827,6 @@ OK
 96 - 1550
 96 - 2135
 96 - 2961
-OK
-OK
 OK
 100 - 1249
 100 - 525
@@ -3930,7 +3917,6 @@ OK
 82 - 2852
 82 - 338
 81 - 1195
-OK
 OK
 100 - 1249
 100 - 525
@@ -4246,10 +4232,7 @@ OK
 88 - 910
 87 - 1396
 OK
-OK
-OK
 2294 YD AMS EZE P8000Q 76 2023-05-31T07:22:00 0 152 0
-OK
 OK
 100 - 1249
 100 - 525
@@ -4338,12 +4321,9 @@ OK
 87 - 2689
 OK
 OK
-OK
 No hay vuelo registrado desde PRG hacia FRA desde 2023-05-15T20:22:00
 OK
-OK
 2832 EX GIG WAW W8000X 72 2023-05-31T17:08:00 -1 985 0
-OK
 OK
 OK
 100 - 1249
@@ -4443,8 +4423,6 @@ OK
 OK
 OK
 OK
-OK
-OK
 100 - 1249
 100 - 525
 99 - 652
@@ -4536,7 +4514,6 @@ OK
 81 - 1195
 81 - 1321
 OK
-OK
 100 - 1249
 100 - 525
 99 - 652
@@ -4611,10 +4588,7 @@ OK
 OK
 692 PP FRA BRC V8000Y 80 2023-05-31T06:18:00 1 531 0
 OK
-OK
 241 XY AMS PRG B8000F 40 2023-05-31T10:45:00 2 864 0
-OK
-OK
 OK
 No hay vuelo registrado desde EZE hacia MAD desde 2023-05-12T21:28:00
 OK
@@ -4806,8 +4780,6 @@ OK
 87 - 1396
 OK
 OK
-OK
-OK
 1321 SL AMS FRA E8000R 81 2023-05-30T21:08:00 -2 1155 0
 OK
 1058 IT EZE GIG G8000D 73 2023-05-31T03:02:00 -5 784 0
@@ -4885,7 +4857,6 @@ OK
 85 - 932
 84 - 1036
 84 - 1263
-OK
 OK
 2704 SK WAW FRA Q8000C 14 2023-05-02T15:50:00 -3 367 0
 OK
@@ -5050,8 +5021,6 @@ OK
 2126 FI BRC SCL B8000Q 88 2023-05-31T03:44:00 -5 611 0
 237 IB BRC GIG Z8000O 87 2023-05-31T03:53:00 -1 695 0
 OK
-OK
-OK
 100 - 1249
 100 - 525
 99 - 652
@@ -5192,7 +5161,6 @@ OK
 88 - 2677
 88 - 308
 OK
-OK
 1715 WT HND EZE O8000M 98 2023-05-31T23:42:00 2 126 0
 OK
 100 - 1249
@@ -5325,8 +5293,6 @@ OK
 92 - 2280
 92 - 2560
 92 - 3082
-OK
-OK
 OK
 OK
 100 - 1249
@@ -5494,7 +5460,6 @@ OK
 88 - 308
 OK
 OK
-OK
 2023-05-01T14:37:00 - 1247
 2023-05-01T14:53:00 - 115
 2023-05-01T14:53:00 - 995
@@ -5585,7 +5550,6 @@ No hay vuelo registrado desde PRG hacia GIG desde 2023-05-07T18:35:00
 OK
 OK
 OK
-OK
 1160 NK EZE BRC Z8000G 63 2023-05-01T00:25:00 1 375 0
 OK
 100 - 1249
@@ -5652,7 +5616,6 @@ OK
 945 QZ MAD GIG U8000T 61 2023-05-31T22:55:00 0 861 0
 OK
 3016 TQ EZE WAW F8000A 12 2023-05-31T09:59:00 5 925 0
-OK
 OK
 OK
 OK
@@ -5744,11 +5707,9 @@ OK
 93 - 1319
 93 - 1381
 OK
-OK
 3064 YW AMS EZE U8000T 30 2023-05-03T09:32:00 -1 400 0
 OK
 2507 DA GIG MAD Z8000B 80 2023-05-31T04:46:00 2 261 0
-OK
 OK
 2155 QR FRA HND Y8000M 84 2023-05-31T04:04:00 0 865 0
 149 UD WAW EZE W8000H 8 2023-05-31T04:27:00 -4 268 0
@@ -5913,9 +5874,6 @@ OK
 96 - 1550
 OK
 No hay vuelo registrado desde MAD hacia FRA desde 2023-05-11T11:47:00
-OK
-OK
-OK
 OK
 OK
 OK
@@ -6114,8 +6072,6 @@ OK
 1314 ID HND BRC S8000L 43 2023-05-03T09:46:00 -5 806 0
 2740 QL GIG HND D8000O 35 2023-05-03T09:49:00 4 92 0
 OK
-OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -6134,7 +6090,6 @@ OK
 87 - 433
 86 - 1910
 84 - 1344
-OK
 OK
 562 ZD EZE PRG B8000C 76 2023-05-01T06:32:00 -1 454 0
 OK
@@ -6177,7 +6132,6 @@ OK
 72 - 2461
 68 - 2824
 67 - 2702
-OK
 OK
 98 - 1715
 97 - 1649
@@ -6274,13 +6228,11 @@ OK
 10 - 2530
 10 - 2556
 OK
-OK
 No hay vuelo registrado desde WAW hacia SCL desde 2023-05-30T09:51:00
 OK
 No hay vuelo registrado desde GIG hacia HND desde 2023-05-18T08:04:00
 OK
 No hay vuelo registrado desde GIG hacia PRG desde 2023-05-10T05:28:00
-OK
 OK
 98 - 1715
 97 - 1649
@@ -6301,7 +6253,6 @@ OK
 No hay vuelo registrado desde MAD hacia EZE desde 2023-05-07T01:01:00
 OK
 No hay vuelo registrado desde WAW hacia SCL desde 2023-05-02T23:40:00
-OK
 OK
 98 - 1715
 97 - 1649
@@ -6328,7 +6279,6 @@ OK
 81 - 1195
 81 - 2198
 81 - 3305
-OK
 OK
 98 - 1715
 97 - 1649
@@ -6566,7 +6516,6 @@ OK
 73 - 2301
 OK
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -6708,7 +6657,6 @@ OK
 47 - 772
 46 - 1121
 44 - 2554
-OK
 OK
 OK
 OK
@@ -6886,7 +6834,6 @@ OK
 OK
 No hay vuelo registrado desde MAD hacia FRA desde 2023-05-06T12:11:00
 OK
-OK
 No hay vuelo registrado desde PRG hacia AMS desde 2023-05-19T02:50:00
 OK
 98 - 1715
@@ -6919,7 +6866,6 @@ OK
 No hay vuelo registrado desde EZE hacia SCL desde 2023-05-22T17:47:00
 OK
 No hay vuelo registrado desde MAD hacia BRC desde 2023-05-30T12:06:00
-OK
 OK
 98 - 1715
 97 - 1649
@@ -7200,7 +7146,6 @@ OK
 No hay vuelo registrado desde PRG hacia AMS desde 2023-05-10T20:22:00
 OK
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -7304,8 +7249,6 @@ OK
 OK
 OK
 OK
-OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -7350,7 +7293,6 @@ OK
 64 - 1566
 OK
 No hay vuelo registrado desde EZE hacia SCL desde 2023-05-27T04:08:00
-OK
 OK
 No hay vuelo registrado desde FRA hacia AMS desde 2023-05-21T02:24:00
 OK
@@ -7436,9 +7378,6 @@ OK
 OK
 OK
 OK
-OK
-OK
-OK
 No hay vuelo registrado desde HND hacia FRA desde 2023-05-21T17:42:00
 OK
 98 - 1715
@@ -7495,7 +7434,6 @@ OK
 55 - 510
 54 - 1868
 52 - 1232
-OK
 OK
 No hay vuelo registrado desde FRA hacia HND desde 2023-05-18T05:32:00
 OK
@@ -7710,13 +7648,11 @@ OK
 No hay vuelo registrado desde EZE hacia FRA desde 2023-05-19T00:45:00
 OK
 OK
-OK
 2023-05-01T03:03:00 - 1735
 2023-05-01T03:11:00 - 3414
 2023-05-01T03:17:00 - 854
 2023-05-01T03:19:00 - 1121
 2023-05-01T03:20:00 - 2873
-OK
 OK
 98 - 1715
 97 - 1649
@@ -7737,12 +7673,7 @@ OK
 86 - 1910
 OK
 OK
-OK
-OK
-OK
 No hay vuelo registrado desde FRA hacia WAW desde 2023-05-27T02:50:00
-OK
-OK
 OK
 98 - 1715
 97 - 1649
@@ -7842,7 +7773,6 @@ OK
 OK
 No hay vuelo registrado desde AMS hacia WAW desde 2023-05-26T13:10:00
 OK
-OK
 No hay vuelo registrado desde AMS hacia BRC desde 2023-05-31T12:35:00
 OK
 OK
@@ -7871,7 +7801,6 @@ OK
 84 - 1525
 84 - 1722
 83 - 2577
-OK
 OK
 No hay vuelo registrado desde AMS hacia WAW desde 2023-05-17T06:18:00
 OK
@@ -7997,10 +7926,6 @@ OK
 48 - 1699
 47 - 228
 47 - 3378
-OK
-OK
-OK
-OK
 OK
 OK
 OK
@@ -8131,8 +8056,6 @@ OK
 No hay vuelo registrado desde PRG hacia MAD desde 2023-05-30T13:04:00
 OK
 No hay vuelo registrado desde MAD hacia EZE desde 2023-05-10T01:15:00
-OK
-OK
 OK
 OK
 OK
@@ -8298,9 +8221,7 @@ OK
 10 - 2530
 10 - 2556
 OK
-OK
 No hay vuelo registrado desde EZE hacia SCL desde 2023-05-20T05:44:00
-OK
 OK
 98 - 1715
 97 - 1649
@@ -8402,7 +8323,6 @@ OK
 31 - 3468
 30 - 2190
 30 - 2371
-OK
 OK
 OK
 98 - 1715
@@ -8652,8 +8572,6 @@ No hay vuelo registrado desde AMS hacia MAD desde 2023-05-25T11:57:00
 OK
 OK
 OK
-OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -8736,7 +8654,6 @@ OK
 OK
 No hay vuelo registrado desde WAW hacia MAD desde 2023-05-29T01:16:00
 OK
-OK
 No hay vuelo registrado desde BRC hacia AMS desde 2023-05-12T22:10:00
 OK
 98 - 1715
@@ -8789,8 +8706,6 @@ OK
 81 - 2198
 81 - 3305
 80 - 2778
-OK
-OK
 OK
 No hay vuelo registrado desde FRA hacia AMS desde 2023-05-09T10:39:00
 OK
@@ -8979,7 +8894,6 @@ OK
 78 - 3311
 78 - 639
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -9074,16 +8988,11 @@ OK
 OK
 OK
 OK
-OK
 No hay vuelo registrado desde PRG hacia HND desde 2023-05-17T13:00:00
 OK
 OK
 OK
-OK
-OK
-OK
 308 IH BRC PRG Q8000R 88 2023-05-31T23:49:00 -2 208 0
-OK
 OK
 2023-05-01T16:51:00 - 996
 2023-05-01T16:38:00 - 2814
@@ -9135,8 +9044,6 @@ OK
 67 - 3112
 66 - 1237
 64 - 1566
-OK
-OK
 OK
 OK
 98 - 1715
@@ -9384,7 +9291,6 @@ OK
 84 - 1525
 OK
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -9461,7 +9367,6 @@ No hay vuelo registrado desde SCL hacia FRA desde 2023-05-24T16:59:00
 OK
 1715 WT HND EZE O8000M 98 2023-05-31T23:42:00 2 126 0
 OK
-OK
 No hay vuelo registrado desde HND hacia AMS desde 2023-05-27T08:27:00
 OK
 98 - 1715
@@ -9516,7 +9421,6 @@ OK
 55 - 1247
 55 - 2585
 55 - 510
-OK
 OK
 98 - 1715
 97 - 1649
@@ -9591,7 +9495,6 @@ OK
 38 - 2918
 35 - 2974
 34 - 214
-OK
 OK
 OK
 No hay vuelo registrado desde SCL hacia HND desde 2023-05-09T14:12:00
@@ -9751,9 +9654,6 @@ OK
 OK
 No hay vuelo registrado desde FRA hacia WAW desde 2023-05-24T09:31:00
 OK
-OK
-OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -9792,7 +9692,6 @@ OK
 73 - 2935
 72 - 2461
 68 - 2824
-OK
 OK
 No hay vuelo registrado desde HND hacia AMS desde 2023-05-14T15:38:00
 OK
@@ -9937,11 +9836,7 @@ OK
 73 - 2935
 OK
 OK
-OK
-OK
 No hay vuelo registrado desde SCL hacia HND desde 2023-05-04T12:08:00
-OK
-OK
 OK
 No hay vuelo registrado desde WAW hacia SCL desde 2023-05-29T09:25:00
 OK
@@ -10194,7 +10089,6 @@ OK
 10 - 2530
 10 - 2556
 OK
-OK
 No hay vuelo registrado desde HND hacia MAD desde 2023-05-30T06:13:00
 OK
 98 - 1715
@@ -10265,7 +10159,6 @@ OK
 OK
 OK
 308 IH BRC PRG Q8000R 88 2023-05-31T23:49:00 -2 208 0
-OK
 OK
 98 - 1715
 97 - 1649
@@ -10534,7 +10427,6 @@ OK
 OK
 784 AY WAW EZE A8000R 10 2023-05-31T23:00:00 -3 1018 0
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -10594,9 +10486,7 @@ OK
 OK
 OK
 OK
-OK
 No hay vuelo registrado desde BRC hacia AMS desde 2023-05-02T21:45:00
-OK
 OK
 OK
 98 - 1715
@@ -10743,9 +10633,6 @@ OK
 58 - 2812
 OK
 OK
-OK
-OK
-OK
 No hay vuelo registrado desde FRA hacia BRC desde 2023-05-10T11:17:00
 OK
 98 - 1715
@@ -10811,13 +10698,9 @@ OK
 47 - 3378
 OK
 OK
-OK
-OK
 784 AY WAW EZE A8000R 10 2023-05-31T23:00:00 -3 1018 0
 OK
-OK
 No hay vuelo registrado desde GIG hacia EZE desde 2023-05-20T19:38:00
-OK
 OK
 OK
 No hay vuelo registrado desde GIG hacia BRC desde 2023-05-22T04:10:00
@@ -10833,7 +10716,6 @@ OK
 92 - 2280
 92 - 3082
 90 - 459
-OK
 OK
 OK
 3499 XB GIG MAD Z8000W 49 2023-05-31T23:20:00 -3 935 0
@@ -10979,9 +10861,7 @@ OK
 OK
 OK
 OK
-OK
 No hay vuelo registrado desde BRC hacia FRA desde 2023-05-24T20:23:00
-OK
 OK
 OK
 98 - 1715
@@ -11080,7 +10960,6 @@ OK
 10 - 2556
 10 - 2814
 10 - 784
-OK
 OK
 98 - 1715
 97 - 1649
@@ -11416,9 +11295,7 @@ OK
 10 - 2814
 10 - 784
 OK
-OK
 No hay vuelo registrado desde AMS hacia BRC desde 2023-05-08T12:22:00
-OK
 OK
 2585 RS SCL FRA D8000N 55 2023-05-01T13:45:00 -1 393 0
 OK
@@ -11462,7 +11339,6 @@ OK
 68 - 2824
 67 - 2702
 67 - 3112
-OK
 OK
 98 - 1715
 97 - 1649
@@ -11536,16 +11412,11 @@ OK
 39 - 2470
 38 - 2918
 OK
-OK
 No hay vuelo registrado desde FRA hacia HND desde 2023-05-06T15:19:00
-OK
 OK
 No hay vuelo registrado desde AMS hacia BRC desde 2023-05-04T18:27:00
 OK
-OK
-OK
 No hay vuelo registrado desde FRA hacia HND desde 2023-05-04T23:12:00
-OK
 OK
 No hay vuelo registrado desde HND hacia MAD desde 2023-05-31T17:40:00
 OK
@@ -11596,9 +11467,6 @@ OK
 63 - 1160
 63 - 2062
 61 - 945
-OK
-OK
-OK
 OK
 OK
 OK
@@ -11713,7 +11581,6 @@ OK
 84 - 1525
 84 - 1722
 OK
-OK
 98 - 1715
 97 - 1649
 96 - 3284
@@ -11750,8 +11617,6 @@ OK
 74 - 2599
 73 - 2301
 73 - 2935
-OK
-OK
 OK
 98 - 1715
 97 - 1649
@@ -12306,8 +12171,6 @@ OK
 OK
 OK
 OK
-OK
-OK
 No hay vuelo registrado desde MAD hacia AMS desde 2023-05-20T20:40:00
 OK
 OK
@@ -12317,15 +12180,10 @@ OK
 No hay vuelo registrado desde SCL hacia BRC desde 2023-05-08T00:47:00
 OK
 OK
-OK
 No hay vuelo registrado desde AMS hacia HND desde 2023-05-08T05:11:00
 OK
 OK
-OK
 No hay vuelo registrado desde SCL hacia WAW desde 2023-05-07T10:35:00
-OK
-OK
-OK
 OK
 1017 GZ MAD BRC U8000Y 24 2023-05-01T07:50:00 0 407 0
 1525 LA AMS MAD P8000M 84 2023-05-01T07:51:00 5 609 0
@@ -12384,8 +12242,6 @@ OK
 2132 QY MAD BRC I8000N 16 2023-05-01T16:32:00 -1 1065 0
 2814 YV HND AMS Y8000T 10 2023-05-01T16:38:00 5 1139 0
 996 QZ AMS BRC S8000N 15 2023-05-01T16:51:00 2 104 0
-OK
-OK
 OK
 OK
 OK
