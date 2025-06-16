@@ -31,7 +31,7 @@ const PARAMETROS_AGREGAR_ARCHIVO = 2
 const PARAMETROS_VER_TABLERO = 5
 const PARAMETROS_INFO_VUELO = 2
 const PARAMETROS_PRIORIDAD_VUELOS = 2
-const PARAMETROS_SIGUIENTE_VUELO = 3
+const PARAMETROS_SIGUIENTE_VUELO = 4
 const PARAMETROS_BORRAR = 3
 
 
@@ -65,7 +65,7 @@ func (tabla *tabla) Agregar_archivo(parametros []string){
 	ruta := parametros[1]
 	archivo, err := os.Open(ruta)
 	if err != nil {
-		imprimirError("guardar_archivo")
+		imprimirError("agregar_archivo")
 		return
 	}
 	defer archivo.Close()
@@ -77,6 +77,7 @@ func (tabla *tabla) Agregar_archivo(parametros []string){
 		tabla.base_datos.Guardar(vuelo.Numero_vuelo(), vuelo)
 	}
 	
+	tabla.dicc_fecha = diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool{
 		tabla.dicc_fecha.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.Numero_vuelo()}, dato)
 		return true
@@ -157,7 +158,7 @@ func (tabla *tabla) Siguiente_vuelo(parametros []string){
 	fecha := tuple{fecha: desde, codigo: "0"}
 	tabla.dicc_fecha.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
 		if origen == vuelo.Aeropuerto_origen() && destino == vuelo.Aeropuerto_destino() {
-			fmt.Println(clave.fecha, "-", clave.codigo)
+			fmt.Println(vuelo.Obtener_string())
 			hallado = true
 			return false
 		}
