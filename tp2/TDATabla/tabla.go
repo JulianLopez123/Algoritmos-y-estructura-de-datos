@@ -8,6 +8,7 @@ import (
 	"strings"
 	"tdas/cola_prioridad"
 	"tdas/diccionario"
+	"tdas/pila"
 	"tp2/TDAVuelo"
 )
 
@@ -60,7 +61,6 @@ func CrearTabla()Tabla{
 func (tabla *tabla) Agregar_archivo(parametros []string){
 	if !verificarCantParametros(parametros,PARAMETROS_AGREGAR_ARCHIVO){
 		imprimirError("agregar_archivo")
-		return
 	}
 	ruta := parametros[1]
 	archivo, err := os.Open(ruta)
@@ -99,26 +99,30 @@ func (tabla *tabla) Ver_tablero(parametros []string){
 		imprimirError("ver_tablero")
 	}
 
-	nose := tuple{fecha: desde, codigo: "0"}
-	nose2 := tuple{fecha: hasta, codigo: "99999999999"}
-
-	iter := tabla.dicc_fecha.IteradorRango(&nose, &nose2)
-	var resultados []tuple
-
-	for iter.HaySiguiente() && len(resultados) < cant_vuelos {
-		clave, _ := iter.VerActual()
-		resultados = append(resultados, clave)
-		iter.Siguiente()
-	}
+	fecha_desde := tuple{fecha: desde, codigo: "0"}
+	fecha_hasta := tuple{fecha: hasta, codigo: "99999999999"}
 
 	if modo == "asc" {
-		for _, clave := range resultados {
+		var contador_asc int
+		tabla.dicc_fecha.IterarRango(&fecha_desde, &fecha_hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			if contador_asc == cant_vuelos {
+				return false
+			}
 			fmt.Println(clave.fecha, "-", clave.codigo)
-		}
-	} else {
-		for i := len(resultados) - 1; i >= 0; i-- {
-			clave := resultados[i]
-			fmt.Println(clave.fecha, "-", clave.codigo)
+			contador_asc++
+			return true
+		})
+	}
+
+	if modo == "desc" {
+		pila := pila.CrearPilaDinamica[tuple]()
+		tabla.dicc_fecha.IterarRango(&fecha_desde, &fecha_hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
+			pila.Apilar(clave)
+			return true
+		})
+		for i := 0; i < cant_vuelos && !pila.EstaVacia(); i++ {
+			tope := pila.Desapilar()
+			fmt.Println(tope.fecha, "-", tope.codigo)
 		}
 	}
 	fmt.Println("OK")
@@ -133,6 +137,7 @@ func (tabla *tabla) Info_vuelo(parametros []string){
 
 	if !tabla.base_datos.Pertenece(numero_vuelo) {
 		imprimirError("info_vuelo")
+		return
 	}
 	vuelo := tabla.base_datos.Obtener(numero_vuelo)
 	fmt.Println(vuelo.Obtener_string())
@@ -216,6 +221,7 @@ func (tabla *tabla) Borrar(parametros []string){
 		vuelo := tabla.base_datos.Obtener(codigo)
 		fmt.Println(vuelo.Obtener_string())
 		tabla.base_datos.Borrar(codigo)
+		tabla.dicc_fecha.Borrar(claves[i])
 	}
 
 	fmt.Println("OK")
