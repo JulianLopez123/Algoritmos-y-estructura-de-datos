@@ -55,15 +55,15 @@ func CrearTabla() Tabla {
 
 }
 
-func (tabla *tabla) Agregar_archivo(parametros []string) {
+func (tabla *tabla) AgregarArchivo(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_AGREGAR_ARCHIVO) {
-		imprimirError("agregar_archivo")
+		tabla.ImprimirError("agregar_archivo")
 		return
 	}
 	ruta := parametros[1]
 	archivo, err := os.Open(ruta)
 	if err != nil {
-		imprimirError("agregar_archivo")
+		tabla.ImprimirError("agregar_archivo")
 		return
 	}
 	defer archivo.Close()
@@ -72,21 +72,21 @@ func (tabla *tabla) Agregar_archivo(parametros []string) {
 		linea := lectura.Text()
 		linea_sep := strings.Split(linea, ",")
 		vuelo := TDAVuelo.CrearVuelo(linea_sep)
-		tabla.base_datos.Guardar(vuelo.Numero_vuelo(), vuelo)
+		tabla.base_datos.Guardar(vuelo.NumeroVuelo(), vuelo)
 	}
 
 	tabla.dicc_fecha = diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
-		tabla.dicc_fecha.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.Numero_vuelo()}, dato)
+		tabla.dicc_fecha.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.NumeroVuelo()}, dato)
 		return true
 	})
 
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Ver_tablero(parametros []string) {
+func (tabla *tabla) VerTablero(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_VER_TABLERO) {
-		imprimirError("ver_tablero")
+		tabla.ImprimirError("ver_tablero")
 		return
 	}
 	cant_vuelos, _ := strconv.Atoi(parametros[1])
@@ -95,7 +95,7 @@ func (tabla *tabla) Ver_tablero(parametros []string) {
 	hasta := parametros[4]
 
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { //
-		imprimirError("ver_tablero")
+		tabla.ImprimirError("ver_tablero")
 		return
 	}
 
@@ -128,25 +128,25 @@ func (tabla *tabla) Ver_tablero(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Info_vuelo(parametros []string) {
+func (tabla *tabla) InfoVuelo(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_INFO_VUELO) {
-		imprimirError("info_vuelo")
+		tabla.ImprimirError("info_vuelo")
 		return
 	}
 	numero_vuelo := parametros[1]
 
 	if !tabla.base_datos.Pertenece(numero_vuelo) {
-		imprimirError("info_vuelo")
+		tabla.ImprimirError("info_vuelo")
 		return
 	}
 	vuelo := tabla.base_datos.Obtener(numero_vuelo)
-	fmt.Println(vuelo.Obtener_string())
+	fmt.Println(vuelo.ObtenerString())
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Siguiente_vuelo(parametros []string) {
+func (tabla *tabla) SiguienteVuelo(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_SIGUIENTE_VUELO) {
-		imprimirError("siguiente_vuelo")
+		tabla.ImprimirError("siguiente_vuelo")
 		return
 	}
 	origen := parametros[1]
@@ -156,8 +156,8 @@ func (tabla *tabla) Siguiente_vuelo(parametros []string) {
 	hallado := false
 	fecha := tuple{fecha: desde, codigo: "0"}
 	tabla.dicc_fecha.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
-		if origen == vuelo.Aeropuerto_origen() && destino == vuelo.Aeropuerto_destino() {
-			fmt.Println(vuelo.Obtener_string())
+		if origen == vuelo.AeropuertoOrigen() && destino == vuelo.AeropuertoDestino() {
+			fmt.Println(vuelo.ObtenerString())
 			hallado = true
 			return false
 		}
@@ -169,18 +169,18 @@ func (tabla *tabla) Siguiente_vuelo(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Prioridad_vuelos(parametros []string) {
+func (tabla *tabla) PrioridadVuelos(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_PRIORIDAD_VUELOS) {
-		imprimirError("prioridad_vuelo")
+		tabla.ImprimirError("prioridad_vuelo")
 		return
 	}
 	cant_vuelos, err := strconv.Atoi(parametros[1])
 	if cant_vuelos <= 0 {
-		imprimirError("prioridad_vuelos")
+		tabla.ImprimirError("prioridad_vuelos")
 		return
 	}
 	if err != nil {
-		imprimirError("prioridad_vuelos")
+		tabla.ImprimirError("prioridad_vuelos")
 		return
 	}
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
@@ -188,7 +188,7 @@ func (tabla *tabla) Prioridad_vuelos(parametros []string) {
 	cant := 0
 	for iterador.HaySiguiente() {
 		_, vuelo := iterador.VerActual()
-		num_vuelo_prioridad := numVuelo_prioridad{numero_vuelo: vuelo.Numero_vuelo(), prioridad: vuelo.Prioridad()}
+		num_vuelo_prioridad := numVuelo_prioridad{numero_vuelo: vuelo.NumeroVuelo(), prioridad: vuelo.Prioridad()}
 		heap.Encolar(num_vuelo_prioridad)
 		cant++
 		iterador.Siguiente()
@@ -203,7 +203,7 @@ func (tabla *tabla) Prioridad_vuelos(parametros []string) {
 
 func (tabla *tabla) Borrar(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_BORRAR) {
-		imprimirError("borrar")
+		tabla.ImprimirError("borrar")
 		return
 	}
 
@@ -211,7 +211,7 @@ func (tabla *tabla) Borrar(parametros []string) {
 	fecha_hasta := parametros[2]
 
 	if strings.Compare(fecha_desde, fecha_hasta) > 0 {
-		imprimirError("borrar")
+		tabla.ImprimirError("borrar")
 		return
 	}
 
@@ -226,7 +226,7 @@ func (tabla *tabla) Borrar(parametros []string) {
 	for i := 0; i < len(claves); i++ {
 		codigo := claves[i].codigo
 		vuelo := tabla.base_datos.Obtener(codigo)
-		fmt.Println(vuelo.Obtener_string())
+		fmt.Println(vuelo.ObtenerString())
 		tabla.base_datos.Borrar(codigo)
 		tabla.dicc_fecha.Borrar(claves[i])
 	}
@@ -234,7 +234,7 @@ func (tabla *tabla) Borrar(parametros []string) {
 	fmt.Println("OK")
 }
 
-func imprimirError(comando string) {
+func (tabla *tabla)ImprimirError(comando string) {
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
 }
 

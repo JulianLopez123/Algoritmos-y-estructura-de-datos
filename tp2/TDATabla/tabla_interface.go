@@ -2,16 +2,18 @@ package TDATabla
 
 type Tabla interface {
 
-	Agregar_archivo([]string)
+	//Si  la cantidad de elementos 
+	AgregarArchivo([]string)
 
-	Ver_tablero([]string)
+	VerTablero([]string)
 
-	Info_vuelo([]string)
+	InfoVuelo([]string)
 
-	Siguiente_vuelo([]string)
+	SiguienteVuelo([]string)
 
-	Prioridad_vuelos([]string)
+	PrioridadVuelos([]string)
 
 	Borrar([]string)
 
+	ImprimirError(string)
 }
