@@ -25,6 +25,7 @@ type tabla struct {
 	base_datos diccionario.Diccionario[string, TDAVuelo.Vuelo]
 	dicc_fecha diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]
 	// dicc_prioridad cola_prioridad.ColaPrioridad[numVuelo_prioridad]
+	clave_mayor string
 }
 
 const PARAMETROS_AGREGAR_ARCHIVO = 2
@@ -52,7 +53,7 @@ func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int { //heap maxim
 
 func CrearTabla() Tabla {
 	return &tabla{base_datos: diccionario.CrearHash[string, TDAVuelo.Vuelo](),
-		dicc_fecha: diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)}
+		dicc_fecha: diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente), clave_mayor: ""}
 
 }
 
@@ -76,11 +77,17 @@ func (tabla *tabla) Agregar_archivo(parametros []string) {
 		tabla.base_datos.Guardar(vuelo.Numero_vuelo(), vuelo)
 	}
 
+	var claveMayor string
 	tabla.dicc_fecha = diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
+		if strings.Compare(clave, claveMayor) == 1 {
+			claveMayor = clave
+		}
 		tabla.dicc_fecha.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.Numero_vuelo()}, dato)
 		return true
 	})
+
+	tabla.clave_mayor = claveMayor
 
 	fmt.Println("OK")
 }
@@ -101,7 +108,7 @@ func (tabla *tabla) Ver_tablero(parametros []string) {
 	}
 
 	fecha_desde := tuple{fecha: desde, codigo: "0"}
-	fecha_hasta := tuple{fecha: hasta, codigo: "99999999999"}
+	fecha_hasta := tuple{fecha: hasta, codigo: tabla.clave_mayor}
 
 	if modo == "asc" {
 		var contador_asc int
@@ -217,7 +224,7 @@ func (tabla *tabla) Borrar(parametros []string) {
 	}
 
 	desde := tuple{fecha: fecha_desde, codigo: "0"}
-	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}
+	hasta := tuple{fecha: fecha_hasta, codigo: tabla.clave_mayor}
 
 	var claves []tuple
 	tabla.dicc_fecha.IterarRango(&desde, &hasta, func(clave tuple, dato TDAVuelo.Vuelo) bool {
