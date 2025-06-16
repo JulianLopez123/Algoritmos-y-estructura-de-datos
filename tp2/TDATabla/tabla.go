@@ -205,8 +205,10 @@ func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string) {
 		fmt.Println(vuelo.ObtenerString())
 		tabla.base_datos.Borrar(codigo)
 		tabla.dicc_fecha.Borrar(claves[i])
-		clave_conexion := conexion_fecha{fecha: claves[i].fecha, conexion: conexion{aeropuerto_origen: vuelo.AeropuertoOrigen(), aeropuerto_destino: vuelo.AeropuertoDestino()}}
-		tabla.dicc_conexiones.Borrar(clave_conexion)
+		clave_conexion := conexion_fecha{fecha: vuelo.Fecha(), conexion: conexion{aeropuerto_origen: vuelo.AeropuertoOrigen(), aeropuerto_destino: vuelo.AeropuertoDestino()}}
+		if tabla.dicc_conexiones.Pertenece(clave_conexion) {
+			tabla.dicc_conexiones.Borrar(clave_conexion)
+		}
 	}
 
 	fmt.Println("OK")
