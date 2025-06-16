@@ -37,5 +37,4 @@ func main() {
 			fmt.Fprintln(os.Stderr, "Error en comando", operacion)
 		}
 	}
-
 }

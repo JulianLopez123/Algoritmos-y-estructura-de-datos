@@ -97,6 +97,7 @@ func (tabla *tabla) Ver_tablero(parametros []string) {
 
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { //
 		imprimirError("ver_tablero")
+		return
 	}
 
 	fecha_desde := tuple{fecha: desde, codigo: "0"}
@@ -174,33 +175,29 @@ func (tabla *tabla) Prioridad_vuelos(parametros []string) {
 		imprimirError("prioridad_vuelo")
 		return
 	}
-	cant_vuelos, _ := strconv.Atoi(parametros[1])
-	if cant_vuelos < 0 {
+	cant_vuelos, err := strconv.Atoi(parametros[1])
+	if cant_vuelos <= 0 {
 		imprimirError("prioridad_vuelos")
 		return
 	}
-	// if err != nil {
-	// 	// Hubo un error, manejarlo aquí.
-	// 	fmt.Println("Error al convertir la cadena:", err)
-	// 	// Por ejemplo, se puede retornar un error, imprimir un mensaje, etc.
-	// 	return // O break, continue, etc., según el contexto
-	// }
+	if err != nil {
+		imprimirError("prioridad_vuelos")
+		return
+	}
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
 	iterador := tabla.base_datos.Iterador()
+	cant := 0
 	for iterador.HaySiguiente() {
 		_, vuelo := iterador.VerActual()
 		num_vuelo_prioridad := numVuelo_prioridad{numero_vuelo: vuelo.Numero_vuelo(), prioridad: vuelo.Prioridad()}
 		heap.Encolar(num_vuelo_prioridad)
+		cant++
 		iterador.Siguiente()
 	}
 
-	top := make([]numVuelo_prioridad, cant_vuelos)
-	for i := 0; i < cant_vuelos; i++ {
-		top[i] = heap.Desencolar()
-	}
-	for i := 0; i < cant_vuelos; i++ {
-		numero_vuelo, prioridad := top[i].numero_vuelo, top[i].prioridad
-		fmt.Println(prioridad, "-", numero_vuelo)
+	for i := 0; i < cant_vuelos && !heap.EstaVacia(); i++ {
+		tope := heap.Desencolar()
+		fmt.Println(tope.prioridad, "-", tope.numero_vuelo)
 	}
 	fmt.Println("OK")
 }
@@ -213,6 +210,11 @@ func (tabla *tabla) Borrar(parametros []string) {
 
 	fecha_desde := parametros[1]
 	fecha_hasta := parametros[2]
+
+	if strings.Compare(fecha_desde, fecha_hasta) > 0 {
+		imprimirError("borrar")
+		return
+	}
 
 	desde := tuple{fecha: fecha_desde, codigo: "0"}
 	hasta := tuple{fecha: fecha_hasta, codigo: "99999999999"}
