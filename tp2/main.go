@@ -34,7 +34,7 @@ func main() {
 		case "borrar":
 			tabla.Borrar(parametros)
 		default:
-			fmt.Println("Error")
+			fmt.Fprintln(os.Stderr, "Error en comando", operacion)
 		}
 	}
 

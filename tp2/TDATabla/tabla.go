@@ -31,7 +31,7 @@ const PARAMETROS_AGREGAR_ARCHIVO = 2
 const PARAMETROS_VER_TABLERO = 5
 const PARAMETROS_INFO_VUELO = 2
 const PARAMETROS_PRIORIDAD_VUELOS = 2
-const PARAMETROS_SIGUIENTE_VUELO = 3
+const PARAMETROS_SIGUIENTE_VUELO = 4
 const PARAMETROS_BORRAR = 3
 
 func comparacion_fechas_ascendente(fecha1 tuple, fecha2 tuple) int {
@@ -59,11 +59,12 @@ func CrearTabla() Tabla {
 func (tabla *tabla) Agregar_archivo(parametros []string) {
 	if !verificarCantParametros(parametros, PARAMETROS_AGREGAR_ARCHIVO) {
 		imprimirError("agregar_archivo")
+		return
 	}
 	ruta := parametros[1]
 	archivo, err := os.Open(ruta)
 	if err != nil {
-		imprimirError("guardar_archivo")
+		imprimirError("agregar_archivo")
 		return
 	}
 	defer archivo.Close()
@@ -75,6 +76,7 @@ func (tabla *tabla) Agregar_archivo(parametros []string) {
 		tabla.base_datos.Guardar(vuelo.Numero_vuelo(), vuelo)
 	}
 
+	tabla.dicc_fecha = diccionario.CrearABB[tuple, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
 		tabla.dicc_fecha.Guardar(tuple{fecha: dato.Fecha(), codigo: dato.Numero_vuelo()}, dato)
 		return true
@@ -155,7 +157,7 @@ func (tabla *tabla) Siguiente_vuelo(parametros []string) {
 	fecha := tuple{fecha: desde, codigo: "0"}
 	tabla.dicc_fecha.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
 		if origen == vuelo.Aeropuerto_origen() && destino == vuelo.Aeropuerto_destino() {
-			fmt.Println(clave.fecha, "-", clave.codigo)
+			fmt.Println(vuelo.Obtener_string())
 			hallado = true
 			return false
 		}
@@ -177,6 +179,12 @@ func (tabla *tabla) Prioridad_vuelos(parametros []string) {
 		imprimirError("prioridad_vuelos")
 		return
 	}
+	// if err != nil {
+	// 	// Hubo un error, manejarlo aquí.
+	// 	fmt.Println("Error al convertir la cadena:", err)
+	// 	// Por ejemplo, se puede retornar un error, imprimir un mensaje, etc.
+	// 	return // O break, continue, etc., según el contexto
+	// }
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
 	iterador := tabla.base_datos.Iterador()
 	for iterador.HaySiguiente() {
