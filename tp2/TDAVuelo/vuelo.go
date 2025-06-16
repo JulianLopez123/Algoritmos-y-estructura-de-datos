@@ -19,7 +19,6 @@ type vuelo struct {
 }
 
 func CrearVuelo(entrada []string) Vuelo {
-	//numero_vuelo, _ := strconv.Atoi(entrada[0])
 	prioridad, _ := strconv.Atoi(entrada[5])
 	retraso_salida, _ := strconv.Atoi(entrada[7])
 	tiempo_vuelo, _ := strconv.Atoi(entrada[8])
@@ -34,7 +33,7 @@ func (vuelo *vuelo) Fecha() string {
 	return vuelo.fecha
 }
 
-func (vuelo *vuelo) Numero_vuelo() string {
+func (vuelo *vuelo) NumeroVuelo() string {
 	return vuelo.numero_vuelo
 }
 
@@ -42,15 +41,15 @@ func (vuelo *vuelo) Prioridad() int {
 	return vuelo.prioridad
 }
 
-func (vuelo *vuelo) Aeropuerto_origen() string {
+func (vuelo *vuelo) AeropuertoOrigen() string {
 	return vuelo.aeropuerto_origen
 }
 
-func (vuelo *vuelo) Aeropuerto_destino() string {
+func (vuelo *vuelo) AeropuertoDestino() string {
 	return vuelo.aeropuerto_destino
 }
 
-func (vuelo *vuelo) Obtener_string() string {
+func (vuelo *vuelo) ObtenerString() string {
 	return fmt.Sprintf("%s %s %s %s %s %d %s %d %d %d",
 		vuelo.numero_vuelo,
 		vuelo.aerolinea,
