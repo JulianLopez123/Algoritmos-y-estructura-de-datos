@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"tdas/cola_prioridad"
 	"tdas/diccionario"
@@ -25,13 +24,6 @@ type tabla struct {
 	base_datos diccionario.Diccionario[string, TDAVuelo.Vuelo]
 	dicc_fecha diccionario.DiccionarioOrdenado[tuple, TDAVuelo.Vuelo]
 }
-
-const PARAMETROS_AGREGAR_ARCHIVO = 2
-const PARAMETROS_VER_TABLERO = 5
-const PARAMETROS_INFO_VUELO = 2
-const PARAMETROS_PRIORIDAD_VUELOS = 2
-const PARAMETROS_SIGUIENTE_VUELO = 4
-const PARAMETROS_BORRAR = 3
 
 func comparacion_fechas_ascendente(fecha1 tuple, fecha2 tuple) int {
 	result := strings.Compare(fecha1.fecha, fecha2.fecha)
@@ -55,12 +47,7 @@ func CrearTabla() Tabla {
 
 }
 
-func (tabla *tabla) AgregarArchivo(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_AGREGAR_ARCHIVO) {
-		tabla.ImprimirError("agregar_archivo")
-		return
-	}
-	ruta := parametros[1]
+func (tabla *tabla) AgregarArchivo(ruta string) {
 	archivo, err := os.Open(ruta)
 	if err != nil {
 		tabla.ImprimirError("agregar_archivo")
@@ -84,17 +71,8 @@ func (tabla *tabla) AgregarArchivo(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) VerTablero(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_VER_TABLERO) {
-		tabla.ImprimirError("ver_tablero")
-		return
-	}
-	cant_vuelos, _ := strconv.Atoi(parametros[1])
-	modo := parametros[2]
-	desde := parametros[3]
-	hasta := parametros[4]
-
-	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { //
+func (tabla *tabla) VerTablero(cant_vuelos int,modo,desde,hasta string) {
+	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { 
 		tabla.ImprimirError("ver_tablero")
 		return
 	}
@@ -128,13 +106,7 @@ func (tabla *tabla) VerTablero(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) InfoVuelo(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_INFO_VUELO) {
-		tabla.ImprimirError("info_vuelo")
-		return
-	}
-	numero_vuelo := parametros[1]
-
+func (tabla *tabla) InfoVuelo(numero_vuelo string) {
 	if !tabla.base_datos.Pertenece(numero_vuelo) {
 		tabla.ImprimirError("info_vuelo")
 		return
@@ -144,17 +116,9 @@ func (tabla *tabla) InfoVuelo(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) SiguienteVuelo(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_SIGUIENTE_VUELO) {
-		tabla.ImprimirError("siguiente_vuelo")
-		return
-	}
-	origen := parametros[1]
-	destino := parametros[2]
-	desde := parametros[3]
-
+func (tabla *tabla) SiguienteVuelo(origen,destino,fecha_desde string) {
 	hallado := false
-	fecha := tuple{fecha: desde, codigo: "0"}
+	fecha := tuple{fecha: fecha_desde, codigo: "0"}
 	tabla.dicc_fecha.IterarRango(&fecha, nil, func(clave tuple, vuelo TDAVuelo.Vuelo) bool {
 		if origen == vuelo.AeropuertoOrigen() && destino == vuelo.AeropuertoDestino() {
 			fmt.Println(vuelo.ObtenerString())
@@ -164,26 +128,17 @@ func (tabla *tabla) SiguienteVuelo(parametros []string) {
 		return true
 	})
 	if !hallado {
-		fmt.Println("No hay vuelo registrado desde", origen, "hacia", destino, "desde", desde)
+		fmt.Println("No hay vuelo registrado desde", origen, "hacia", destino, "desde", fecha_desde)
 	}
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) PrioridadVuelos(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_PRIORIDAD_VUELOS) {
-		tabla.ImprimirError("prioridad_vuelo")
-		return
-	}
-	cant_vuelos, err := strconv.Atoi(parametros[1])
+func (tabla *tabla) PrioridadVuelos(cant_vuelos int) {
 	if cant_vuelos <= 0 {
 		tabla.ImprimirError("prioridad_vuelos")
 		return
 	}
-	if err != nil {
-		tabla.ImprimirError("prioridad_vuelos")
-		return
-	}
-	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad) //heap maximos
+	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad)
 	iterador := tabla.base_datos.Iterador()
 	cant := 0
 	for iterador.HaySiguiente() {
@@ -201,15 +156,7 @@ func (tabla *tabla) PrioridadVuelos(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Borrar(parametros []string) {
-	if !verificarCantParametros(parametros, PARAMETROS_BORRAR) {
-		tabla.ImprimirError("borrar")
-		return
-	}
-
-	fecha_desde := parametros[1]
-	fecha_hasta := parametros[2]
-
+func (tabla *tabla) Borrar(fecha_desde,fecha_hasta string) {
 	if strings.Compare(fecha_desde, fecha_hasta) > 0 {
 		tabla.ImprimirError("borrar")
 		return
@@ -234,10 +181,6 @@ func (tabla *tabla) Borrar(parametros []string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla)ImprimirError(comando string) {
+func (tabla *tabla) ImprimirError(comando string){
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
-}
-
-func verificarCantParametros(parametros []string, cantidad int) bool {
-	return len(parametros) == cantidad
 }

@@ -2,23 +2,21 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
 	"tp2/TDATabla"
 )
 
-const(
-	PARAMETROS_AGREGAR_ARCHIVO = 2
-	PARAMETROS_VER_TABLERO = 5
-	PARAMETROS_INFO_VUELO = 2
-	PARAMETROS_PRIORIDAD_VUELOS = 2
-	PARAMETROS_SIGUIENTE_VUELO = 4
-	PARAMETROS_BORRAR = 3
-
+const (
+	PARAMETROS_AGREGAR_ARCHIVO   = 2
+	PARAMETROS_VER_TABLERO       = 5
+	PARAMETROS_INFO_VUELO        = 2
+	PARAMETROS_PRIORIDAD_VUELOS  = 2
+	PARAMETROS_SIGUIENTE_VUELO   = 4
+	PARAMETROS_BORRAR            = 3
 )
- 
+
 func main() {
 	lectura := bufio.NewScanner(os.Stdin)
 	tabla := TDATabla.CrearTabla()
@@ -32,60 +30,66 @@ func main() {
 		comando := ingreso[0]
 		parametros := ingreso[1:]
 
-		if !validarComando(comando,parametros,tabla){
-			fmt.Fprintln(os.Stderr, "Error en comando", )
-		}
-	}
-}		
-	
-func validarComando(comando string, parametros []string,tabla TDATabla.Tabla)bool{
-	switch comando {
+		
+		switch comando {
 	case "agregar_archivo":
-		if verificarCantParametros(parametros,PARAMETROS_AGREGAR_ARCHIVO){
-			return tabla.AgregarArchivo(parametros[0])
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_AGREGAR_ARCHIVO){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		return false
+		tabla.AgregarArchivo(parametros[0])
 
 	case "ver_tablero":
-		if verificarCantParametros(parametros,PARAMETROS_VER_TABLERO){
-			cant_vuelos, err:= strconv.Atoi(parametros[1])
-			if err != nil{
-				return false
-			}
-			return tabla.VerTablero(cant_vuelos,parametros[1],parametros[2])
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_VER_TABLERO){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		return false
+		cant_vuelos, err := strconv.Atoi(parametros[0])
+		if err != nil{
+			tabla.ImprimirError(comando)
+			continue
+		}
+		tabla.VerTablero(cant_vuelos, parametros[1], parametros[2], parametros[3])
 
 	case "info_vuelo":
-		if verificarCantParametros(parametros,PARAMETROS_INFO_VUELO){
-			return tabla.InfoVuelo(parametros)	
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_INFO_VUELO){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		return false
+		tabla.InfoVuelo(parametros[0])
 
 	case "prioridad_vuelos":
-		if verificarCantParametros(parametros,PARAMETROS_PRIORIDAD_VUELOS){
-			return tabla.PrioridadVuelos(parametros)
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_PRIORIDAD_VUELOS){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		
+		cant_vuelos, err := strconv.Atoi(parametros[0])
+		if err != nil{
+			tabla.ImprimirError(comando)
+			continue
+		}
+		tabla.PrioridadVuelos(cant_vuelos)
+
 	case "siguiente_vuelo":
-		if verificarCantParametros(parametros,PARAMETROS_SIGUIENTE_VUELO){
-			return tabla.SiguienteVuelo(parametros)
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_SIGUIENTE_VUELO){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		return false
+		tabla.SiguienteVuelo(parametros[0], parametros[1], parametros[2])
 
 	case "borrar":
-		if verificarCantParametros(parametros,PARAMETROS_BORRAR){
-			return tabla.Borrar(parametros)
+		if !cantParametrosCorrectos(ingreso,PARAMETROS_BORRAR){ 
+			tabla.ImprimirError(comando)
+			continue
 		}
-		return false
+		tabla.Borrar(parametros[0], parametros[1])
 
 	default:
-		return false
+		tabla.ImprimirError(comando)
 	}
-}
+	}
+}	
 
-func validarYEjecutarOperacion(primitiva func (TDATabla.Tabla))
-
-func verificarCantParametros(parametros []string, cantidad int) bool {
+func cantParametrosCorrectos(parametros []string,cantidad int)bool{
 	return len(parametros) == cantidad
 }
