@@ -1,0 +1,9 @@
+panic: La clave no pertenece al diccionario
+
+goroutine 1 [running]:
+tdas/diccionario.(*abb[...]).Borrar(0x4d8ac0, {{0xc00018345a, 0x13}, {{0xc000183448, 0x3}, {0xc00018344c, 0x3}}})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tdas/diccionario/abb.go:67 +0x266
+tp2/TDATabla.(*tabla).Borrar(0xc0000aa040, {0xc0000b4097, 0x13}, {0xc0000b40ab, 0x13})
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/TDATabla/tabla.go:210 +0x2ee
+main.main()
+	/home/federico-fredotovich/Escritorio/Algoritmos-y-estructura-de-datos/tp2/main.go:84 +0x157

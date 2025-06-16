@@ -12,7 +12,7 @@ import (
 )
 
 type numVuelo_fecha struct {
-	fecha  string
+	fecha        string
 	numero_vuelo string
 }
 type numVuelo_prioridad struct {
@@ -20,21 +20,21 @@ type numVuelo_prioridad struct {
 	prioridad    int
 }
 
-type conexion struct{
-	aeropuerto_origen string
+type conexion struct {
+	aeropuerto_origen  string
 	aeropuerto_destino string
 }
 
-type conexion_fecha struct{
-	fecha string
+type conexion_fecha struct {
+	fecha    string
 	conexion conexion
 }
 
 type tabla struct {
-	base_datos diccionario.Diccionario[string, TDAVuelo.Vuelo]
-	dicc_fecha diccionario.DiccionarioOrdenado[numVuelo_fecha, TDAVuelo.Vuelo]
-	dicc_conexiones diccionario.DiccionarioOrdenado[conexion_fecha,TDAVuelo.Vuelo]
-	clave_mayor string
+	base_datos      diccionario.Diccionario[string, TDAVuelo.Vuelo]
+	dicc_fecha      diccionario.DiccionarioOrdenado[numVuelo_fecha, TDAVuelo.Vuelo]
+	dicc_conexiones diccionario.DiccionarioOrdenado[conexion_fecha, TDAVuelo.Vuelo]
+	clave_mayor     string
 }
 
 func comparacion_fechas_ascendente(fecha1 numVuelo_fecha, fecha2 numVuelo_fecha) int {
@@ -53,13 +53,13 @@ func comparar_numero_vuelo_prioridad(a, b numVuelo_prioridad) int {
 	return resultado
 }
 
-func comparar_conexiones(a,b conexion_fecha)int{
-	resultado := strings.Compare(a.conexion.aeropuerto_origen,b.conexion.aeropuerto_origen)
-	if resultado == 0{
-		resultado = strings.Compare(a.conexion.aeropuerto_destino,b.conexion.aeropuerto_destino)
+func comparar_conexiones(a, b conexion_fecha) int {
+	resultado := strings.Compare(a.conexion.aeropuerto_origen, b.conexion.aeropuerto_origen)
+	if resultado == 0 {
+		resultado = strings.Compare(a.conexion.aeropuerto_destino, b.conexion.aeropuerto_destino)
 	}
-	if resultado == 0{
-		resultado = strings.Compare(a.fecha,b.fecha)
+	if resultado == 0 {
+		resultado = strings.Compare(a.fecha, b.fecha)
 	}
 	return resultado
 }
@@ -86,13 +86,13 @@ func (tabla *tabla) AgregarArchivo(ruta string) {
 
 	var claveMayor string
 	tabla.dicc_fecha = diccionario.CrearABB[numVuelo_fecha, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
-	tabla.dicc_conexiones = diccionario.CrearABB[conexion_fecha,TDAVuelo.Vuelo](comparar_conexiones)
+	tabla.dicc_conexiones = diccionario.CrearABB[conexion_fecha, TDAVuelo.Vuelo](comparar_conexiones)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
 		if strings.Compare(clave, claveMayor) == 1 {
 			claveMayor = clave
 		}
 		tabla.dicc_fecha.Guardar(numVuelo_fecha{fecha: dato.Fecha(), numero_vuelo: dato.NumeroVuelo()}, dato)
-		tabla.dicc_conexiones.Guardar(conexion_fecha{conexion: conexion{aeropuerto_destino: dato.AeropuertoDestino(),aeropuerto_origen:dato.AeropuertoOrigen()},fecha: dato.Fecha()},dato)
+		tabla.dicc_conexiones.Guardar(conexion_fecha{conexion: conexion{aeropuerto_destino: dato.AeropuertoDestino(), aeropuerto_origen: dato.AeropuertoOrigen()}, fecha: dato.Fecha()}, dato)
 		return true
 	})
 
@@ -148,7 +148,7 @@ func (tabla *tabla) InfoVuelo(numero_vuelo string) {
 
 func (tabla *tabla) SiguienteVuelo(origen, destino, fecha_desde string) {
 	hallado := false
-	clave := conexion_fecha{fecha: fecha_desde, conexion: conexion{aeropuerto_origen: origen,aeropuerto_destino: destino}}
+	clave := conexion_fecha{fecha: fecha_desde, conexion: conexion{aeropuerto_origen: origen, aeropuerto_destino: destino}}
 
 	tabla.dicc_conexiones.IterarRango(&clave, nil, func(clave conexion_fecha, vuelo TDAVuelo.Vuelo) bool {
 		if origen == clave.conexion.aeropuerto_origen && destino == clave.conexion.aeropuerto_destino {
@@ -205,6 +205,8 @@ func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string) {
 		fmt.Println(vuelo.ObtenerString())
 		tabla.base_datos.Borrar(codigo)
 		tabla.dicc_fecha.Borrar(claves[i])
+		clave_conexion := conexion_fecha{fecha: claves[i].fecha, conexion: conexion{aeropuerto_origen: vuelo.AeropuertoOrigen(), aeropuerto_destino: vuelo.AeropuertoDestino()}}
+		tabla.dicc_conexiones.Borrar(clave_conexion)
 	}
 
 	fmt.Println("OK")
