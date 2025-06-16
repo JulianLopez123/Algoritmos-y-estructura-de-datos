@@ -34,6 +34,7 @@ type tabla struct {
 	base_datos diccionario.Diccionario[string, TDAVuelo.Vuelo]
 	dicc_fecha diccionario.DiccionarioOrdenado[numVuelo_fecha, TDAVuelo.Vuelo]
 	dicc_conexiones diccionario.DiccionarioOrdenado[conexion_fecha,TDAVuelo.Vuelo]
+	clave_mayor string
 }
 
 func comparacion_fechas_ascendente(fecha1 numVuelo_fecha, fecha2 numVuelo_fecha) int {
@@ -65,7 +66,7 @@ func comparar_conexiones(a,b conexion_fecha)int{
 
 func CrearTabla() Tabla {
 	return &tabla{base_datos: diccionario.CrearHash[string, TDAVuelo.Vuelo](),
-		dicc_fecha: diccionario.CrearABB[numVuelo_fecha, TDAVuelo.Vuelo](comparacion_fechas_ascendente)}
+		dicc_fecha: diccionario.CrearABB[numVuelo_fecha, TDAVuelo.Vuelo](comparacion_fechas_ascendente), clave_mayor: ""}
 }
 
 func (tabla *tabla) AgregarArchivo(ruta string) {
@@ -83,25 +84,31 @@ func (tabla *tabla) AgregarArchivo(ruta string) {
 		tabla.base_datos.Guardar(vuelo.NumeroVuelo(), vuelo)
 	}
 
+	var claveMayor string
 	tabla.dicc_fecha = diccionario.CrearABB[numVuelo_fecha, TDAVuelo.Vuelo](comparacion_fechas_ascendente)
 	tabla.dicc_conexiones = diccionario.CrearABB[conexion_fecha,TDAVuelo.Vuelo](comparar_conexiones)
 	tabla.base_datos.Iterar(func(clave string, dato TDAVuelo.Vuelo) bool {
+		if strings.Compare(clave, claveMayor) == 1 {
+			claveMayor = clave
+		}
 		tabla.dicc_fecha.Guardar(numVuelo_fecha{fecha: dato.Fecha(), numero_vuelo: dato.NumeroVuelo()}, dato)
 		tabla.dicc_conexiones.Guardar(conexion_fecha{conexion: conexion{aeropuerto_destino: dato.AeropuertoDestino(),aeropuerto_origen:dato.AeropuertoOrigen()},fecha: dato.Fecha()},dato)
 		return true
 	})
 
+	tabla.clave_mayor = claveMayor
+
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) VerTablero(cant_vuelos int,modo,desde,hasta string) {
-	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 { 
+func (tabla *tabla) VerTablero(cant_vuelos int, modo, desde, hasta string) {
+	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 {
 		tabla.ImprimirError("ver_tablero")
 		return
 	}
 
 	fecha_desde := numVuelo_fecha{fecha: desde, numero_vuelo: "0"}
-	fecha_hasta := numVuelo_fecha{fecha: hasta, numero_vuelo: "99999999999"}
+	fecha_hasta := numVuelo_fecha{fecha: hasta, numero_vuelo: tabla.clave_mayor}
 
 	if modo == "asc" {
 		var contador_asc int
@@ -139,7 +146,7 @@ func (tabla *tabla) InfoVuelo(numero_vuelo string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) SiguienteVuelo(origen,destino,fecha_desde string) {
+func (tabla *tabla) SiguienteVuelo(origen, destino, fecha_desde string) {
 	hallado := false
 	clave := conexion_fecha{fecha: fecha_desde, conexion: conexion{aeropuerto_origen: origen,aeropuerto_destino: destino}}
 
@@ -164,12 +171,10 @@ func (tabla *tabla) PrioridadVuelos(cant_vuelos int) {
 	}
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad)
 	iterador := tabla.base_datos.Iterador()
-	cant := 0
 	for iterador.HaySiguiente() {
 		_, vuelo := iterador.VerActual()
 		num_vuelo_prioridad := numVuelo_prioridad{numero_vuelo: vuelo.NumeroVuelo(), prioridad: vuelo.Prioridad()}
 		heap.Encolar(num_vuelo_prioridad)
-		cant++
 		iterador.Siguiente()
 	}
 
@@ -180,14 +185,14 @@ func (tabla *tabla) PrioridadVuelos(cant_vuelos int) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) Borrar(fecha_desde,fecha_hasta string) {
+func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string) {
 	if strings.Compare(fecha_desde, fecha_hasta) > 0 {
 		tabla.ImprimirError("borrar")
 		return
 	}
 
 	desde := numVuelo_fecha{fecha: fecha_desde, numero_vuelo: "0"}
-	hasta := numVuelo_fecha{fecha: fecha_hasta, numero_vuelo: "99999999999"}
+	hasta := numVuelo_fecha{fecha: fecha_hasta, numero_vuelo: tabla.clave_mayor}
 
 	var claves []numVuelo_fecha
 	tabla.dicc_fecha.IterarRango(&desde, &hasta, func(clave numVuelo_fecha, dato TDAVuelo.Vuelo) bool {
@@ -205,6 +210,6 @@ func (tabla *tabla) Borrar(fecha_desde,fecha_hasta string) {
 	fmt.Println("OK")
 }
 
-func (tabla *tabla) ImprimirError(comando string){
+func (tabla *tabla) ImprimirError(comando string) {
 	fmt.Fprintln(os.Stderr, "Error en comando", comando)
 }
