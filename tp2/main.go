@@ -19,7 +19,7 @@ func main() {
 		}
 		parametros := strings.Split(linea, " ")
 		operacion := parametros[0]
-	
+
 		switch operacion {
 		case "agregar_archivo":
 			tabla.Agregar_archivo(parametros)
@@ -34,8 +34,7 @@ func main() {
 		case "borrar":
 			tabla.Borrar(parametros)
 		default:
-			fmt.Println("Error")
+			fmt.Fprintln(os.Stderr, "Error en comando", operacion)
 		}
 	}
-
 }

@@ -12,6 +12,4 @@ type Vuelo interface {
 	Aeropuerto_destino() string
 
 	Obtener_string() string
-
-	//Obtener_codigo_vuelo(string) string
 }

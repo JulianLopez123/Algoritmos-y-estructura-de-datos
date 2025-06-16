@@ -19,7 +19,6 @@ type vuelo struct {
 }
 
 func CrearVuelo(entrada []string) Vuelo {
-	//numero_vuelo, _ := strconv.Atoi(entrada[0])
 	prioridad, _ := strconv.Atoi(entrada[5])
 	retraso_salida, _ := strconv.Atoi(entrada[7])
 	tiempo_vuelo, _ := strconv.Atoi(entrada[8])
