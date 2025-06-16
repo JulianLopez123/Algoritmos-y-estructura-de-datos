@@ -3,4 +3,5 @@ go 1.22
 use (
 	./tdas
 	./tp1
+	./tp2
 )
