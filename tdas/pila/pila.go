@@ -16,3 +16,19 @@ type Pila[T any] interface {
 	// se devuelve ese valor. Si está vacía, entra en pánico con un mensaje "La pila esta vacia".
 	Desapilar() T
 }
+
+func esta_ord(arr []int) bool {
+	return esta_ord_rec(arr, 0, len(arr)-1)
+}
+
+func esta_ord_rec(arr []int, inicio, fin int) bool {
+	if inicio >= fin {
+		return true
+	}
+	mitad := (inicio + fin) / 2
+
+	if arr[inicio] > arr[mitad] || arr[fin] < arr[mitad] {
+		return false
+	}
+	return esta_ord_rec(arr, mitad+1, fin) && esta_ord_rec(arr, inicio, mitad-1)
+}
