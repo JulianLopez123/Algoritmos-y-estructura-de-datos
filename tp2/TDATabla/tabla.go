@@ -69,7 +69,7 @@ func CrearTabla() Tabla {
 		dicc_fecha: diccionario.CrearABB[numVuelo_fecha, TDAVuelo.Vuelo](comparacion_fechas_ascendente), clave_mayor: ""}
 }
 
-func (tabla *tabla) AgregarArchivo(ruta string)bool{
+func (tabla *tabla) AgregarArchivo(ruta string) bool {
 	archivo, err := os.Open(ruta)
 	if err != nil {
 		return true
@@ -99,23 +99,23 @@ func (tabla *tabla) AgregarArchivo(ruta string)bool{
 	return false
 }
 
-func (tabla *tabla) VerTablero(cant_vuelos int, modo, desde, hasta string) ([]string,bool) {
-	
+func (tabla *tabla) VerTablero(cant_vuelos int, modo, desde, hasta string) ([]string, bool) {
+
 	if modo != "desc" && modo != "asc" || cant_vuelos <= 0 || strings.Compare(desde, hasta) > 0 {
-		return nil,true
+		return nil, true
 	}
 
 	fecha_desde := numVuelo_fecha{fecha: desde, numero_vuelo: "0"}
 	fecha_hasta := numVuelo_fecha{fecha: hasta, numero_vuelo: tabla.clave_mayor}
 	var resultado []string
-	
+
 	if modo == "asc" {
 		var contador_asc int
 		tabla.dicc_fecha.IterarRango(&fecha_desde, &fecha_hasta, func(clave numVuelo_fecha, dato TDAVuelo.Vuelo) bool {
 			if contador_asc == cant_vuelos {
 				return false
 			}
-			resultado = append(resultado, clave.fecha + " - " + clave.numero_vuelo)
+			resultado = append(resultado, clave.fecha+" - "+clave.numero_vuelo)
 			contador_asc++
 			return true
 		})
@@ -129,7 +129,7 @@ func (tabla *tabla) VerTablero(cant_vuelos int, modo, desde, hasta string) ([]st
 		})
 		for i := 0; i < cant_vuelos && !pila.EstaVacia(); i++ {
 			tope := pila.Desapilar()
-			resultado = append(resultado, tope.fecha + " - " + tope.numero_vuelo)
+			resultado = append(resultado, tope.fecha+" - "+tope.numero_vuelo)
 		}
 	}
 	return resultado, false
@@ -137,13 +137,13 @@ func (tabla *tabla) VerTablero(cant_vuelos int, modo, desde, hasta string) ([]st
 
 func (tabla *tabla) InfoVuelo(numero_vuelo string) (string, bool) {
 	if !tabla.base_datos.Pertenece(numero_vuelo) {
-		return "",true
+		return "", true
 	}
 	vuelo := tabla.base_datos.Obtener(numero_vuelo)
-	return vuelo.ObtenerString(),false
+	return vuelo.ObtenerString(), false
 }
 
-func (tabla *tabla) SiguienteVuelo(origen, destino, fecha_desde string) (string,bool) {
+func (tabla *tabla) SiguienteVuelo(origen, destino, fecha_desde string) (string, bool) {
 	hallado := false
 	clave := conexion_fecha{fecha: fecha_desde, conexion: conexion{aeropuerto_origen: origen, aeropuerto_destino: destino}}
 
@@ -157,15 +157,15 @@ func (tabla *tabla) SiguienteVuelo(origen, destino, fecha_desde string) (string,
 		return true
 	})
 	if !hallado {
-		 return "", true
-    }
+		return "", true
+	}
 
-    return resultado, false
+	return resultado, false
 }
 
-func (tabla *tabla) PrioridadVuelos(cant_vuelos int) ([]string,bool) {
+func (tabla *tabla) PrioridadVuelos(cant_vuelos int) ([]string, bool) {
 	if cant_vuelos <= 0 {
-		return nil,true
+		return nil, true
 	}
 	var resultado []string
 	heap := cola_prioridad.CrearHeap(comparar_numero_vuelo_prioridad)
@@ -179,14 +179,14 @@ func (tabla *tabla) PrioridadVuelos(cant_vuelos int) ([]string,bool) {
 
 	for i := 0; i < cant_vuelos && !heap.EstaVacia(); i++ {
 		tope := heap.Desencolar()
-		resultado = append(resultado,strconv.Itoa(tope.prioridad)+ " - " + tope.numero_vuelo)
+		resultado = append(resultado, strconv.Itoa(tope.prioridad)+" - "+tope.numero_vuelo)
 	}
-	return resultado,false
+	return resultado, false
 }
 
-func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string)([]string,bool){
+func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string) ([]string, bool) {
 	if strings.Compare(fecha_desde, fecha_hasta) > 0 {
-		return nil,true
+		return nil, true
 	}
 
 	desde := numVuelo_fecha{fecha: fecha_desde, numero_vuelo: "0"}
@@ -210,5 +210,5 @@ func (tabla *tabla) Borrar(fecha_desde, fecha_hasta string)([]string,bool){
 		}
 	}
 
-	return resultado,false
+	return resultado, false
 }

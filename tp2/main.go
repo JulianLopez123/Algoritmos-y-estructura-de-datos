@@ -28,47 +28,47 @@ func main() {
 			break
 		}
 		ingreso := strings.Split(linea, " ")
-		ejecutarparametros(ingreso,tabla)
+		ejecutarParametros(ingreso, tabla)
 	}
 }
 
-func ejecutarparametros(ingreso []string,tabla TDATabla.Tabla){
+func ejecutarParametros(ingreso []string, tabla TDATabla.Tabla) {
 	comando := ingreso[0]
 	parametros := ingreso[1:]
 
 	switch comando {
 	case "agregar_archivo":
-		casoAgregarArchivo(tabla,parametros,comando)
+		casoAgregarArchivo(tabla, parametros, comando)
 	case "ver_tablero":
-		casoVerTablero(tabla,parametros,comando)
+		casoVerTablero(tabla, parametros, comando)
 	case "info_vuelo":
-		casoInfoVuelo(tabla,parametros,comando)
+		casoInfoVuelo(tabla, parametros, comando)
 	case "prioridad_vuelos":
-		casoPrioridadVuelos(tabla,parametros,comando)
+		casoPrioridadVuelos(tabla, parametros, comando)
 	case "siguiente_vuelo":
-		casoSiguienteVuelo(tabla,parametros,comando)
+		casoSiguienteVuelo(tabla, parametros, comando)
 	case "borrar":
-		casoBorrar(tabla,parametros,comando)
+		casoBorrar(tabla, parametros, comando)
 	default:
 		imprimirError(comando)
 	}
 }
 
-func casoAgregarArchivo(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoAgregarArchivo(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_AGREGAR_ARCHIVO) {
 		imprimirError(comando)
 		return
 	}
 	err := tabla.AgregarArchivo(parametros[0])
-	if err{
+	if err {
 		imprimirError(comando)
-		return 
+		return
 	}
 	fmt.Println("OK")
-	
+
 }
 
-func casoVerTablero(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoVerTablero(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_VER_TABLERO) {
 		imprimirError(comando)
 		return
@@ -79,24 +79,24 @@ func casoVerTablero(tabla TDATabla.Tabla,parametros []string,comando string){
 		return
 	}
 
-	vuelos,err2 := tabla.VerTablero(cant_vuelos, parametros[1], parametros[2], parametros[3])
-	if err2{
+	vuelos, err2 := tabla.VerTablero(cant_vuelos, parametros[1], parametros[2], parametros[3])
+	if err2 {
 		imprimirError(comando)
 		return
 	}
-	for _,vuelo := range vuelos{
+	for _, vuelo := range vuelos {
 		fmt.Println(vuelo)
 	}
 	fmt.Println("OK")
 }
 
-func casoInfoVuelo(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoInfoVuelo(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_INFO_VUELO) {
 		imprimirError(comando)
 		return
 	}
-	vuelo,err:=tabla.InfoVuelo(parametros[0])
-	if err{
+	vuelo, err := tabla.InfoVuelo(parametros[0])
+	if err {
 		imprimirError(comando)
 		return
 	}
@@ -104,7 +104,7 @@ func casoInfoVuelo(tabla TDATabla.Tabla,parametros []string,comando string){
 	fmt.Println("OK")
 }
 
-func casoPrioridadVuelos(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoPrioridadVuelos(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_PRIORIDAD_VUELOS) {
 		imprimirError(comando)
 		return
@@ -114,18 +114,18 @@ func casoPrioridadVuelos(tabla TDATabla.Tabla,parametros []string,comando string
 		imprimirError(comando)
 		return
 	}
-	vuelos,err2 := tabla.PrioridadVuelos(cant_vuelos)
-	if err2{
+	vuelos, err2 := tabla.PrioridadVuelos(cant_vuelos)
+	if err2 {
 		imprimirError(comando)
 		return
 	}
-	for _,vuelo := range vuelos{
+	for _, vuelo := range vuelos {
 		fmt.Println(vuelo)
 	}
 	fmt.Println("OK")
 }
 
-func casoSiguienteVuelo(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoSiguienteVuelo(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_SIGUIENTE_VUELO) {
 		imprimirError(comando)
 		return
@@ -133,26 +133,26 @@ func casoSiguienteVuelo(tabla TDATabla.Tabla,parametros []string,comando string)
 	origen := parametros[0]
 	destino := parametros[1]
 	fecha_desde := parametros[2]
-	resultado ,err:= tabla.SiguienteVuelo(origen,destino,fecha_desde)
-	if err{
+	resultado, err := tabla.SiguienteVuelo(origen, destino, fecha_desde)
+	if err {
 		fmt.Println("No hay vuelo registrado desde", origen, "hacia", destino, "desde", fecha_desde)
-	}else{
+	} else {
 		fmt.Println(resultado)
 	}
 	fmt.Println("OK")
 }
 
-func casoBorrar(tabla TDATabla.Tabla,parametros []string,comando string){
+func casoBorrar(tabla TDATabla.Tabla, parametros []string, comando string) {
 	if !cantParametrosCorrectos(parametros, PARAMETROS_BORRAR) {
 		imprimirError(comando)
 		return
 	}
-	vuelos,err:=tabla.Borrar(parametros[0], parametros[1])
-	if err{
+	vuelos, err := tabla.Borrar(parametros[0], parametros[1])
+	if err {
 		imprimirError(comando)
 		return
 	}
-	for _,vuelo := range vuelos{
+	for _, vuelo := range vuelos {
 		fmt.Println(vuelo)
 	}
 	fmt.Println("OK")
