@@ -11,7 +11,7 @@ class Grafo:
                 self.agregar_vertice(v)
 
     def agregar_vertice(self, v):
-        if v not in self.vertices:
+        if v not in self.vertices.keys():
             self.vertices.add(v)
             self.aristas[v] = {}
 

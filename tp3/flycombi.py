@@ -99,8 +99,7 @@ def camino_minimo_barato_o_rapido(grafo, forma, origen, destino):
             if distancia_por_aca < dist[w]:
                 dist[w] = distancia_por_aca
                 padre[w] = v
-                heap.encolar((dist[w], w))
-                # o: heap.actualizar(w, dist[w])
+                heap.put((dist[w], w))
     return None
 
 
@@ -165,14 +164,14 @@ def main():
             camino_mas(grafo, parametros)
         elif comando == "camino_escalas":
             camino_escalas(grafo, parametros)
-        elif comando == "centralidad":
-            centralidad(grafo, parametros)
-        elif comando == "nueva_aerolinea":
-            nueva_aerolinea(grafo, parametros)
-        elif comando == "itinerario":
-            itinerario(grafo, parametros)
-        elif comando == "exportar_kml":
-            exportar_kml(grafo, parametros)
+        # elif comando == "centralidad":
+        #     centralidad(grafo, parametros)
+        # elif comando == "nueva_aerolinea":
+        #     nueva_aerolinea(grafo, parametros)
+        # elif comando == "itinerario":
+        #     itinerario(grafo, parametros)
+        # elif comando == "exportar_kml":
+        #     exportar_kml(grafo, parametros)
         else:
             print("error")
             return 6
