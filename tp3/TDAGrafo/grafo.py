@@ -2,11 +2,11 @@ import random
 
 
 class Grafo:
-    def __init__(self, es_dirigido, vertices_init=[]):
+    def __init__(self, es_dirigido, lista_vertices=[]):
         self.es_dirigido = es_dirigido
         self.aristas = {}
-        if vertices_init:
-            for v in vertices_init:
+        if lista_vertices:
+            for v in lista_vertices:
                 self.agregar_vertice(v)
 
     def agregar_vertice(self, v):
