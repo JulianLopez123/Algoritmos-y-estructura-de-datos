@@ -93,7 +93,7 @@ def camino_mas(
     camino = None
     distancia_minima = float("inf")
     for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancia = camino_minimo_barato_o_rapido(grafo, aeropuerto_origen)
+        padres, distancia = dijkstra(grafo, aeropuerto_origen)
         for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
             if aeropuerto_destino not in aeropuertos_de_ciudades[destino]:
                 continue
@@ -146,7 +146,7 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
     camino = None
     distancia_minima = float("inf")
     for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancia = camino_minimo_escalas(grafo, aeropuerto_origen)
+        padres, distancia = bfs(grafo, aeropuerto_origen)
         for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
             if aeropuerto_destino not in aeropuertos_de_ciudades[destino]:
                 continue
@@ -169,7 +169,7 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
 # def centralidad(grafo,parametros):
 
 
-def camino_minimo_barato_o_rapido(grafo, origen):
+def dijkstra(grafo, origen):
     dist = {}
     padre = {}
     for v in grafo.obtener_vertices():
@@ -191,7 +191,7 @@ def camino_minimo_barato_o_rapido(grafo, origen):
     return padre, dist
 
 
-def camino_minimo_escalas(grafo, origen):
+def bfs(grafo, origen):
     visitados = set()
     padres = {}
     orden = {}
@@ -261,11 +261,77 @@ def escribir_archivo_vuelos(vuelos, ruta, informacion_vuelos):
 def nueva_aerolinea(grafo, parametros, informacion_vuelos):
     if len(parametros) != 1:
         print("error cant param nueva aerolinea")
-        return 6
+        return 7
     ruta = parametros[0]
     arbol = mst_prim(grafo)
     vuelos = obtener_vuelos(arbol)
     escribir_archivo_vuelos(vuelos, ruta, informacion_vuelos)
+
+
+# def betweeness_centrality(grafo, cantidad):
+#     for aeropuerto in grafo.obtener_vertices():
+#         padre, dist = dijkstra(grafo, aeropuerto)
+
+
+# def centralidad(grafo, parametros):
+#     if len(parametros) != 5:
+#         print("errror cant param centralidad")
+#         return 9
+#     cantidad_aeropuertos = int(parametros[0])  # validar si no se puede hacer int
+
+
+def _dfs(grafo, v, visitados, pila):
+    for w in grafo.adyacentes(v):
+        if w not in visitados:
+            visitados.add(w)
+            _dfs(grafo, w, visitados, pila)
+    pila.put(v)
+
+
+def topologico_dfs(grafo):
+    visitados = set()
+    pila = queue.LifoQueue()
+    for v in grafo.obtener_vertices():
+        if v not in visitados:
+            visitados.add(v)
+            _dfs(grafo, v, visitados, pila)
+    return pila_a_lista(pila)
+
+
+def pila_a_lista(pila):
+    lista = []
+    while not pila.empty():
+        lista.append(pila.get())
+    return lista
+
+
+def obtener_itinerario(ruta):
+    itinerario = Grafo(es_dirigido=True)
+    with open(ruta, "r") as archivo:
+        ciudades_a_visitar = archivo.readline().rstrip("\n").split(",")
+        for ciudad in ciudades_a_visitar:
+            itinerario.agregar_vertice(ciudad)
+        for linea in archivo:
+            prioridades = linea.rstrip("\n").split(",")
+            itinerario.agregar_arista(prioridades[0], prioridades[1], 1)
+    return itinerario
+
+
+# def obtener_caminos(itinerario):
+
+
+def itinerario(parametros):
+    if len(parametros) != 1:
+        print("error cant param itinerario")
+        return 8
+    ruta = parametros[0]
+    itinerario = obtener_itinerario(ruta)
+    orden = topologico_dfs(itinerario)
+    ciudades_en_orden = ",".join(orden)
+    print(ciudades_en_orden)
+
+
+# def exportar_kml(grafo, parametros):
 
 
 def main():
@@ -273,7 +339,7 @@ def main():
     if len(entrada) < 3:
         print("error")
         return 1
-
+    # falta si < archivo
     archivo_aeropuertos = entrada[1]
     archivo_vuelos = entrada[2]
 
@@ -306,11 +372,11 @@ def main():
                 aeropuertos_de_ciudades,
             )
         # elif comando == "centralidad":
-        #     centralidad(grafo, parametros)
+        #     centralidad(grafo_cant_vuelos_entre_aeropuertos, parametros)
         elif comando == "nueva_aerolinea":
             nueva_aerolinea(grafo_precio, parametros, info_vuelos)
-        # elif comando == "itinerario":
-        #     itinerario(grafo, parametros)
+        elif comando == "itinerario":
+            itinerario(parametros)
         # elif comando == "exportar_kml":
         #     exportar_kml(grafo, parametros)
         else:
