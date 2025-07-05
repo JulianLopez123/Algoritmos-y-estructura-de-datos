@@ -336,7 +336,7 @@ def obtener_itinerario(ruta):
     with open(ruta, "r") as archivo:
         ciudades_a_visitar = archivo.readline().strip().split(",")
         for ciudad in ciudades_a_visitar:
-            itinerario.agregar_vertice(ciudad)
+            itinerario.agregar_vertice(ciudad.strip())
         for linea in archivo:
             if not linea:
                 continue
@@ -351,13 +351,13 @@ def itinerario(grafo_escalas, parametros, aeropuertos_de_ciudades):
     ruta = parametros[0]
     itinerario = obtener_itinerario(ruta)
     orden = topologico_dfs(itinerario)
-    ciudades_en_orden = ",".join(orden)
+    ciudades_en_orden = ", ".join(orden)
     print(ciudades_en_orden)
     ciudades_en_orden = ciudades_en_orden.split(",")
 
     for i in range(len(ciudades_en_orden) - 1):
-        origen = ciudades_en_orden[i]
-        destino = ciudades_en_orden[i + 1]
+        origen = ciudades_en_orden[i].strip()
+        destino = ciudades_en_orden[i + 1].strip()
         padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = (
             camino_minimo(
                 grafo_escalas,
@@ -392,7 +392,7 @@ def escribir_lineas_kml(archivo, aeropuertos, info_aeropuertos):
         archivo.write("		<Placemark>\n")
         archivo.write("        <LineString>\n")
         archivo.write(
-            f"                <coordinates>{latitud_origen} {longitud_origen} {latitud_destino} {longitud_destino}</coordinates>\n"
+            f"                <coordinates>{latitud_origen}, {longitud_origen} {latitud_destino}, {longitud_destino}</coordinates>\n"
         )
         archivo.write("        </LineString>\n")
         archivo.write("		</Placemark>\n")
@@ -400,11 +400,10 @@ def escribir_lineas_kml(archivo, aeropuertos, info_aeropuertos):
 
 def escribir_lugares_kml(archivo, aeropuertos, info_aeropuertos):
     for aeropuerto in aeropuertos:
-        ciudad = info_aeropuertos[aeropuerto]["ciudad"]
         latitud = info_aeropuertos[aeropuerto]["latitud"]
         longitud = info_aeropuertos[aeropuerto]["longitud"]
         archivo.write("		<Placemark>\n")
-        archivo.write(f"			<name>{ciudad}</name>\n")
+        archivo.write(f"			<name>{aeropuerto}</name>\n")
         archivo.write("			<Point>\n")
         archivo.write(
             f"                <coordinates>{latitud}, {longitud}</coordinates>\n"
