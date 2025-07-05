@@ -3,7 +3,7 @@ from collections import deque
 from TDAGrafo.grafo import Grafo
 
 
-def dijkstra(grafo, origen, destino=None):
+def dijkstra(grafo, forma, origen, destino=None):
     dist = {}
     padre = {}
     for v in grafo.obtener_vertices():
@@ -17,7 +17,7 @@ def dijkstra(grafo, origen, destino=None):
         if v == destino:
             break
         for w in grafo.adyacentes(v):
-            distancia_por_aca = dist[v] + grafo.peso_arista(v, w)
+            distancia_por_aca = dist[v] + grafo.peso_arista(v, w)[forma]
             if distancia_por_aca < dist[w]:
                 dist[w] = distancia_por_aca
                 padre[w] = v
@@ -25,7 +25,7 @@ def dijkstra(grafo, origen, destino=None):
     return padre, dist
 
 
-def bfs(grafo, origen, destino=None):
+def bfs(grafo, forma, origen, destino):
     visitados = set()
     padres = {}
     orden = {}
@@ -65,12 +65,12 @@ def mst_prim(grafo):
     return arbol
 
 
-def betweeness_centrality(grafo):
+def betweeness_centrality(grafo, forma):
     cent = {}
     for v in grafo.obtener_vertices():
         cent[v] = 0
     for v in grafo.obtener_vertices():
-        padre, distancias = dijkstra(grafo, v)
+        padre, distancias = dijkstra(grafo, forma, v, None)
         cent_aux = {}
         for w in grafo.obtener_vertices():
             cent_aux[w] = 0
@@ -118,10 +118,7 @@ def cargar_grafo(archivo_aeropuertos, archivo_vuelos):
     info_aeropuertos = {}
     info_vuelos = {}
 
-    grafo_precio = Grafo(es_dirigido=False)
-    grafo_tiempo_promedio = Grafo(es_dirigido=False)
-    grafo_escalas = Grafo(es_dirigido=False)
-    grafo_escalas_inverso = Grafo(es_dirigido=False)
+    grafo = Grafo(es_dirigido=False)
 
     with open(archivo_aeropuertos, "r") as aeropuertos:
         for aeropuerto in aeropuertos:
@@ -140,10 +137,7 @@ def cargar_grafo(archivo_aeropuertos, archivo_vuelos):
                 "latitud": latitud,
                 "longitud": longitud,
             }
-            grafo_precio.agregar_vertice(codigo_aeropuerto)
-            grafo_tiempo_promedio.agregar_vertice(codigo_aeropuerto)
-            grafo_escalas.agregar_vertice(codigo_aeropuerto)
-            grafo_escalas_inverso.agregar_vertice(codigo_aeropuerto)
+            grafo.agregar_vertice(codigo_aeropuerto)
 
     with open(archivo_vuelos, "r") as vuelos:
         for vuelo in vuelos:
@@ -156,46 +150,23 @@ def cargar_grafo(archivo_aeropuertos, archivo_vuelos):
                 cant_vuelos_entre_aeropuertos,
             ) = (vuelo[0], vuelo[1], int(vuelo[2]), int(vuelo[3]), int(vuelo[4]))
 
-            info_vuelos[(aeropuerto_i, aeropuerto_j)] = {
+            info_vuelo = {
                 "tiempo_promedio": tiempo_promedio,
                 "precio": precio,
                 "cant_vuelos_entre_aeropuertos": cant_vuelos_entre_aeropuertos,
             }
-
-            grafo_precio.agregar_arista(aeropuerto_i, aeropuerto_j, precio)
-            grafo_tiempo_promedio.agregar_arista(
-                aeropuerto_i, aeropuerto_j, tiempo_promedio
-            )
-            grafo_escalas.agregar_arista(
-                aeropuerto_i, aeropuerto_j, cant_vuelos_entre_aeropuertos
-            )
-            grafo_escalas_inverso.agregar_arista(
-                aeropuerto_i, aeropuerto_j, 1 / cant_vuelos_entre_aeropuertos
-            )
-    return (
-        grafo_precio,
-        grafo_tiempo_promedio,
-        grafo_escalas,
-        grafo_escalas_inverso,
-        info_aeropuertos,
-        aeropuertos_de_ciudades,
-        info_vuelos,
-    )
+            info_vuelos[(aeropuerto_i, aeropuerto_j)] = info_vuelo
+            grafo.agregar_arista(aeropuerto_i, aeropuerto_j, info_vuelo)
+    return (grafo, info_aeropuertos, info_vuelos, aeropuertos_de_ciudades)
 
 
-def camino_minimo(
-    grafo,
-    origen,
-    destino,
-    aeropuertos_de_ciudades,
-    funcion,
-):
+def camino_minimo(grafo, origen, destino, aeropuertos_de_ciudades, forma, funcion):
     padres_minimos = {}
     aeropuerto_origen_minimo = ""
     aeropuerto_destino_minimo = ""
     distancia_minima = float("inf")
     for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancias = funcion(grafo, aeropuerto_origen)
+        padres, distancias = funcion(grafo, forma, aeropuerto_origen, None)
         for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
             if aeropuerto_destino not in distancias:
                 continue
@@ -211,8 +182,7 @@ def camino_minimo(
 
 
 def camino_mas(
-    grafo_precio,
-    grafo_tiempo_promedio,
+    grafo,
     parametros,
     aeropuertos_de_ciudades,
 ):
@@ -221,15 +191,11 @@ def camino_mas(
     forma = parametros[0]
     origen = parametros[1]
     destino = parametros[2]
-    if forma == "barato":
-        grafo = grafo_precio
-    elif forma == "rapido":
-        grafo = grafo_tiempo_promedio
-    else:
+    if forma != "barato" or forma != "rapido":
         return 3
 
-    padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = camino_minimo(
-        grafo, origen, destino, aeropuertos_de_ciudades, dijkstra
+    padres_minimos, aeropuerto_destino_minimo = camino_minimo(
+        grafo, origen, destino, aeropuertos_de_ciudades, forma, dijkstra
     )
     if padres_minimos == None:
         return 4
@@ -268,9 +234,9 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
 
     origen = parametros[0]
     destino = parametros[1]
-
-    padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = camino_minimo(
-        grafo, origen, destino, aeropuertos_de_ciudades, bfs
+    forma = "cant_vuelos_entre_aeropuertos"
+    padres_minimos, aeropuerto_destino_minimo = camino_minimo(
+        grafo, origen, destino, aeropuertos_de_ciudades, None, bfs
     )
     camino = reconstruir_camino(padres_minimos, aeropuerto_destino_minimo)
     if camino == None:
@@ -321,7 +287,8 @@ def centralidad(grafo, parametros):
     if not parametros[0].isnumeric():
         return 10
     cantidad_aeropuertos = int(parametros[0])
-    centralidad = betweeness_centrality(grafo)
+    forma = "cant_vuelos_entre_aeropuertos"
+    centralidad = betweeness_centrality(grafo, forma)
     aeropuertos_centrales = sorted(
         centralidad.items(), key=lambda aeropuerto: aeropuerto[1], reverse=True
     )
@@ -345,7 +312,7 @@ def obtener_itinerario(ruta):
     return itinerario
 
 
-def itinerario(grafo_escalas, parametros, aeropuertos_de_ciudades):
+def itinerario(grafo, parametros, aeropuertos_de_ciudades):
     if len(parametros) != 1:
         return 8
     ruta = parametros[0]
@@ -354,18 +321,13 @@ def itinerario(grafo_escalas, parametros, aeropuertos_de_ciudades):
     ciudades_en_orden = ", ".join(orden)
     print(ciudades_en_orden)
     ciudades_en_orden = ciudades_en_orden.split(",")
+    forma = "cant_vuelos_entre_aeropuertos"
 
     for i in range(len(ciudades_en_orden) - 1):
         origen = ciudades_en_orden[i].strip()
         destino = ciudades_en_orden[i + 1].strip()
-        padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = (
-            camino_minimo(
-                grafo_escalas,
-                origen,
-                destino,
-                aeropuertos_de_ciudades,
-                bfs,
-            )
+        padres_minimos, aeropuerto_destino_minimo = camino_minimo(
+            grafo, origen, destino, aeropuertos_de_ciudades, forma, bfs
         )
         camino = reconstruir_camino(padres_minimos, aeropuerto_destino_minimo)
         if camino == None:
