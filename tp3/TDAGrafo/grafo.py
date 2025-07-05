@@ -5,9 +5,8 @@ class Grafo:
     def __init__(self, es_dirigido, lista_vertices=[]):
         self.es_dirigido = es_dirigido
         self.aristas = {}
-        if lista_vertices:
-            for v in lista_vertices:
-                self.agregar_vertice(v)
+        for v in lista_vertices:
+            self.agregar_vertice(v)
 
     def agregar_vertice(self, v):
         if v not in self.aristas:

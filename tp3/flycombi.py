@@ -14,15 +14,15 @@ from biblioteca import (
 
 def main():
     entrada = sys.argv
-    archivo_instrucciones = sys.stdin
+    instrucciones = sys.stdin
     if len(entrada) != 3:
         return 1
     archivo_aeropuertos = entrada[1]
     archivo_vuelos = entrada[2]
-    ejecucion(archivo_aeropuertos, archivo_vuelos, archivo_instrucciones)
+    ejecucion(archivo_aeropuertos, archivo_vuelos, instrucciones)
 
 
-def ejecucion(archivo_aeropuertos, archivo_vuelos, archivo_instrucciones):
+def ejecucion(archivo_aeropuertos, archivo_vuelos, instrucciones):
     ruta_kml = ""
     (
         grafo_precio,
@@ -33,15 +33,8 @@ def ejecucion(archivo_aeropuertos, archivo_vuelos, archivo_instrucciones):
         aeropuertos_de_ciudades,
         info_vuelos,
     ) = cargar_grafo(archivo_aeropuertos, archivo_vuelos)
-    while True:
-        if archivo_instrucciones:
-            ingreso = archivo_instrucciones.readline().rstrip("\n")
-            if ingreso == "":
-                return
-            print(ingreso)
-        else:
-            ingreso = input()
-        ingreso = ingreso.split(" ", maxsplit=1)
+    for linea in instrucciones:
+        ingreso = linea.rstrip("\n").split(" ", maxsplit=1)
         comando = ingreso[0]
         parametros = ingreso[1].split(",")
         if comando == "camino_mas":

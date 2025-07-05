@@ -3,7 +3,7 @@ from collections import deque
 from TDAGrafo.grafo import Grafo
 
 
-def dijkstra(grafo, origen):
+def dijkstra(grafo, origen, destino=None):
     dist = {}
     padre = {}
     for v in grafo.obtener_vertices():
@@ -14,6 +14,8 @@ def dijkstra(grafo, origen):
     heap.put((0, origen))
     while not heap.empty():
         _, v = heap.get()
+        if v == destino:
+            break
         for w in grafo.adyacentes(v):
             distancia_por_aca = dist[v] + grafo.peso_arista(v, w)
             if distancia_por_aca < dist[w]:
@@ -23,7 +25,7 @@ def dijkstra(grafo, origen):
     return padre, dist
 
 
-def bfs(grafo, origen):
+def bfs(grafo, origen, destino=None):
     visitados = set()
     padres = {}
     orden = {}
@@ -49,17 +51,17 @@ def mst_prim(grafo):
     visitados.add(v)
     q = PriorityQueue()
     for w in grafo.adyacentes(v):
-        q.put(((v, w), grafo.peso_arista(v, w)))
+        q.put((grafo.peso_arista(v, w), v, w))
     arbol = Grafo(es_dirigido=False, lista_vertices=grafo.obtener_vertices())
     while not q.empty():
-        (v, w), peso = q.get()
+        peso, v, w = q.get()
         if w in visitados:
             continue
         arbol.agregar_arista(v, w, peso)
         visitados.add(w)
         for x in grafo.adyacentes(w):
             if x not in visitados:
-                q.put(((w, x), grafo.peso_arista(w, x)))
+                q.put((grafo.peso_arista(w, x), w, x))
     return arbol
 
 
@@ -116,8 +118,8 @@ def cargar_grafo(archivo_aeropuertos, archivo_vuelos):
     info_aeropuertos = {}
     info_vuelos = {}
 
-    grafo_precio = Grafo(es_dirigido=True)
-    grafo_tiempo_promedio = Grafo(es_dirigido=True)
+    grafo_precio = Grafo(es_dirigido=False)
+    grafo_tiempo_promedio = Grafo(es_dirigido=False)
     grafo_escalas = Grafo(es_dirigido=False)
     grafo_escalas_inverso = Grafo(es_dirigido=False)
 
@@ -193,18 +195,18 @@ def camino_minimo(
     aeropuerto_destino_minimo = ""
     distancia_minima = float("inf")
     for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancia = funcion(grafo, aeropuerto_origen)
+        padres, distancias = funcion(grafo, aeropuerto_origen)
         for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
-            if (
-                aeropuerto_destino not in aeropuertos_de_ciudades[destino]
-                or aeropuerto_destino not in distancia
-            ):
+            if aeropuerto_destino not in distancias:
                 continue
-            if distancia[aeropuerto_destino] < distancia_minima:
-                distancia_minima = distancia[aeropuerto_destino]
+            if distancias[aeropuerto_destino] < distancia_minima:
+                distancia_minima = distancias[aeropuerto_destino]
                 padres_minimos = padres
                 aeropuerto_destino_minimo = aeropuerto_destino
                 aeropuerto_origen_minimo = aeropuerto_origen
+
+    if distancia_minima == float("inf"):
+        return None, None, None
     return padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
 
 
@@ -229,11 +231,10 @@ def camino_mas(
     padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = camino_minimo(
         grafo, origen, destino, aeropuertos_de_ciudades, dijkstra
     )
-    camino = reconstruir_camino(
-        padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
-    )
-    if camino == None:
+    if padres_minimos == None:
         return 4
+
+    camino = reconstruir_camino(padres_minimos, aeropuerto_destino_minimo)
 
     linea = armar_camino_imprimible(camino)
     print(linea)
@@ -250,7 +251,9 @@ def armar_camino_imprimible(camino):
     return linea
 
 
-def reconstruir_camino(padre, origen, destino):
+def reconstruir_camino(padre, destino):
+    if padre == None:
+        return None
     resultado = []
     aeropuerto = destino
     while aeropuerto:
@@ -269,9 +272,7 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
     padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = camino_minimo(
         grafo, origen, destino, aeropuertos_de_ciudades, bfs
     )
-    camino = reconstruir_camino(
-        padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
-    )
+    camino = reconstruir_camino(padres_minimos, aeropuerto_destino_minimo)
     if camino == None:
         return 4
 
@@ -281,14 +282,14 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
 
 
 def obtener_vuelos(grafo):
-    aristas = []
+    vuelos = []
     visitados = set()
     for v in grafo.obtener_vertices():
         for w in grafo.adyacentes(v):
             if w not in visitados:
-                aristas.append((v, w, grafo.peso_arista(v, w)))
+                vuelos.append((v, w, grafo.peso_arista(v, w)))
         visitados.add(v)
-    return aristas
+    return vuelos
 
 
 def escribir_archivo_vuelos(vuelos, ruta, informacion_vuelos):
@@ -300,7 +301,7 @@ def escribir_archivo_vuelos(vuelos, ruta, informacion_vuelos):
             if aeropuertos_conectados not in informacion_vuelos:
                 aeropuertos_conectados = (aeropuerto_destino, aeropuerto_origen)
             info_vuelo = informacion_vuelos[aeropuertos_conectados]
-            linea = f"{aeropuertos_conectados[0]},{aeropuertos_conectados[1]},{info_vuelo["tiempo_promedio"]},{info_vuelo["precio"]},{info_vuelo["cant_vuelos_entre_aeropuertos"]}\n"
+            linea = f"{aeropuertos_conectados[0]},{aeropuertos_conectados[1]},{info_vuelo['tiempo_promedio']},{info_vuelo['precio']},{info_vuelo['cant_vuelos_entre_aeropuertos']}\n"
             archivo.write(linea)
     print("OK")
 
@@ -333,11 +334,13 @@ def centralidad(grafo, parametros):
 def obtener_itinerario(ruta):
     itinerario = Grafo(es_dirigido=True)
     with open(ruta, "r") as archivo:
-        ciudades_a_visitar = archivo.readline().rstrip("\n").split(",")
+        ciudades_a_visitar = archivo.readline().strip().split(",")
         for ciudad in ciudades_a_visitar:
             itinerario.agregar_vertice(ciudad)
         for linea in archivo:
-            prioridades = linea.rstrip("\n").split(",")
+            if not linea:
+                continue
+            prioridades = linea.strip().split(",")
             itinerario.agregar_arista(prioridades[0], prioridades[1])
     return itinerario
 
@@ -364,9 +367,7 @@ def itinerario(grafo_escalas, parametros, aeropuertos_de_ciudades):
                 bfs,
             )
         )
-        camino = reconstruir_camino(
-            padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
-        )
+        camino = reconstruir_camino(padres_minimos, aeropuerto_destino_minimo)
         if camino == None:
             return 4
 
