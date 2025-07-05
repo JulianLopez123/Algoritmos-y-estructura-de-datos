@@ -68,6 +68,33 @@ def cargar_grafo(archivo_aeropuertos, archivo_vuelos):
     )
 
 
+def conseguir_camino_minimo(
+    grafo,
+    origen,
+    destino,
+    aeropuertos_de_ciudades,
+    funcion,
+):
+    padres_minimos = {}
+    aeropuerto_origen_minimo = ""
+    aeropuerto_destino_minimo = ""
+    distancia_minima = float("inf")
+    for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
+        padres, distancia = funcion(grafo, aeropuerto_origen)
+        for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
+            if (
+                aeropuerto_destino not in aeropuertos_de_ciudades[destino]
+                or aeropuerto_destino not in distancia
+            ):
+                continue
+            if distancia[aeropuerto_destino] < distancia_minima:
+                distancia_minima = distancia[aeropuerto_destino]
+                padres_minimos = padres
+                aeropuerto_destino_minimo = aeropuerto_destino
+                aeropuerto_origen_minimo = aeropuerto_origen
+    return padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
+
+
 def camino_mas(
     grafo_precio,
     grafo_tiempo_promedio,
@@ -87,22 +114,11 @@ def camino_mas(
     else:
         return 3
 
-    padres_minimos = {}
-    aeropuerto_origen_minimo = ""
-    aeropuerto_destino_minimo = ""
-    camino = None
-    distancia_minima = float("inf")
-    for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancia = dijkstra(grafo, aeropuerto_origen)
-        for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
-            if aeropuerto_destino not in aeropuertos_de_ciudades[destino]:
-                continue
-            if distancia[aeropuerto_destino] < distancia_minima:
-                distancia_minima = distancia[aeropuerto_destino]
-                padres_minimos = padres
-                aeropuerto_destino_minimo = aeropuerto_destino
-                aeropuerto_origen_minimo = aeropuerto_origen
-
+    padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = (
+        conseguir_camino_minimo(
+            grafo, origen, destino, aeropuertos_de_ciudades, dijkstra
+        )
+    )
     camino = reconstruir_camino(
         padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
     )
@@ -110,17 +126,19 @@ def camino_mas(
         print("error no hay camino")
         return 4
 
-    mostrar_camino(camino)
+    linea = armar_camino_imprimible(camino)
+    print(linea)
+    return linea
 
 
-def mostrar_camino(camino):
-    imprimible = ""
+def armar_camino_imprimible(camino):
+    linea = ""
     for i in range(len(camino)):
         if i != len(camino) - 1:
-            imprimible += camino[i] + " -> "
+            linea += camino[i] + " -> "
         else:
-            imprimible += camino[i]
-    print(imprimible)
+            linea += camino[i]
+    return linea
 
 
 def reconstruir_camino(padre, origen, destino):
@@ -140,22 +158,9 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
     origen = parametros[0]
     destino = parametros[1]
 
-    padres_minimos = {}
-    aeropuerto_origen_minimo = ""
-    aeropuerto_destino_minimo = ""
-    camino = None
-    distancia_minima = float("inf")
-    for aeropuerto_origen in aeropuertos_de_ciudades[origen]:
-        padres, distancia = bfs(grafo, aeropuerto_origen)
-        for aeropuerto_destino in aeropuertos_de_ciudades[destino]:
-            if aeropuerto_destino not in aeropuertos_de_ciudades[destino]:
-                continue
-            if distancia[aeropuerto_destino] < distancia_minima:
-                distancia_minima = distancia[aeropuerto_destino]
-                padres_minimos = padres
-                aeropuerto_destino_minimo = aeropuerto_destino
-                aeropuerto_origen_minimo = aeropuerto_origen
-
+    padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = (
+        conseguir_camino_minimo(grafo, origen, destino, aeropuertos_de_ciudades, bfs)
+    )
     camino = reconstruir_camino(
         padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
     )
@@ -163,7 +168,9 @@ def camino_escalas(grafo, parametros, aeropuertos_de_ciudades):
         print("error no hay camino")
         return 4
 
-    mostrar_camino(camino)
+    linea = armar_camino_imprimible(camino)
+    print(linea)
+    return linea
 
 
 # def centralidad(grafo,parametros):
@@ -313,14 +320,14 @@ def obtener_itinerario(ruta):
             itinerario.agregar_vertice(ciudad)
         for linea in archivo:
             prioridades = linea.rstrip("\n").split(",")
-            itinerario.agregar_arista(prioridades[0], prioridades[1], 1)
+            itinerario.agregar_arista(prioridades[0], prioridades[1])
     return itinerario
 
 
 # def obtener_caminos(itinerario):
 
 
-def itinerario(parametros):
+def itinerario(grafo_tiempo, grafo_escalas, parametros, aeropuertos_de_ciudades):
     if len(parametros) != 1:
         print("error cant param itinerario")
         return 8
@@ -329,9 +336,101 @@ def itinerario(parametros):
     orden = topologico_dfs(itinerario)
     ciudades_en_orden = ",".join(orden)
     print(ciudades_en_orden)
+    ciudades_en_orden = ciudades_en_orden.split(",")
+
+    for i in range(len(ciudades_en_orden)):
+        if i == len(ciudades_en_orden) - 1:
+            break
+        origen = ciudades_en_orden[i]
+        destino = ciudades_en_orden[i + 1]
+        padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo = (
+            conseguir_camino_minimo(
+                grafo_tiempo,
+                origen,
+                destino,
+                aeropuertos_de_ciudades,
+                dijkstra,
+            )
+        )
+        camino = reconstruir_camino(
+            padres_minimos, aeropuerto_origen_minimo, aeropuerto_destino_minimo
+        )
+        if camino == None:
+            print("error no hay camino")
+            return 4
+
+        linea = armar_camino_imprimible(camino)
+        print(linea)
 
 
-# def exportar_kml(grafo, parametros):
+def exportar_kml(parametros, ruta_kml, info_aeropuertos):
+    if len(parametros) != 1 or ruta_kml == "":
+        print("error param kml")
+        return 9
+
+    archivo = parametros[0]
+    escribir_kml(archivo, info_aeropuertos, ruta_kml)
+
+
+def escribir_lineas_kml(archivo, aeropuertos, info_aeropuertos):
+    for i in range(len(aeropuertos)):
+        if i == len(aeropuertos) - 1:
+            break
+        latitud_origen = info_aeropuertos[aeropuertos[i]]["latitud"]
+        longitud_origen = info_aeropuertos[aeropuertos[i]]["longitud"]
+        latitud_destino = info_aeropuertos[aeropuertos[i + 1]]["latitud"]
+        longitud_destino = info_aeropuertos[aeropuertos[i + 1]]["longitud"]
+        archivo.write("		<Placemark>\n")
+        archivo.write("        <LineString>\n")
+        archivo.write(
+            f"                <coordinates>{latitud_origen} {longitud_origen} {latitud_destino} {longitud_destino}</coordinates>\n"
+        )
+        archivo.write("        </LineString>\n")
+        archivo.write("		</Placemark>\n")
+
+
+def escribir_lugares_kml(archivo, aeropuertos, info_aeropuertos):
+    for aeropuerto in aeropuertos:
+        ciudad = info_aeropuertos[aeropuerto]["ciudad"]
+        latitud = info_aeropuertos[aeropuerto]["latitud"]
+        longitud = info_aeropuertos[aeropuerto]["longitud"]
+        archivo.write("		<Placemark>\n")
+        archivo.write(f"			<name>{ciudad}</name>\n")
+        archivo.write("			<Point>\n")
+        archivo.write(
+            f"                <coordinates>{latitud}, {longitud}</coordinates>\n"
+        )
+        archivo.write("			</Point>\n")
+        archivo.write("		</Placemark>\n\n")
+
+
+def escribir_inicio_kml(archivo, ciudad_origen, ciudad_destino):
+    archivo.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    archivo.write('<kml xmlns="http://earth.google.com/kml/2.1">\n')
+    archivo.write("	<Document>\n")
+    archivo.write(
+        f"        <name>Camino desde {ciudad_origen} hacia {ciudad_destino}</name>\n\n"
+    )
+
+
+def escribir_declaracion_kml(archivo):
+    archivo.write(" </Document>\n")
+    archivo.write("</kml>")
+
+
+def escribir_kml(archivo, info_aeropuertos, ruta_kml):
+    with open(archivo, "w") as kml:
+        aeropuertos = ruta_kml.split(" -> ")
+        aeropuerto_origen = aeropuertos[0]
+        aeropuerto_destino = aeropuertos[-1]
+        ciudad_origen = info_aeropuertos[aeropuerto_origen]["ciudad"]
+        ciudad_destino = info_aeropuertos[aeropuerto_destino]["ciudad"]
+
+        escribir_inicio_kml(kml, ciudad_origen, ciudad_destino)
+        escribir_lugares_kml(kml, aeropuertos, info_aeropuertos)
+        escribir_lineas_kml(kml, aeropuertos, info_aeropuertos)
+        escribir_declaracion_kml(kml)
+    print("OK")
 
 
 def main():
@@ -342,7 +441,7 @@ def main():
     # falta si < archivo
     archivo_aeropuertos = entrada[1]
     archivo_vuelos = entrada[2]
-
+    ruta_kml = ""
     (
         grafo_precio,
         grafo_tiempo_promedio,
@@ -353,20 +452,21 @@ def main():
     ) = cargar_grafo(archivo_aeropuertos, archivo_vuelos)
 
     while True:
+
         ingreso = input()
         ingreso = ingreso.rstrip().split(" ", maxsplit=1)
         comando = ingreso[0]
         parametros = ingreso[1].split(",")
 
         if comando == "camino_mas":
-            camino_mas(
+            ruta_kml = camino_mas(
                 grafo_precio,
                 grafo_tiempo_promedio,
                 parametros,
                 aeropuertos_de_ciudades,
             )
         elif comando == "camino_escalas":
-            camino_escalas(
+            ruta_kml = camino_escalas(
                 grafo_cant_vuelos_entre_aeropuertos,
                 parametros,
                 aeropuertos_de_ciudades,
@@ -376,9 +476,14 @@ def main():
         elif comando == "nueva_aerolinea":
             nueva_aerolinea(grafo_precio, parametros, info_vuelos)
         elif comando == "itinerario":
-            itinerario(parametros)
-        # elif comando == "exportar_kml":
-        #     exportar_kml(grafo, parametros)
+            itinerario(
+                grafo_tiempo_promedio,
+                grafo_cant_vuelos_entre_aeropuertos,
+                parametros,
+                aeropuertos_de_ciudades,
+            )
+        elif comando == "exportar_kml":
+            exportar_kml(parametros, ruta_kml, info_aeropuertos)
         else:
             print("error")
             return 6
